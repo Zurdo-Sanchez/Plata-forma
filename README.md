@@ -1,103 +1,42 @@
-# Plata-forma
-Aplicación de contabilidad familiar basada en ledger (doble partida) para gestionar cuentas bancarias, tarjetas de crédito, préstamos y presupuestos. Construida con NestJS, Vue 3 (Quasar) y MySQL, completamente dockerizada.
+# 🪙 Plata-Forma
+
+> Entrená, organizá y dominá las finanzas de tu hogar.
+
+**Plata-Forma** es una aplicación moderna de contabilidad familiar basada en un modelo **ledger (doble partida)**, diseñada para gestionar cuentas bancarias, tarjetas de crédito, préstamos y presupuestos de forma clara, consistente y escalable.
+
+✅ Multi-idioma (i18n) desde el inicio  
+✅ Documentación viva: **Usuario + API** (versionada junto al código)  
+✅ Stack: **NestJS + TypeScript + Vue 3 (Quasar) + MySQL**  
+✅ 100% dockerizado
 
 ---
 
-## 🌍 Multi-idioma (i18n)
+## 🚀 Características
 
-### Frontend
-El frontend usa i18n para traducir:
-- UI (menús, formularios, reportes)
-- nombres de categorías base (si se usan defaults)
-- mensajes de error de validación a nivel UI
-
-> Recomendación: mantener traducciones por módulos para escalar mejor.
-
-### API
-La API expone errores y mensajes localizables según el header:
-- `Accept-Language: es | ca | en | pt ...`
-
-> Nota: los datos del dominio (descripciones de transacciones, nombres de cuentas/categorías creadas por usuarios) no se traducen automáticamente.
-
-Idiomas previstos (inicial):
-- `es` (Español)
-- `ca` (Català)
-- `en` (English)
-- (opcional) `pt` más adelante
+- 👨‍👩‍👧‍👦 Gestión multiusuario por hogar
+- 🌍 Multi-idioma (i18n) en frontend y mensajes de API
+- 💰 Cuentas (banco, efectivo, tarjeta, préstamo)
+- 🧾 Transacciones con múltiples líneas (ledger)
+- 🔎 Filtros avanzados por fecha, cuenta, categoría y etiquetas
+- 📊 Reportes mensuales y análisis de gastos
+- 💳 Control de tarjetas de crédito (cierre y vencimiento)
+- 📉 Gestión de préstamos con amortización
+- 🧮 Cálculo dinámico de saldos (no se guardan saldos manuales)
+- 🐳 Totalmente dockerizado
 
 ---
 
-## 📚 Documentación viva (Usuario + API)
+## 🧠 Filosofía
 
-Plata-Forma mantiene documentación **versionada** y actualizada junto al código.
-
-### 🧑‍💻 Documentación de Usuario
-Ubicación: `docs/user/`
-
-- Guías por módulos (Cuentas, Movimientos, Tarjetas, Préstamos, Reportes)
-- FAQ y “primeros pasos”
-- Multi-idioma por carpeta:
-  - `docs/user/es/`
-  - `docs/user/ca/`
-  - `docs/user/en/`
-
-### 🔌 Documentación de API
-Ubicación: `docs/api/`
-
-- Especificación OpenAPI (Swagger)
-- Ejemplos de requests/responses
-- Guías: autenticación, paginación, errores, filtros
-- Changelog de endpoints
-
-> Objetivo: que el frontend consuma una API bien documentada desde el día 1.
+- ✔️ Modelo **ledger** con doble partida  
+- ✔️ Cada transacción balancea (∑ líneas = 0)  
+- ✔️ Dinero en enteros (centavos) — nunca floats  
+- ✔️ Historial auditable  
+- ✔️ Arquitectura modular y escalable  
 
 ---
 
-## 🛠 Stack Tecnológico
+## 🏗 Estructura del repo
 
-### Backend
-- NestJS
-- TypeScript
-- Prisma ORM
-- MySQL
-- Validación con Zod
+> Recomendación: monorepo para compartir tipos y esquemas entre API y Front.
 
-### Frontend
-- Vue 3
-- Quasar Framework
-- Pinia
-
-### Infra
-- Docker
-- Docker Compose
-
----
-
-## 🏦 Modelo Contable (Ledger)
-
-Cada operación se registra como una **transacción** con múltiples líneas.
-
-Ejemplo — Gasto supermercado 50€:
-
-| Cuenta | Monto (centavos) |
-|--------|-------------------|
-| Banco | -5000 |
-| Gasto: Supermercado | +5000 |
-
-La suma siempre debe ser **0**.
-
-Esto permite:
-- Transferencias naturales
-- Manejo correcto de tarjetas (deuda)
-- Pagos parciales
-- Splits por categorías
-- Intereses y cuotas sin hacks
-
----
-
-## ⚙️ Instalación (Desarrollo)
-
-### 1) Clonar
-```bash
-git clone https://github.com/tu-usuario/plata-forma.git
-cd plata-forma
