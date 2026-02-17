@@ -9,7 +9,11 @@ API_PORT=3333
 API_HOST=plata-forma-api.loc
 CORS_ORIGIN=http://plata-forma.loc
 CORS_CREDENTIALS=false
-DATABASE_URL=mysql://plataforma:plataforma@mysql:3306/plataforma
+DATABASE_URL=mysql://root:secret@docker-db:3306/plataforma
+AUTH_MAX_LOGIN_ATTEMPTS=5
+AUTH_LOCK_MINUTES=15
+JWT_SECRET=change-me
+AUTH_TOKEN_EXPIRES_IN=1h
 #============================================
 
 #APP

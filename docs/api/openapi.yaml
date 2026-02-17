@@ -1,0 +1,89 @@
+openapi: 3.0.3
+info:
+  title: Plata-Forma API
+  version: 0.0.1
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        '400':
+          description: Invalid data or user exists
+  /auth/login:
+    post:
+      summary: Login and get a JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Invalid data
+        '401':
+          description: Invalid credentials
+        '429':
+          description: Account locked
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+    RegisterResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        message:
+          type: string
+        userId:
+          type: string
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+    LoginResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        message:
+          type: string
+        accessToken:
+          type: string
+        tokenType:
+          type: string
+        userId:
+          type: string

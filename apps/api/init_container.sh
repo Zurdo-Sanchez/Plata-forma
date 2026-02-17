@@ -8,8 +8,8 @@ set -e
 echo "Inicializando el contenedor plataforma-api..."
 
 cd /api
-if [ ! -d "/api/node_modules" ]; then
-    echo "/api/node_modules no existe, ejecutando npm install..."
+if [ ! -d "/api/node_modules" ] || [ ! -x "/api/node_modules/.bin/prisma" ]; then
+    echo "/api/node_modules no existe o Prisma no esta instalado, ejecutando npm install..."
     npm install
 fi
 
