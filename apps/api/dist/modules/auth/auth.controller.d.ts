@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { AuthService } from './auth.service';
+import { AuthRequest } from './auth.guard';
 export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
@@ -11,8 +12,12 @@ export declare class AuthController {
     login(body: unknown, acceptLanguage: string | undefined, request: Request): Promise<{
         ok: boolean;
         message: string;
-        accessToken: never;
+        accessToken: string;
         tokenType: string;
         userId: string;
+    }>;
+    me(request: AuthRequest): Promise<{
+        ok: boolean;
+        user: import("./auth.guard").AuthUser | undefined;
     }>;
 }

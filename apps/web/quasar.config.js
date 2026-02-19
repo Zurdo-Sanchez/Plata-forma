@@ -14,7 +14,7 @@ module.exports = configure(() => ({
   },
   framework: {
     config: {},
-    plugins: []
+    plugins: ['Notify']
   },
   animations: [],
   sourceFiles: {

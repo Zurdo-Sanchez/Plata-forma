@@ -20,7 +20,7 @@ export declare class AuthService {
     login(payload: LoginDto, context: LoginContext): Promise<{
         ok: boolean;
         message: string;
-        accessToken: never;
+        accessToken: string;
         tokenType: string;
         userId: string;
     }>;

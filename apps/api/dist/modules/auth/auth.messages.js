@@ -1,9 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DEFAULT_LOCALE = void 0;
-exports.resolveLocale = resolveLocale;
 exports.t = t;
-exports.DEFAULT_LOCALE = 'es';
+const i18n_1 = require("../../i18n");
 const messages = {
     es: {
         invalidBody: 'Datos inválidos.',
@@ -12,6 +10,7 @@ const messages = {
         locked: 'Cuenta bloqueada por intentos fallidos. Intenta más tarde.',
         registered: 'Registro exitoso.',
         loggedIn: 'Login exitoso.',
+        unauthorized: 'No autorizado.',
     },
     ca: {
         invalidBody: 'Dades invàlides.',
@@ -20,6 +19,7 @@ const messages = {
         locked: 'Compte bloquejat per intents fallits. Torna-ho a provar més tard.',
         registered: 'Registre exitós.',
         loggedIn: 'Inici de sessió exitós.',
+        unauthorized: 'No autoritzat.',
     },
     en: {
         invalidBody: 'Invalid data.',
@@ -28,25 +28,10 @@ const messages = {
         locked: 'Account locked due to failed attempts. Try again later.',
         registered: 'Registration successful.',
         loggedIn: 'Login successful.',
+        unauthorized: 'Unauthorized.',
     },
 };
-function resolveLocale(acceptLanguage) {
-    if (!acceptLanguage) {
-        return exports.DEFAULT_LOCALE;
-    }
-    const language = acceptLanguage.split(',')[0]?.trim().toLowerCase();
-    if (!language) {
-        return exports.DEFAULT_LOCALE;
-    }
-    if (language.startsWith('ca')) {
-        return 'ca';
-    }
-    if (language.startsWith('en')) {
-        return 'en';
-    }
-    return 'es';
-}
 function t(locale, key) {
-    return messages[locale][key] ?? messages[exports.DEFAULT_LOCALE][key];
+    return (0, i18n_1.t)(messages, locale, key);
 }
 //# sourceMappingURL=auth.messages.js.map

@@ -11,12 +11,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
-const express_1 = require("express");
 const auth_service_1 = require("./auth.service");
+const auth_guard_1 = require("./auth.guard");
 const auth_schemas_1 = require("./auth.schemas");
 const auth_messages_1 = require("./auth.messages");
 let AuthController = class AuthController {
@@ -43,6 +42,12 @@ let AuthController = class AuthController {
             userAgent: request.get('user-agent') ?? undefined,
         });
     }
+    async me(request) {
+        return {
+            ok: true,
+            user: request.user,
+        };
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
@@ -59,9 +64,17 @@ __decorate([
     __param(1, (0, common_1.Headers)('accept-language')),
     __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, typeof (_a = typeof express_1.Request !== "undefined" && express_1.Request) === "function" ? _a : Object]),
+    __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
+__decorate([
+    (0, common_1.Get)('me'),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "me", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

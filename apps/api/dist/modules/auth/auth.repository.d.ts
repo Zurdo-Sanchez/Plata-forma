@@ -8,6 +8,7 @@ export declare class AuthRepository {
         email: string;
         passwordHash: string;
         passwordSalt: string;
+        isSuperAdmin: boolean;
         failedAttempts: number;
         lockedUntil: Date | null;
         lastLoginAt: Date | null;
@@ -19,6 +20,7 @@ export declare class AuthRepository {
         email: string;
         passwordHash: string;
         passwordSalt: string;
+        isSuperAdmin: boolean;
         failedAttempts: number;
         lockedUntil: Date | null;
         lastLoginAt: Date | null;
@@ -30,6 +32,7 @@ export declare class AuthRepository {
         email: string;
         passwordHash: string;
         passwordSalt: string;
+        isSuperAdmin: boolean;
         failedAttempts: number;
         lockedUntil: Date | null;
         lastLoginAt: Date | null;

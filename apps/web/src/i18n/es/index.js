@@ -1,6 +1,25 @@
 export default {
   app: {
-    brand: 'Plata-Forma'
+    brand: 'Plata-Forma',
+    tagline: 'Entrená, organizá y dominá las finanzas de tu hogar.',
+    errors: {
+      required: 'Completa los campos obligatorios.',
+      generic: 'No se pudo completar la solicitud.',
+      network: 'No se pudo conectar con el servidor.'
+    },
+    messages: {
+      saved: 'Guardado correctamente.'
+    }
+  },
+  nav: {
+    dashboard: 'Dashboard',
+    households: 'Hogares',
+    accounts: 'Cuentas',
+    categories: 'Categorías',
+    transactions: 'Transacciones',
+    creditCards: 'Tarjetas',
+    loans: 'Préstamos',
+    reports: 'Reportes'
   },
   auth: {
     common: {
@@ -34,7 +53,11 @@ export default {
       required: 'Completa todos los campos obligatorios.',
       passwordMismatch: 'Las contraseñas no coinciden.',
       network: 'No se pudo conectar con el servidor.',
-      generic: 'No se pudo completar la solicitud. Intenta de nuevo.'
+      generic: 'No se pudo completar la solicitud. Intenta de nuevo.',
+      invalidBody: 'Datos inválidos.',
+      invalidCredentials: 'Correo o contraseña incorrectos.',
+      locked: 'Cuenta bloqueada por intentos fallidos. Intenta más tarde.',
+      lockedUntil: 'Cuenta bloqueada hasta {date}.'
     },
     login: {
       secureChip: 'Entorno bancario seguro',
@@ -87,6 +110,146 @@ export default {
     }
   },
   dashboard: {
-    title: 'Dashboard'
+    title: 'Dashboard',
+    kicker: 'Resumen',
+    logout: 'Cerrar sesión',
+    monthly: 'Resumen mensual',
+    monthLabel: 'Mes',
+    income: 'Ingresos',
+    expense: 'Gastos',
+    net: 'Balance',
+    noHousehold: 'Sin hogar seleccionado',
+    selectHousehold: 'Selecciona o crea un hogar para ver el resumen.'
+  },
+  households: {
+    kicker: 'Configuración',
+    title: 'Hogares',
+    subtitle: 'Gestiona los hogares y sus miembros.',
+    listTitle: 'Tus hogares',
+    empty: 'Aún no tienes hogares creados.',
+    currencyFallback: 'Sin moneda',
+    select: 'Seleccionar',
+    selected: 'Actual',
+    createTitle: 'Crear hogar',
+    name: 'Nombre del hogar',
+    currency: 'Moneda (opcional)',
+    createAction: 'Crear hogar',
+    addMemberTitle: 'Agregar miembro',
+    memberEmail: 'Email del miembro',
+    memberRole: 'Rol',
+    memberRoleMember: 'Miembro',
+    memberRoleOwner: 'Propietario',
+    addMemberAction: 'Agregar',
+    selectHousehold: 'Selecciona un hogar.'
+  },
+  accounts: {
+    kicker: 'Configuración',
+    title: 'Cuentas',
+    subtitle: 'Administra cuentas bancarias, efectivo, tarjetas y préstamos.',
+    listTitle: 'Cuentas',
+    empty: 'No hay cuentas creadas.',
+    currencyFallback: 'Sin moneda',
+    archive: 'Archivar',
+    createTitle: 'Crear cuenta',
+    name: 'Nombre',
+    type: 'Tipo',
+    currency: 'Moneda (opcional)',
+    createAction: 'Crear cuenta',
+    selectHousehold: 'Selecciona un hogar para ver cuentas.',
+    types: {
+      bank: 'Banco',
+      cash: 'Efectivo',
+      creditCard: 'Tarjeta',
+      loan: 'Préstamo'
+    }
+  },
+  categories: {
+    kicker: 'Configuración',
+    title: 'Categorías',
+    subtitle: 'Clasifica ingresos, gastos y transferencias.',
+    listTitle: 'Categorías',
+    empty: 'No hay categorías creadas.',
+    archive: 'Archivar',
+    createTitle: 'Crear categoría',
+    name: 'Nombre',
+    type: 'Tipo',
+    createAction: 'Crear categoría',
+    selectHousehold: 'Selecciona un hogar para ver categorías.',
+    types: {
+      expense: 'Gasto',
+      income: 'Ingreso',
+      transfer: 'Transferencia'
+    }
+  },
+  transactions: {
+    kicker: 'Ledger',
+    title: 'Transacciones',
+    subtitle: 'Registra movimientos con múltiples líneas.',
+    listTitle: 'Movimientos recientes',
+    empty: 'No hay transacciones todavía.',
+    noDescription: 'Sin descripción',
+    lines: 'líneas',
+    delete: 'Eliminar',
+    createTitle: 'Nueva transacción',
+    date: 'Fecha',
+    description: 'Descripción',
+    linesTitle: 'Líneas',
+    account: 'Cuenta',
+    categoryOptional: 'Categoría (opcional)',
+    amount: 'Monto (centavos)',
+    memo: 'Nota',
+    addLine: 'Agregar línea',
+    removeLine: 'Quitar',
+    balanceLabel: 'Balance',
+    createAction: 'Guardar transacción',
+    selectHousehold: 'Selecciona un hogar para ver transacciones.'
+  },
+  creditCards: {
+    kicker: 'Deuda',
+    title: 'Tarjetas',
+    subtitle: 'Control de cierres y vencimientos.',
+    listTitle: 'Tarjetas',
+    empty: 'No hay tarjetas registradas.',
+    createTitle: 'Registrar tarjeta',
+    name: 'Nombre',
+    closingDay: 'Día de cierre',
+    dueDay: 'Día de vencimiento',
+    limitAmount: 'Límite (centavos)',
+    closingDayLabel: 'Cierre',
+    dueDayLabel: 'Vence',
+    createAction: 'Guardar tarjeta',
+    selectHousehold: 'Selecciona un hogar para ver tarjetas.'
+  },
+  loans: {
+    kicker: 'Deuda',
+    title: 'Préstamos',
+    subtitle: 'Gestiona préstamos y tasas.',
+    listTitle: 'Préstamos',
+    empty: 'No hay préstamos registrados.',
+    createTitle: 'Registrar préstamo',
+    name: 'Nombre',
+    principal: 'Principal (centavos)',
+    rate: 'Tasa (bps)',
+    startDate: 'Inicio',
+    term: 'Plazo (meses)',
+    principalLabel: 'Principal',
+    rateLabel: 'Tasa',
+    createAction: 'Guardar préstamo',
+    selectHousehold: 'Selecciona un hogar para ver préstamos.'
+  },
+  reports: {
+    kicker: 'Insights',
+    title: 'Reportes',
+    subtitle: 'Resumen mensual por categoría y cuenta.',
+    filters: 'Filtros',
+    month: 'Mes',
+    load: 'Cargar',
+    summary: 'Resumen',
+    income: 'Ingresos',
+    expense: 'Gastos',
+    net: 'Balance',
+    byCategory: 'Por categoría',
+    byAccount: 'Por cuenta',
+    selectHousehold: 'Selecciona un hogar para ver reportes.'
   }
 };

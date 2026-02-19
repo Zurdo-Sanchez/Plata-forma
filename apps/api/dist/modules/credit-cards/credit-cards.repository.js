@@ -1,0 +1,77 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CreditCardsRepository = void 0;
+const common_1 = require("@nestjs/common");
+const client_1 = require("@prisma/client");
+const prisma_service_1 = require("../../prisma/prisma.service");
+let CreditCardsRepository = class CreditCardsRepository {
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+    listByHousehold(householdId) {
+        return this.prisma.creditCard.findMany({
+            where: { householdId },
+            include: { account: true },
+            orderBy: { createdAt: 'asc' },
+        });
+    }
+    findById(id) {
+        return this.prisma.creditCard.findUnique({
+            where: { id },
+            include: { account: true },
+        });
+    }
+    findAccountById(id) {
+        return this.prisma.account.findUnique({
+            where: { id },
+        });
+    }
+    async createWithAccount(householdId, accountData, cardData) {
+        return this.prisma.$transaction(async (trx) => {
+            const account = await trx.account.create({
+                data: {
+                    name: accountData.name,
+                    type: client_1.AccountType.CREDIT_CARD,
+                    household: { connect: { id: householdId } },
+                    isActive: true,
+                },
+            });
+            const card = await trx.creditCard.create({
+                data: {
+                    ...cardData,
+                    account: { connect: { id: account.id } },
+                },
+                include: { account: true },
+            });
+            return card;
+        });
+    }
+    createCreditCard(data) {
+        return this.prisma.creditCard.create({
+            data,
+            include: { account: true },
+        });
+    }
+    updateCreditCard(id, data) {
+        return this.prisma.creditCard.update({
+            where: { id },
+            data,
+            include: { account: true },
+        });
+    }
+};
+exports.CreditCardsRepository = CreditCardsRepository;
+exports.CreditCardsRepository = CreditCardsRepository = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+], CreditCardsRepository);
+//# sourceMappingURL=credit-cards.repository.js.map

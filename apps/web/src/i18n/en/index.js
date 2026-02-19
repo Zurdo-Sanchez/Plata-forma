@@ -1,6 +1,25 @@
 export default {
   app: {
-    brand: 'Plata-Forma'
+    brand: 'Plata-Forma',
+    tagline: 'Train, organize, and master your household finances.',
+    errors: {
+      required: 'Please complete the required fields.',
+      generic: 'We could not complete the request.',
+      network: 'Unable to connect to the server.'
+    },
+    messages: {
+      saved: 'Saved successfully.'
+    }
+  },
+  nav: {
+    dashboard: 'Dashboard',
+    households: 'Households',
+    accounts: 'Accounts',
+    categories: 'Categories',
+    transactions: 'Transactions',
+    creditCards: 'Credit cards',
+    loans: 'Loans',
+    reports: 'Reports'
   },
   auth: {
     common: {
@@ -34,7 +53,11 @@ export default {
       required: 'Please complete all required fields.',
       passwordMismatch: 'Passwords do not match.',
       network: 'Unable to connect to the server.',
-      generic: 'We could not complete the request. Please try again.'
+      generic: 'We could not complete the request. Please try again.',
+      invalidBody: 'Invalid data.',
+      invalidCredentials: 'Email or password is incorrect.',
+      locked: 'Account locked due to failed attempts. Try again later.',
+      lockedUntil: 'Account locked until {date}.'
     },
     login: {
       secureChip: 'Secure Banking Environment',
@@ -86,6 +109,146 @@ export default {
     }
   },
   dashboard: {
-    title: 'Dashboard'
+    title: 'Dashboard',
+    kicker: 'Overview',
+    logout: 'Sign out',
+    monthly: 'Monthly overview',
+    monthLabel: 'Month',
+    income: 'Income',
+    expense: 'Expense',
+    net: 'Net',
+    noHousehold: 'No household selected',
+    selectHousehold: 'Select or create a household to view the summary.'
+  },
+  households: {
+    kicker: 'Settings',
+    title: 'Households',
+    subtitle: 'Manage households and members.',
+    listTitle: 'Your households',
+    empty: 'You have not created any households yet.',
+    currencyFallback: 'No currency',
+    select: 'Select',
+    selected: 'Current',
+    createTitle: 'Create household',
+    name: 'Household name',
+    currency: 'Currency (optional)',
+    createAction: 'Create household',
+    addMemberTitle: 'Add member',
+    memberEmail: 'Member email',
+    memberRole: 'Role',
+    memberRoleMember: 'Member',
+    memberRoleOwner: 'Owner',
+    addMemberAction: 'Add',
+    selectHousehold: 'Select a household.'
+  },
+  accounts: {
+    kicker: 'Settings',
+    title: 'Accounts',
+    subtitle: 'Manage bank, cash, card, and loan accounts.',
+    listTitle: 'Accounts',
+    empty: 'No accounts created.',
+    currencyFallback: 'No currency',
+    archive: 'Archive',
+    createTitle: 'Create account',
+    name: 'Name',
+    type: 'Type',
+    currency: 'Currency (optional)',
+    createAction: 'Create account',
+    selectHousehold: 'Select a household to view accounts.',
+    types: {
+      bank: 'Bank',
+      cash: 'Cash',
+      creditCard: 'Credit card',
+      loan: 'Loan'
+    }
+  },
+  categories: {
+    kicker: 'Settings',
+    title: 'Categories',
+    subtitle: 'Classify income, expenses, and transfers.',
+    listTitle: 'Categories',
+    empty: 'No categories created.',
+    archive: 'Archive',
+    createTitle: 'Create category',
+    name: 'Name',
+    type: 'Type',
+    createAction: 'Create category',
+    selectHousehold: 'Select a household to view categories.',
+    types: {
+      expense: 'Expense',
+      income: 'Income',
+      transfer: 'Transfer'
+    }
+  },
+  transactions: {
+    kicker: 'Ledger',
+    title: 'Transactions',
+    subtitle: 'Record movements with multiple lines.',
+    listTitle: 'Recent activity',
+    empty: 'No transactions yet.',
+    noDescription: 'No description',
+    lines: 'lines',
+    delete: 'Delete',
+    createTitle: 'New transaction',
+    date: 'Date',
+    description: 'Description',
+    linesTitle: 'Lines',
+    account: 'Account',
+    categoryOptional: 'Category (optional)',
+    amount: 'Amount (cents)',
+    memo: 'Memo',
+    addLine: 'Add line',
+    removeLine: 'Remove',
+    balanceLabel: 'Balance',
+    createAction: 'Save transaction',
+    selectHousehold: 'Select a household to view transactions.'
+  },
+  creditCards: {
+    kicker: 'Debt',
+    title: 'Credit cards',
+    subtitle: 'Track closing and due dates.',
+    listTitle: 'Cards',
+    empty: 'No cards registered.',
+    createTitle: 'Register card',
+    name: 'Name',
+    closingDay: 'Closing day',
+    dueDay: 'Due day',
+    limitAmount: 'Limit (cents)',
+    closingDayLabel: 'Closes',
+    dueDayLabel: 'Due',
+    createAction: 'Save card',
+    selectHousehold: 'Select a household to view cards.'
+  },
+  loans: {
+    kicker: 'Debt',
+    title: 'Loans',
+    subtitle: 'Manage loans and rates.',
+    listTitle: 'Loans',
+    empty: 'No loans registered.',
+    createTitle: 'Register loan',
+    name: 'Name',
+    principal: 'Principal (cents)',
+    rate: 'Rate (bps)',
+    startDate: 'Start date',
+    term: 'Term (months)',
+    principalLabel: 'Principal',
+    rateLabel: 'Rate',
+    createAction: 'Save loan',
+    selectHousehold: 'Select a household to view loans.'
+  },
+  reports: {
+    kicker: 'Insights',
+    title: 'Reports',
+    subtitle: 'Monthly summary by category and account.',
+    filters: 'Filters',
+    month: 'Month',
+    load: 'Load',
+    summary: 'Summary',
+    income: 'Income',
+    expense: 'Expense',
+    net: 'Net',
+    byCategory: 'By category',
+    byAccount: 'By account',
+    selectHousehold: 'Select a household to view reports.'
   }
 };

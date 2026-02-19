@@ -11,13 +11,30 @@ const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const auth_module_1 = require("./modules/auth/auth.module");
+const accounts_module_1 = require("./modules/accounts/accounts.module");
+const categories_module_1 = require("./modules/categories/categories.module");
+const credit_cards_module_1 = require("./modules/credit-cards/credit-cards.module");
+const households_module_1 = require("./modules/households/households.module");
+const loans_module_1 = require("./modules/loans/loans.module");
+const reports_module_1 = require("./modules/reports/reports.module");
+const transactions_module_1 = require("./modules/transactions/transactions.module");
 const prisma_module_1 = require("./prisma/prisma.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule, auth_module_1.AuthModule],
+        imports: [
+            prisma_module_1.PrismaModule,
+            auth_module_1.AuthModule,
+            households_module_1.HouseholdsModule,
+            accounts_module_1.AccountsModule,
+            categories_module_1.CategoriesModule,
+            transactions_module_1.TransactionsModule,
+            credit_cards_module_1.CreditCardsModule,
+            loans_module_1.LoansModule,
+            reports_module_1.ReportsModule,
+        ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })

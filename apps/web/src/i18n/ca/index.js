@@ -1,6 +1,25 @@
 export default {
   app: {
-    brand: 'Plata-Forma'
+    brand: 'Plata-Forma',
+    tagline: 'Entrena, organitza i domina les finances de la teva llar.',
+    errors: {
+      required: 'Completa els camps obligatoris.',
+      generic: 'No hem pogut completar la sol·licitud.',
+      network: 'No es pot connectar amb el servidor.'
+    },
+    messages: {
+      saved: 'Desat correctament.'
+    }
+  },
+  nav: {
+    dashboard: 'Dashboard',
+    households: 'Llars',
+    accounts: 'Comptes',
+    categories: 'Categories',
+    transactions: 'Transaccions',
+    creditCards: 'Targetes',
+    loans: 'Préstecs',
+    reports: 'Informes'
   },
   auth: {
     common: {
@@ -34,7 +53,11 @@ export default {
       required: 'Completa tots els camps obligatoris.',
       passwordMismatch: 'Les contrasenyes no coincideixen.',
       network: 'No es pot connectar amb el servidor.',
-      generic: 'No hem pogut completar la sol·licitud. Torna-ho a provar.'
+      generic: 'No hem pogut completar la sol·licitud. Torna-ho a provar.',
+      invalidBody: 'Dades invàlides.',
+      invalidCredentials: 'Correu o contrasenya incorrectes.',
+      locked: 'Compte bloquejat per intents fallits. Torna-ho a provar més tard.',
+      lockedUntil: 'Compte bloquejat fins a {date}.'
     },
     login: {
       secureChip: 'Entorn bancari segur',
@@ -87,6 +110,146 @@ export default {
     }
   },
   dashboard: {
-    title: 'Dashboard'
+    title: 'Dashboard',
+    kicker: 'Resum',
+    logout: 'Tancar sessió',
+    monthly: 'Resum mensual',
+    monthLabel: 'Mes',
+    income: 'Ingressos',
+    expense: 'Despeses',
+    net: 'Balanç',
+    noHousehold: 'Sense llar seleccionada',
+    selectHousehold: 'Selecciona o crea una llar per veure el resum.'
+  },
+  households: {
+    kicker: 'Configuració',
+    title: 'Llars',
+    subtitle: 'Gestiona les llars i els membres.',
+    listTitle: 'Les teves llars',
+    empty: 'Encara no tens llars creades.',
+    currencyFallback: 'Sense moneda',
+    select: 'Seleccionar',
+    selected: 'Actual',
+    createTitle: 'Crear llar',
+    name: 'Nom de la llar',
+    currency: 'Moneda (opcional)',
+    createAction: 'Crear llar',
+    addMemberTitle: 'Afegir membre',
+    memberEmail: 'Email del membre',
+    memberRole: 'Rol',
+    memberRoleMember: 'Membre',
+    memberRoleOwner: 'Propietari',
+    addMemberAction: 'Afegir',
+    selectHousehold: 'Selecciona una llar.'
+  },
+  accounts: {
+    kicker: 'Configuració',
+    title: 'Comptes',
+    subtitle: 'Administra comptes bancaris, efectiu, targetes i préstecs.',
+    listTitle: 'Comptes',
+    empty: 'No hi ha comptes creats.',
+    currencyFallback: 'Sense moneda',
+    archive: 'Arxivar',
+    createTitle: 'Crear compte',
+    name: 'Nom',
+    type: 'Tipus',
+    currency: 'Moneda (opcional)',
+    createAction: 'Crear compte',
+    selectHousehold: 'Selecciona una llar per veure comptes.',
+    types: {
+      bank: 'Banc',
+      cash: 'Efectiu',
+      creditCard: 'Targeta',
+      loan: 'Préstec'
+    }
+  },
+  categories: {
+    kicker: 'Configuració',
+    title: 'Categories',
+    subtitle: 'Classifica ingressos, despeses i transferències.',
+    listTitle: 'Categories',
+    empty: 'No hi ha categories creades.',
+    archive: 'Arxivar',
+    createTitle: 'Crear categoria',
+    name: 'Nom',
+    type: 'Tipus',
+    createAction: 'Crear categoria',
+    selectHousehold: 'Selecciona una llar per veure categories.',
+    types: {
+      expense: 'Despesa',
+      income: 'Ingrés',
+      transfer: 'Transferència'
+    }
+  },
+  transactions: {
+    kicker: 'Ledger',
+    title: 'Transaccions',
+    subtitle: 'Registra moviments amb múltiples línies.',
+    listTitle: 'Moviments recents',
+    empty: 'No hi ha transaccions encara.',
+    noDescription: 'Sense descripció',
+    lines: 'línies',
+    delete: 'Eliminar',
+    createTitle: 'Nova transacció',
+    date: 'Data',
+    description: 'Descripció',
+    linesTitle: 'Línies',
+    account: 'Compte',
+    categoryOptional: 'Categoria (opcional)',
+    amount: 'Import (centims)',
+    memo: 'Nota',
+    addLine: 'Afegir línia',
+    removeLine: 'Treure',
+    balanceLabel: 'Balanç',
+    createAction: 'Desar transacció',
+    selectHousehold: 'Selecciona una llar per veure transaccions.'
+  },
+  creditCards: {
+    kicker: 'Deute',
+    title: 'Targetes',
+    subtitle: 'Controla els tancaments i venciments.',
+    listTitle: 'Targetes',
+    empty: 'No hi ha targetes registrades.',
+    createTitle: 'Registrar targeta',
+    name: 'Nom',
+    closingDay: 'Dia de tancament',
+    dueDay: 'Dia de venciment',
+    limitAmount: 'Límit (centaus)',
+    closingDayLabel: 'Tanca',
+    dueDayLabel: 'Venceix',
+    createAction: 'Desar targeta',
+    selectHousehold: 'Selecciona una llar per veure targetes.'
+  },
+  loans: {
+    kicker: 'Deute',
+    title: 'Préstecs',
+    subtitle: 'Gestiona préstecs i taxes.',
+    listTitle: 'Préstecs',
+    empty: 'No hi ha préstecs registrats.',
+    createTitle: 'Registrar préstec',
+    name: 'Nom',
+    principal: 'Principal (centaus)',
+    rate: 'Taxa (bps)',
+    startDate: 'Inici',
+    term: 'Termini (mesos)',
+    principalLabel: 'Principal',
+    rateLabel: 'Taxa',
+    createAction: 'Desar préstec',
+    selectHousehold: 'Selecciona una llar per veure préstecs.'
+  },
+  reports: {
+    kicker: 'Insights',
+    title: 'Informes',
+    subtitle: 'Resum mensual per categoria i compte.',
+    filters: 'Filtres',
+    month: 'Mes',
+    load: 'Carregar',
+    summary: 'Resum',
+    income: 'Ingressos',
+    expense: 'Despeses',
+    net: 'Balanç',
+    byCategory: 'Per categoria',
+    byAccount: 'Per compte',
+    selectHousehold: 'Selecciona una llar per veure informes.'
   }
 };

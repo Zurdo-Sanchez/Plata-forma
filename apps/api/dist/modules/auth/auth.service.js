@@ -69,7 +69,7 @@ let AuthService = class AuthService {
                 userAgent: context.userAgent,
                 user: { connect: { id: user.id } },
             });
-            throw new common_1.TooManyRequestsException({ message: (0, auth_messages_1.t)(locale, 'locked'), lockedUntil: user.lockedUntil });
+            throw new common_1.HttpException({ message: (0, auth_messages_1.t)(locale, 'locked'), lockedUntil: user.lockedUntil }, common_1.HttpStatus.TOO_MANY_REQUESTS);
         }
         if (user.lockedUntil && user.lockedUntil <= now) {
             await this.repository.updateUserAuthState(user.id, {
@@ -102,7 +102,7 @@ let AuthService = class AuthService {
                     message: `Locked for ${this.lockMinutes} minutes after more than ${this.maxAttempts} failed attempts.`,
                     user: { connect: { id: user.id } },
                 });
-                throw new common_1.TooManyRequestsException({ message: (0, auth_messages_1.t)(locale, 'locked'), lockedUntil });
+                throw new common_1.HttpException({ message: (0, auth_messages_1.t)(locale, 'locked'), lockedUntil }, common_1.HttpStatus.TOO_MANY_REQUESTS);
             }
             throw new common_1.UnauthorizedException({ message: (0, auth_messages_1.t)(locale, 'invalidCredentials') });
         }

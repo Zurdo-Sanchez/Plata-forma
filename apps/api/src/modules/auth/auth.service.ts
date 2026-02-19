@@ -1,5 +1,5 @@
-import { BadRequestException, Injectable, TooManyRequestsException, UnauthorizedException } from '@nestjs/common';
-import { sign } from 'jsonwebtoken';
+import { BadRequestException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { sign, type SignOptions } from 'jsonwebtoken';
 import { LoginAlertType, LoginAttemptStatus } from '@prisma/client';
 import { AuthRepository } from './auth.repository';
 import { hashPassword, verifyPassword } from './auth.crypto';
@@ -17,7 +17,7 @@ export class AuthService {
   private readonly maxAttempts: number;
   private readonly lockMinutes: number;
   private readonly jwtSecret: string;
-  private readonly tokenExpiresIn: string;
+  private readonly tokenExpiresIn: SignOptions['expiresIn'];
 
   constructor(private readonly repository: AuthRepository) {
     const maxAttempts = Number(process.env.AUTH_MAX_LOGIN_ATTEMPTS);
@@ -28,7 +28,7 @@ export class AuthService {
     this.maxAttempts = Number.isFinite(maxAttempts) && maxAttempts > 0 ? maxAttempts : 5;
     this.lockMinutes = Number.isFinite(lockMinutes) && lockMinutes > 0 ? lockMinutes : 15;
     this.jwtSecret = jwtSecret;
-    this.tokenExpiresIn = tokenExpiresIn;
+    this.tokenExpiresIn = tokenExpiresIn as SignOptions['expiresIn'];
   }
 
   async register(payload: RegisterDto, acceptLanguage?: string) {
@@ -79,7 +79,10 @@ export class AuthService {
         userAgent: context.userAgent,
         user: { connect: { id: user.id } },
       });
-      throw new TooManyRequestsException({ message: t(locale, 'locked'), lockedUntil: user.lockedUntil });
+      throw new HttpException(
+        { message: t(locale, 'locked'), lockedUntil: user.lockedUntil },
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
     }
 
     if (user.lockedUntil && user.lockedUntil <= now) {
@@ -118,7 +121,7 @@ export class AuthService {
           user: { connect: { id: user.id } },
         });
 
-        throw new TooManyRequestsException({ message: t(locale, 'locked'), lockedUntil });
+        throw new HttpException({ message: t(locale, 'locked'), lockedUntil }, HttpStatus.TOO_MANY_REQUESTS);
       }
 
       throw new UnauthorizedException({ message: t(locale, 'invalidCredentials') });

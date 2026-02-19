@@ -15,13 +15,7 @@
         <span>{{ $t('app.brand') }}</span>
       </div>
       <div class="auth-meta">
-        <span class="auth-chip">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6">
-            <path d="M12 3l7 4v5c0 5-3.5 8-7 9-3.5-1-7-4-7-9V7l7-4z" />
-            <path d="M9.5 12.5l2 2 3.5-4" />
-          </svg>
-          {{ $t('auth.common.secureConnection') }}
-        </span>
+        <LanguageMenu />
       </div>
     </header>
 
@@ -164,10 +158,6 @@
     </footer>
 
     <div class="auth-bottom">
-      <div class="auth-pill-list">
-        <span class="auth-pill">{{ $t('auth.register.biometrics') }}</span>
-        <span class="auth-pill">{{ $t('auth.register.secureTokens') }}</span>
-      </div>
       <span>{{ $t('auth.register.smartAccess') }}</span>
     </div>
   </q-page>
@@ -179,6 +169,7 @@ import { useRouter } from 'vue-router';
 import { Notify } from 'quasar';
 import { t } from '../i18n';
 import { useAuth } from '../composables/useAuth';
+import LanguageMenu from '../components/LanguageMenu.vue';
 
 const showPassword = ref(false);
 const showConfirm = ref(false);

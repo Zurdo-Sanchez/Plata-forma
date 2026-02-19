@@ -57,6 +57,28 @@ Errores:
 - 401 `Credenciales inválidas.`
 - 429 `Cuenta bloqueada por intentos fallidos. Intenta más tarde.`
 
+## GET /auth/me
+
+Devuelve el usuario asociado al token.
+
+Headers:
+- `Authorization: Bearer <token>`
+
+Response 200:
+
+```json
+{
+  "ok": true,
+  "user": {
+    "id": "uuid",
+    "email": "user@example.com"
+  }
+}
+```
+
+Errores:
+- 401 `No autorizado.`
+
 ## Localizacion
 
 Los mensajes de error responden segun `Accept-Language`:

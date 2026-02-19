@@ -1,6 +1,7 @@
-import { BadRequestException, Body, Controller, Headers, Post, Req } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthService } from './auth.service';
+import { AuthGuard, AuthRequest } from './auth.guard';
 import { LoginSchema, RegisterSchema } from './auth.schemas';
 import { resolveLocale, t } from './auth.messages';
 
@@ -36,5 +37,14 @@ export class AuthController {
       ip: request.ip,
       userAgent: request.get('user-agent') ?? undefined,
     });
+  }
+
+  @Get('me')
+  @UseGuards(AuthGuard)
+  async me(@Req() request: AuthRequest) {
+    return {
+      ok: true,
+      user: request.user,
+    };
   }
 }
