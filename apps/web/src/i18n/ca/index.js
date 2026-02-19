@@ -30,6 +30,12 @@ export default {
       languageEn: 'Anglès',
       languageCa: 'Català'
     },
+    errors: {
+      required: 'Completa tots els camps obligatoris.',
+      passwordMismatch: 'Les contrasenyes no coincideixen.',
+      network: 'No es pot connectar amb el servidor.',
+      generic: 'No hem pogut completar la sol·licitud. Torna-ho a provar.'
+    },
     login: {
       secureChip: 'Entorn bancari segur',
       title: 'Benvingut de nou',
@@ -41,7 +47,8 @@ export default {
       householdAction: 'Registrar una nova llar',
       pci: 'Compliment PCI DSS',
       aes: 'Xifratge AES-256',
-      copyright: '(c) 2024 Plata-Forma Financial Systems Inc.'
+      copyright: '(c) 2024 Plata-Forma Financial Systems Inc.',
+      success: 'Sessió iniciada correctament.'
     },
     register: {
       title: 'Crear compte',
@@ -53,7 +60,8 @@ export default {
       accountNote: 'El teu compte inclou monitoratge d\'activitat, alertes i suport 24/7.',
       biometrics: 'Verificació biomètrica',
       secureTokens: 'Tokens segurs',
-      smartAccess: 'Gestió d\'accés intel·ligent per a Plata-Forma.'
+      smartAccess: 'Gestió d\'accés intel·ligent per a Plata-Forma.',
+      success: 'Compte creat correctament. Ja pots iniciar sessió.'
     },
     recovery: {
       title: 'Recuperar contrasenya',
@@ -61,7 +69,8 @@ export default {
       submit: 'Enviar enllaç de recuperació',
       ssl: 'Xifratge SSL',
       pci: 'Compliment PCI DSS',
-      copyright: '(c) 2024 Plata-Forma Financial Systems.'
+      copyright: '(c) 2024 Plata-Forma Financial Systems.',
+      success: 'T\'hem enviat l\'enllaç de recuperació al teu correu.'
     },
     reset: {
       title: 'Restablir contrasenya',
@@ -73,7 +82,11 @@ export default {
       strengthSymbols: 'OK - Números i símbols',
       submit: 'Actualitzar contrasenya',
       info:
-        'En actualitzar la contrasenya, tancarem automàticament totes les sessions actives en altres dispositius.'
+        'En actualitzar la contrasenya, tancarem automàticament totes les sessions actives en altres dispositius.',
+      success: 'Contrasenya actualitzada correctament.'
     }
+  },
+  dashboard: {
+    title: 'Dashboard'
   }
 };

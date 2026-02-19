@@ -38,29 +38,32 @@
           <p>{{ $t('auth.recovery.subtitle') }}</p>
         </div>
 
-        <div class="auth-field">
-          <label class="auth-label" for="recovery-email">{{ $t('auth.common.email') }}</label>
-          <div class="auth-input-wrap">
-            <span class="auth-input-icon">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
-                <rect x="3" y="6" width="18" height="12" rx="2" />
-                <path d="M3 7l9 6 9-6" />
-              </svg>
-            </span>
-            <input
-              id="recovery-email"
-              class="auth-input"
-              type="email"
-              :placeholder="$t('auth.common.emailPlaceholder')"
-              autocomplete="email"
-            />
+        <form class="auth-form" @submit.prevent="onSubmit">
+          <div class="auth-field">
+            <label class="auth-label" for="recovery-email">{{ $t('auth.common.email') }}</label>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <rect x="3" y="6" width="18" height="12" rx="2" />
+                  <path d="M3 7l9 6 9-6" />
+                </svg>
+              </span>
+              <input
+                id="recovery-email"
+                v-model="email"
+                class="auth-input"
+                type="email"
+                :placeholder="$t('auth.common.emailPlaceholder')"
+                autocomplete="email"
+              />
+            </div>
           </div>
-        </div>
 
-        <button class="auth-button" type="button">
-          {{ $t('auth.recovery.submit') }}
-          <span>{{ $t('auth.common.arrow') }}</span>
-        </button>
+          <button class="auth-button" type="submit" :disabled="isLoading">
+            {{ $t('auth.recovery.submit') }}
+            <span>{{ $t('auth.common.arrow') }}</span>
+          </button>
+        </form>
 
         <div class="auth-pill-list">
           <span class="auth-pill">{{ $t('auth.recovery.ssl') }}</span>
@@ -81,7 +84,34 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import { Notify } from 'quasar';
+import { useRouter } from 'vue-router';
 import { t } from '../i18n';
+import { useAuth } from '../composables/useAuth';
 
 const $t = t;
+const email = ref('');
+const isLoading = ref(false);
+const { requestRecovery } = useAuth();
+const router = useRouter();
+
+const onSubmit = async () => {
+  if (isLoading.value) return;
+  if (!email.value) {
+    Notify.create({ type: 'negative', message: t('auth.errors.required') });
+    return;
+  }
+
+  isLoading.value = true;
+  try {
+    await requestRecovery({ email: email.value });
+    Notify.create({ type: 'positive', message: t('auth.recovery.success') });
+    await router.push('/restablecer');
+  } catch (error) {
+    Notify.create({ type: 'negative', message: error?.message || t('auth.errors.generic') });
+  } finally {
+    isLoading.value = false;
+  }
+};
 </script>

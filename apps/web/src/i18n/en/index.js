@@ -30,6 +30,12 @@ export default {
       languageEn: 'English',
       languageCa: 'Catalan'
     },
+    errors: {
+      required: 'Please complete all required fields.',
+      passwordMismatch: 'Passwords do not match.',
+      network: 'Unable to connect to the server.',
+      generic: 'We could not complete the request. Please try again.'
+    },
     login: {
       secureChip: 'Secure Banking Environment',
       title: 'Welcome back',
@@ -41,7 +47,8 @@ export default {
       householdAction: 'Register a new household',
       pci: 'PCI DSS compliant',
       aes: 'AES-256 encryption',
-      copyright: '(c) 2024 Plata-Forma Financial Systems Inc.'
+      copyright: '(c) 2024 Plata-Forma Financial Systems Inc.',
+      success: 'Signed in successfully.'
     },
     register: {
       title: 'Create account',
@@ -53,7 +60,8 @@ export default {
       accountNote: 'Your account includes activity monitoring, alerts, and 24/7 support.',
       biometrics: 'Biometric verification',
       secureTokens: 'Secure tokens',
-      smartAccess: 'Intelligent access management for Plata-Forma.'
+      smartAccess: 'Intelligent access management for Plata-Forma.',
+      success: 'Account created successfully. You can now sign in.'
     },
     recovery: {
       title: 'Recover password',
@@ -61,7 +69,8 @@ export default {
       submit: 'Send recovery link',
       ssl: 'SSL encryption',
       pci: 'PCI DSS compliant',
-      copyright: '(c) 2024 Plata-Forma Financial Systems.'
+      copyright: '(c) 2024 Plata-Forma Financial Systems.',
+      success: 'We sent a recovery link to your email.'
     },
     reset: {
       title: 'Reset password',
@@ -72,7 +81,11 @@ export default {
       strengthCase: 'OK - Uppercase and lowercase',
       strengthSymbols: 'OK - Numbers and symbols',
       submit: 'Update password',
-      info: 'When you update your password, we will automatically close all active sessions on other devices.'
+      info: 'When you update your password, we will automatically close all active sessions on other devices.',
+      success: 'Password updated successfully.'
     }
+  },
+  dashboard: {
+    title: 'Dashboard'
   }
 };

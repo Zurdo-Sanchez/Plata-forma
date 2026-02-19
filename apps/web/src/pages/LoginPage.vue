@@ -54,68 +54,72 @@
           <p>{{ $t('auth.login.subtitle') }}</p>
         </div>
 
-        <div class="auth-field">
-          <label class="auth-label" for="login-email">{{ $t('auth.common.email') }}</label>
-          <div class="auth-input-wrap">
-            <span class="auth-input-icon">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
-                <rect x="3" y="6" width="18" height="12" rx="2" />
-                <path d="M3 7l9 6 9-6" />
-              </svg>
-            </span>
-            <input
-              id="login-email"
-              class="auth-input"
-              type="email"
-              :placeholder="$t('auth.common.emailPlaceholder')"
-              autocomplete="email"
-            />
+        <form class="auth-form" @submit.prevent="onSubmit">
+          <div class="auth-field">
+            <label class="auth-label" for="login-email">{{ $t('auth.common.email') }}</label>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <rect x="3" y="6" width="18" height="12" rx="2" />
+                  <path d="M3 7l9 6 9-6" />
+                </svg>
+              </span>
+              <input
+                id="login-email"
+                v-model="email"
+                class="auth-input"
+                type="email"
+                :placeholder="$t('auth.common.emailPlaceholder')"
+                autocomplete="email"
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="auth-field">
-          <div class="auth-row">
-            <label class="auth-label" for="login-password">{{ $t('auth.common.password') }}</label>
-            <router-link class="auth-link" to="/recuperar">{{ $t('auth.login.forgotPassword') }}</router-link>
+          <div class="auth-field">
+            <div class="auth-row">
+              <label class="auth-label" for="login-password">{{ $t('auth.common.password') }}</label>
+              <router-link class="auth-link" to="/recuperar">{{ $t('auth.login.forgotPassword') }}</router-link>
+            </div>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <path d="M7 10V8a5 5 0 0 1 10 0v2" />
+                  <rect x="5" y="10" width="14" height="10" rx="2" />
+                  <circle cx="12" cy="15" r="2" />
+                </svg>
+              </span>
+              <input
+                id="login-password"
+                v-model="password"
+                class="auth-input"
+                :type="showPassword ? 'text' : 'password'"
+                :placeholder="$t('auth.common.passwordMask')"
+                autocomplete="current-password"
+              />
+              <button
+                class="auth-input-action"
+                type="button"
+                @click="showPassword = !showPassword"
+                :aria-label="$t('auth.common.togglePassword')"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </button>
+            </div>
           </div>
-          <div class="auth-input-wrap">
-            <span class="auth-input-icon">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
-                <path d="M7 10V8a5 5 0 0 1 10 0v2" />
-                <rect x="5" y="10" width="14" height="10" rx="2" />
-                <circle cx="12" cy="15" r="2" />
-              </svg>
-            </span>
-            <input
-              id="login-password"
-              class="auth-input"
-              :type="showPassword ? 'text' : 'password'"
-              :placeholder="$t('auth.common.passwordMask')"
-              autocomplete="current-password"
-            />
-            <button
-              class="auth-input-action"
-              type="button"
-              @click="showPassword = !showPassword"
-              :aria-label="$t('auth.common.togglePassword')"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                <path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            </button>
-          </div>
-        </div>
 
-        <label class="auth-checkbox">
-          <input type="checkbox" />
-          {{ $t('auth.common.rememberMe') }}
-        </label>
+          <label class="auth-checkbox">
+            <input type="checkbox" />
+            {{ $t('auth.common.rememberMe') }}
+          </label>
 
-        <button class="auth-button" type="button">
-          {{ $t('auth.login.submit') }}
-          <span>{{ $t('auth.common.arrow') }}</span>
-        </button>
+          <button class="auth-button" type="submit" :disabled="isLoading">
+            {{ $t('auth.login.submit') }}
+            <span>{{ $t('auth.common.arrow') }}</span>
+          </button>
+        </form>
 
         <div class="auth-divider">{{ $t('auth.login.householdAccess') }}</div>
 
@@ -161,10 +165,18 @@
 
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { Notify } from 'quasar';
 import { t, locale, setLocale } from '../i18n';
+import { useAuth } from '../composables/useAuth';
 
 const showPassword = ref(false);
+const email = ref('');
+const password = ref('');
+const isLoading = ref(false);
 const $t = t;
+const router = useRouter();
+const { login } = useAuth();
 const isLocaleOpen = ref(false);
 const localeMenuRef = ref(null);
 
@@ -188,6 +200,28 @@ const handleClickOutside = (event) => {
   if (!localeMenuRef.value) return;
   if (!localeMenuRef.value.contains(event.target)) {
     isLocaleOpen.value = false;
+  }
+};
+
+const onSubmit = async () => {
+  if (isLoading.value) return;
+  if (!email.value || !password.value) {
+    Notify.create({ type: 'negative', message: t('auth.errors.required') });
+    return;
+  }
+
+  isLoading.value = true;
+  try {
+    const response = await login({ email: email.value, password: password.value });
+    if (response?.accessToken) {
+      localStorage.setItem('auth_token', response.accessToken);
+    }
+    Notify.create({ type: 'positive', message: t('auth.login.success') });
+    await router.push('/dashboard');
+  } catch (error) {
+    Notify.create({ type: 'negative', message: error?.message || t('auth.errors.generic') });
+  } finally {
+    isLoading.value = false;
   }
 };
 

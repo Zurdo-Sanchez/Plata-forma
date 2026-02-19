@@ -30,6 +30,12 @@ export default {
       languageEn: 'Inglés',
       languageCa: 'Català'
     },
+    errors: {
+      required: 'Completa todos los campos obligatorios.',
+      passwordMismatch: 'Las contraseñas no coinciden.',
+      network: 'No se pudo conectar con el servidor.',
+      generic: 'No se pudo completar la solicitud. Intenta de nuevo.'
+    },
     login: {
       secureChip: 'Entorno bancario seguro',
       title: 'Bienvenido de nuevo',
@@ -41,7 +47,8 @@ export default {
       householdAction: 'Registrar nuevo hogar',
       pci: 'Cumple PCI DSS',
       aes: 'Encriptación AES-256',
-      copyright: '(c) 2024 Plata-Forma Financial Systems Inc.'
+      copyright: '(c) 2024 Plata-Forma Financial Systems Inc.',
+      success: 'Inicio de sesión exitoso.'
     },
     register: {
       title: 'Crear cuenta',
@@ -53,7 +60,8 @@ export default {
       accountNote: 'Tu cuenta incluye monitoreo de actividad, alertas y soporte 24/7.',
       biometrics: 'Verificación biométrica',
       secureTokens: 'Tokens seguros',
-      smartAccess: 'Gestión de acceso inteligente para Plata-Forma.'
+      smartAccess: 'Gestión de acceso inteligente para Plata-Forma.',
+      success: 'Cuenta creada correctamente. Ahora puedes iniciar sesión.'
     },
     recovery: {
       title: 'Recuperar contraseña',
@@ -61,7 +69,8 @@ export default {
       submit: 'Enviar enlace de recuperación',
       ssl: 'Encriptación SSL',
       pci: 'Cumple PCI DSS',
-      copyright: '(c) 2024 Plata-Forma Financial Systems.'
+      copyright: '(c) 2024 Plata-Forma Financial Systems.',
+      success: 'Te enviamos el enlace de recuperación a tu correo.'
     },
     reset: {
       title: 'Restablecer contraseña',
@@ -73,7 +82,11 @@ export default {
       strengthSymbols: 'OK - Números y símbolos',
       submit: 'Actualizar contraseña',
       info:
-        'Al actualizar tu contraseña, cerraremos automáticamente todas las sesiones activas en otros dispositivos.'
+        'Al actualizar tu contraseña, cerraremos automáticamente todas las sesiones activas en otros dispositivos.',
+      success: 'Contraseña actualizada correctamente.'
     }
+  },
+  dashboard: {
+    title: 'Dashboard'
   }
 };

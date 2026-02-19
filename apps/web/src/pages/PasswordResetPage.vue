@@ -36,35 +36,37 @@
           <p>{{ $t('auth.reset.subtitle') }}</p>
         </div>
 
-        <div class="auth-field">
-          <label class="auth-label" for="reset-password">{{ $t('auth.common.newPassword') }}</label>
-          <div class="auth-input-wrap">
-            <span class="auth-input-icon">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
-                <path d="M7 10V8a5 5 0 0 1 10 0v2" />
-                <rect x="5" y="10" width="14" height="10" rx="2" />
-              </svg>
-            </span>
-            <input
-              id="reset-password"
-              class="auth-input"
-              :type="showPassword ? 'text' : 'password'"
-              :placeholder="$t('auth.common.passwordPlaceholder')"
-              autocomplete="new-password"
-            />
-            <button
-              class="auth-input-action"
-              type="button"
-              @click="showPassword = !showPassword"
-              :aria-label="$t('auth.common.togglePassword')"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                <path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            </button>
+        <form class="auth-form" @submit.prevent="onSubmit">
+          <div class="auth-field">
+            <label class="auth-label" for="reset-password">{{ $t('auth.common.newPassword') }}</label>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <path d="M7 10V8a5 5 0 0 1 10 0v2" />
+                  <rect x="5" y="10" width="14" height="10" rx="2" />
+                </svg>
+              </span>
+              <input
+                id="reset-password"
+                v-model="password"
+                class="auth-input"
+                :type="showPassword ? 'text' : 'password'"
+                :placeholder="$t('auth.common.passwordPlaceholder')"
+                autocomplete="new-password"
+              />
+              <button
+                class="auth-input-action"
+                type="button"
+                @click="showPassword = !showPassword"
+                :aria-label="$t('auth.common.togglePassword')"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </button>
+            </div>
           </div>
-        </div>
 
         <div class="auth-strength">
           <div class="auth-row">
@@ -79,45 +81,47 @@
           </div>
         </div>
 
-        <div class="auth-field">
-          <label class="auth-label" for="reset-confirm">{{ $t('auth.common.confirmPassword') }}</label>
-          <div class="auth-input-wrap">
-            <span class="auth-input-icon">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
-                <path d="M7 10V8a5 5 0 0 1 10 0v2" />
-                <rect x="5" y="10" width="14" height="10" rx="2" />
-                <path d="M9 15l2 2 4-4" />
-              </svg>
-            </span>
-            <input
-              id="reset-confirm"
-              class="auth-input"
-              :type="showConfirm ? 'text' : 'password'"
-              :placeholder="$t('auth.common.confirmPlaceholder')"
-              autocomplete="new-password"
-            />
-            <button
-              class="auth-input-action"
-              type="button"
-              @click="showConfirm = !showConfirm"
-              :aria-label="$t('auth.common.togglePassword')"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                <path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            </button>
+          <div class="auth-field">
+            <label class="auth-label" for="reset-confirm">{{ $t('auth.common.confirmPassword') }}</label>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <path d="M7 10V8a5 5 0 0 1 10 0v2" />
+                  <rect x="5" y="10" width="14" height="10" rx="2" />
+                  <path d="M9 15l2 2 4-4" />
+                </svg>
+              </span>
+              <input
+                id="reset-confirm"
+                v-model="confirmPassword"
+                class="auth-input"
+                :type="showConfirm ? 'text' : 'password'"
+                :placeholder="$t('auth.common.confirmPlaceholder')"
+                autocomplete="new-password"
+              />
+              <button
+                class="auth-input-action"
+                type="button"
+                @click="showConfirm = !showConfirm"
+                :aria-label="$t('auth.common.togglePassword')"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </button>
+            </div>
           </div>
-        </div>
 
-        <button class="auth-button" type="button">
-          {{ $t('auth.reset.submit') }}
-          <span>{{ $t('auth.common.arrow') }}</span>
-        </button>
+          <button class="auth-button" type="submit" :disabled="isLoading">
+            {{ $t('auth.reset.submit') }}
+            <span>{{ $t('auth.common.arrow') }}</span>
+          </button>
 
-        <div class="auth-footer-note">
-          <router-link class="auth-link" to="/login">{{ $t('auth.common.backToLogin') }}</router-link>
-        </div>
+          <div class="auth-footer-note">
+            <router-link class="auth-link" to="/login">{{ $t('auth.common.backToLogin') }}</router-link>
+          </div>
+        </form>
       </section>
     </main>
 
@@ -139,9 +143,41 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { Notify } from 'quasar';
 import { t } from '../i18n';
+import { useAuth } from '../composables/useAuth';
 
 const showPassword = ref(false);
 const showConfirm = ref(false);
+const password = ref('');
+const confirmPassword = ref('');
+const isLoading = ref(false);
 const $t = t;
+const router = useRouter();
+const { resetPassword } = useAuth();
+
+const onSubmit = async () => {
+  if (isLoading.value) return;
+  if (!password.value || !confirmPassword.value) {
+    Notify.create({ type: 'negative', message: t('auth.errors.required') });
+    return;
+  }
+
+  if (password.value !== confirmPassword.value) {
+    Notify.create({ type: 'negative', message: t('auth.errors.passwordMismatch') });
+    return;
+  }
+
+  isLoading.value = true;
+  try {
+    await resetPassword({ password: password.value });
+    Notify.create({ type: 'positive', message: t('auth.reset.success') });
+    await router.push('/login');
+  } catch (error) {
+    Notify.create({ type: 'negative', message: error?.message || t('auth.errors.generic') });
+  } finally {
+    isLoading.value = false;
+  }
+};
 </script>

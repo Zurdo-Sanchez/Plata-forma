@@ -3,6 +3,7 @@ import LoginPage from 'pages/LoginPage.vue';
 import RegisterPage from 'pages/RegisterPage.vue';
 import PasswordRecoveryPage from 'pages/PasswordRecoveryPage.vue';
 import PasswordResetPage from 'pages/PasswordResetPage.vue';
+import DashboardPage from 'pages/DashboardPage.vue';
 
 const routes = [
   {
@@ -13,7 +14,8 @@ const routes = [
       { path: 'login', component: LoginPage },
       { path: 'registro', component: RegisterPage },
       { path: 'recuperar', component: PasswordRecoveryPage },
-      { path: 'restablecer', component: PasswordResetPage }
+      { path: 'restablecer', component: PasswordResetPage },
+      { path: 'dashboard', component: DashboardPage }
     ]
   },
   {
