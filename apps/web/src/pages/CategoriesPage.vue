@@ -59,9 +59,10 @@ import { Notify } from 'quasar';
 import { t } from '../i18n';
 import { apiRequest } from '../composables/apiClient';
 import { useHouseholdsStore } from '../stores/households';
+import pinia from '../stores/pinia';
 
 const $t = t;
-const householdsStore = useHouseholdsStore();
+const householdsStore = useHouseholdsStore(pinia);
 const items = ref([]);
 const name = ref('');
 const type = ref('EXPENSE');

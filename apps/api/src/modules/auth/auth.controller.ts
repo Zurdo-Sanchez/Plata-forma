@@ -3,7 +3,8 @@ import { Request } from 'express';
 import { AuthService } from './auth.service';
 import { AuthGuard, AuthRequest } from './auth.guard';
 import { LoginSchema, RegisterSchema } from './auth.schemas';
-import { resolveLocale, t } from './auth.messages';
+import { resolveLocale } from '../../i18n';
+import { t } from './auth.messages';
 
 @Controller('auth')
 export class AuthController {

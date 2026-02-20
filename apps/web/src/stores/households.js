@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { apiRequest } from '../composables/apiClient';
+import { safeStorage } from '../utils/storage';
 
 const STORAGE_KEY = 'current_household_id';
 
@@ -7,7 +8,7 @@ export const useHouseholdsStore = defineStore('households', {
   state: () => ({
     items: [],
     loading: false,
-    currentId: typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : ''
+    currentId: safeStorage.get(STORAGE_KEY) || ''
   }),
   getters: {
     currentHousehold(state) {
@@ -32,9 +33,7 @@ export const useHouseholdsStore = defineStore('households', {
     },
     select(id) {
       this.currentId = id;
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem(STORAGE_KEY, id);
-      }
+      safeStorage.set(STORAGE_KEY, id);
     },
     async create(payload) {
       const response = await apiRequest('/households', {

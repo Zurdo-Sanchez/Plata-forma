@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import routes from './routes';
+import { safeStorage } from '../utils/storage';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -7,8 +8,7 @@ const router = createRouter({
 });
 
 const hasAuthToken = () => {
-  if (typeof localStorage === 'undefined') return false;
-  const token = localStorage.getItem('auth_token');
+  const token = safeStorage.get('auth_token');
   return Boolean(token && token.trim().length);
 };
 

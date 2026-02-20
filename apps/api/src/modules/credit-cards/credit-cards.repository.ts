@@ -30,7 +30,7 @@ export class CreditCardsRepository {
   async createWithAccount(
     householdId: string,
     accountData: { name: string },
-    cardData: Prisma.CreditCardCreateInput,
+    cardData: Prisma.CreditCardCreateWithoutAccountInput,
   ): Promise<CreditCard> {
     return this.prisma.$transaction(async (trx) => {
       const account = await trx.account.create({

@@ -1,4 +1,5 @@
 import { locale, t } from '../i18n';
+import { safeStorage } from '../utils/storage';
 
 const resolveApiBase = () => {
   const envUrl =
@@ -41,7 +42,7 @@ export const apiRequest = async (path, options = {}, { withAuth = true } = {}) =
   };
 
   if (withAuth && typeof localStorage !== 'undefined') {
-    const token = localStorage.getItem('auth_token');
+    const token = safeStorage.get('auth_token');
     if (token) {
       headers.Authorization = `Bearer ${token}`;
     }

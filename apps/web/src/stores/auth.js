@@ -1,25 +1,22 @@
 import { defineStore } from 'pinia';
 import { apiRequest } from '../composables/apiClient';
+import { safeStorage } from '../utils/storage';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    token: typeof localStorage !== 'undefined' ? localStorage.getItem('auth_token') : '',
+    token: safeStorage.get('auth_token') || '',
     user: null,
     ready: false
   }),
   actions: {
     setToken(token) {
       this.token = token;
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('auth_token', token);
-      }
+      safeStorage.set('auth_token', token);
     },
     clear() {
       this.token = '';
       this.user = null;
-      if (typeof localStorage !== 'undefined') {
-        localStorage.removeItem('auth_token');
-      }
+      safeStorage.remove('auth_token');
     },
     async fetchMe() {
       if (!this.token) {

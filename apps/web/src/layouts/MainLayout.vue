@@ -41,10 +41,11 @@ import { useRoute } from 'vue-router';
 import { t } from '../i18n';
 import LanguageMenu from '../components/LanguageMenu.vue';
 import { useHouseholdsStore } from '../stores/households';
+import pinia from '../stores/pinia';
 
 const $t = t;
 const route = useRoute();
-const householdsStore = useHouseholdsStore();
+const householdsStore = useHouseholdsStore(pinia);
 
 const showAppNav = computed(() => route.matched.some((record) => record.meta?.requiresAuth));
 

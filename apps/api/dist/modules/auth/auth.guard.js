@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthGuard = void 0;
 const common_1 = require("@nestjs/common");
 const jsonwebtoken_1 = require("jsonwebtoken");
+const i18n_1 = require("../../i18n");
 const auth_messages_1 = require("./auth.messages");
 let AuthGuard = class AuthGuard {
     constructor() {
@@ -16,9 +17,9 @@ let AuthGuard = class AuthGuard {
     }
     canActivate(context) {
         const request = context.switchToHttp().getRequest();
-        const acceptLanguage = request.headers['accept-language'];
-        const locale = (0, auth_messages_1.resolveLocale)(typeof acceptLanguage === 'string' ? acceptLanguage : undefined);
-        const header = request.headers.authorization;
+        const acceptLanguage = request.get('accept-language');
+        const locale = (0, i18n_1.resolveLocale)(acceptLanguage);
+        const header = request.get('authorization');
         const token = typeof header === 'string' && header.startsWith('Bearer ') ? header.slice(7) : null;
         if (!token) {
             throw new common_1.UnauthorizedException({ message: (0, auth_messages_1.t)(locale, 'unauthorized') });

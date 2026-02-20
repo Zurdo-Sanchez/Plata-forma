@@ -118,6 +118,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Notify } from 'quasar';
 import { t, locale } from '../i18n';
+import { safeStorage } from '../utils/storage';
 import { useAuth } from '../composables/useAuth';
 import LanguageMenu from '../components/LanguageMenu.vue';
 
@@ -175,7 +176,7 @@ const onSubmit = async () => {
   try {
     const response = await login({ email: email.value, password: password.value });
     if (response?.accessToken) {
-      localStorage.setItem('auth_token', response.accessToken);
+      safeStorage.set('auth_token', response.accessToken);
     }
     Notify.create({ type: 'positive', message: response?.message || t('auth.login.success') });
     await router.push('/dashboard');

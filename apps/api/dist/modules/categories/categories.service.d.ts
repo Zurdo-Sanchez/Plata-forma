@@ -5,9 +5,49 @@ export declare class CategoriesService {
     private readonly categoriesRepository;
     private readonly householdsService;
     constructor(categoriesRepository: CategoriesRepository, householdsService: HouseholdsService);
-    list(userId: string, householdId: string, acceptLanguage?: string): Promise<any>;
-    create(userId: string, householdId: string, payload: CreateCategoryDto, acceptLanguage?: string): Promise<Category>;
-    get(userId: string, categoryId: string, acceptLanguage?: string): Promise<any>;
-    update(userId: string, categoryId: string, payload: UpdateCategoryDto, acceptLanguage?: string): Promise<Category>;
-    archive(userId: string, categoryId: string, acceptLanguage?: string): Promise<Category>;
+    list(userId: string, householdId: string, acceptLanguage?: string): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
+        type: import(".prisma/client").$Enums.CategoryType;
+        householdId: string;
+        isActive: boolean;
+    }[]>;
+    create(userId: string, householdId: string, payload: CreateCategoryDto, acceptLanguage?: string): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
+        type: import(".prisma/client").$Enums.CategoryType;
+        householdId: string;
+        isActive: boolean;
+    }>;
+    get(userId: string, categoryId: string, acceptLanguage?: string): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
+        type: import(".prisma/client").$Enums.CategoryType;
+        householdId: string;
+        isActive: boolean;
+    }>;
+    update(userId: string, categoryId: string, payload: UpdateCategoryDto, acceptLanguage?: string): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
+        type: import(".prisma/client").$Enums.CategoryType;
+        householdId: string;
+        isActive: boolean;
+    }>;
+    archive(userId: string, categoryId: string, acceptLanguage?: string): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        name: string;
+        type: import(".prisma/client").$Enums.CategoryType;
+        householdId: string;
+        isActive: boolean;
+    }>;
 }

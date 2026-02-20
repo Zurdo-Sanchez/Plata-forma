@@ -79,9 +79,10 @@ import { Notify } from 'quasar';
 import { t } from '../i18n';
 import { apiRequest } from '../composables/apiClient';
 import { useHouseholdsStore } from '../stores/households';
+import pinia from '../stores/pinia';
 
 const $t = t;
-const householdsStore = useHouseholdsStore();
+const householdsStore = useHouseholdsStore(pinia);
 const report = ref(null);
 const month = ref(new Date().toISOString().slice(0, 7));
 const isLoading = ref(false);

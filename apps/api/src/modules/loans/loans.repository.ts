@@ -30,7 +30,7 @@ export class LoansRepository {
   async createWithAccount(
     householdId: string,
     accountData: { name: string },
-    loanData: Prisma.LoanCreateInput,
+    loanData: Prisma.LoanCreateWithoutAccountInput,
   ): Promise<Loan> {
     return this.prisma.$transaction(async (trx) => {
       const account = await trx.account.create({

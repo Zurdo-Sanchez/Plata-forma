@@ -72,9 +72,10 @@ import { onMounted, ref } from 'vue';
 import { Notify } from 'quasar';
 import { t } from '../i18n';
 import { useHouseholdsStore } from '../stores/households';
+import pinia from '../stores/pinia';
 
 const $t = t;
-const householdsStore = useHouseholdsStore();
+const householdsStore = useHouseholdsStore(pinia);
 const name = ref('');
 const currency = ref('');
 const memberEmail = ref('');

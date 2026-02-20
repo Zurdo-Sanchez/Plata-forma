@@ -4,7 +4,8 @@ import { LoginAlertType, LoginAttemptStatus } from '@prisma/client';
 import { AuthRepository } from './auth.repository';
 import { hashPassword, verifyPassword } from './auth.crypto';
 import { LoginDto, RegisterDto } from './auth.schemas';
-import { resolveLocale, t } from './auth.messages';
+import { resolveLocale } from '../../i18n';
+import { t } from './auth.messages';
 
 export interface LoginContext {
   ip?: string;

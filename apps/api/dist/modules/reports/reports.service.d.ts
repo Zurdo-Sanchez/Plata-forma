@@ -12,12 +12,22 @@ export declare class ReportsService {
             end: Date;
         };
         totals: {
-            income: any;
-            expense: any;
-            net: number;
+            income: bigint;
+            expense: bigint;
+            net: bigint;
         };
-        byCategory: any;
-        byAccount: any;
+        byCategory: {
+            categoryId: string | null;
+            name: string;
+            type: import(".prisma/client").$Enums.CategoryType | null;
+            amount: bigint;
+        }[];
+        byAccount: {
+            accountId: string;
+            name: string;
+            type: import(".prisma/client").$Enums.AccountType | null;
+            amount: bigint;
+        }[];
     }>;
     private parseMonth;
 }

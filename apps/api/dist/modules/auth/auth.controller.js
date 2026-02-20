@@ -17,13 +17,14 @@ const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const auth_guard_1 = require("./auth.guard");
 const auth_schemas_1 = require("./auth.schemas");
+const i18n_1 = require("../../i18n");
 const auth_messages_1 = require("./auth.messages");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
     async register(body, acceptLanguage) {
-        const locale = (0, auth_messages_1.resolveLocale)(acceptLanguage);
+        const locale = (0, i18n_1.resolveLocale)(acceptLanguage);
         const parsed = auth_schemas_1.RegisterSchema.safeParse(body);
         if (!parsed.success) {
             throw new common_1.BadRequestException({ message: (0, auth_messages_1.t)(locale, 'invalidBody') });
@@ -31,7 +32,7 @@ let AuthController = class AuthController {
         return this.authService.register(parsed.data, acceptLanguage);
     }
     async login(body, acceptLanguage, request) {
-        const locale = (0, auth_messages_1.resolveLocale)(acceptLanguage);
+        const locale = (0, i18n_1.resolveLocale)(acceptLanguage);
         const parsed = auth_schemas_1.LoginSchema.safeParse(body);
         if (!parsed.success) {
             throw new common_1.BadRequestException({ message: (0, auth_messages_1.t)(locale, 'invalidBody') });

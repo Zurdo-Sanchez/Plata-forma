@@ -15,6 +15,7 @@ const jsonwebtoken_1 = require("jsonwebtoken");
 const client_1 = require("@prisma/client");
 const auth_repository_1 = require("./auth.repository");
 const auth_crypto_1 = require("./auth.crypto");
+const i18n_1 = require("../../i18n");
 const auth_messages_1 = require("./auth.messages");
 let AuthService = class AuthService {
     constructor(repository) {
@@ -29,7 +30,7 @@ let AuthService = class AuthService {
         this.tokenExpiresIn = tokenExpiresIn;
     }
     async register(payload, acceptLanguage) {
-        const locale = (0, auth_messages_1.resolveLocale)(acceptLanguage);
+        const locale = (0, i18n_1.resolveLocale)(acceptLanguage);
         const email = payload.email.trim().toLowerCase();
         const existingUser = await this.repository.findUserByEmail(email);
         if (existingUser) {
@@ -48,7 +49,7 @@ let AuthService = class AuthService {
         };
     }
     async login(payload, context) {
-        const locale = (0, auth_messages_1.resolveLocale)(context.acceptLanguage);
+        const locale = (0, i18n_1.resolveLocale)(context.acceptLanguage);
         const email = payload.email.trim().toLowerCase();
         const user = await this.repository.findUserByEmail(email);
         if (!user) {

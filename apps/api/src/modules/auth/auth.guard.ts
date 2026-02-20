@@ -1,7 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { verify } from 'jsonwebtoken';
 import { Request } from 'express';
-import { resolveLocale, t } from './auth.messages';
+import { resolveLocale } from '../../i18n';
+import { t } from './auth.messages';
 
 export interface AuthUser {
   id: string;
@@ -18,9 +19,9 @@ export class AuthGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<AuthRequest>();
-    const acceptLanguage = request.headers['accept-language'];
-    const locale = resolveLocale(typeof acceptLanguage === 'string' ? acceptLanguage : undefined);
-    const header = request.headers.authorization;
+    const acceptLanguage = request.get('accept-language');
+    const locale = resolveLocale(acceptLanguage);
+    const header = request.get('authorization');
     const token = typeof header === 'string' && header.startsWith('Bearer ') ? header.slice(7) : null;
 
     if (!token) {

@@ -48,18 +48,18 @@ import { useRouter } from 'vue-router';
 import { apiRequest } from '../composables/apiClient';
 import { t } from '../i18n';
 import { useHouseholdsStore } from '../stores/households';
+import { safeStorage } from '../utils/storage';
+import pinia from '../stores/pinia';
 
 const $t = t;
 const router = useRouter();
-const householdsStore = useHouseholdsStore();
+const householdsStore = useHouseholdsStore(pinia);
 const report = ref(null);
 const month = ref(new Date().toISOString().slice(0, 7));
 
 const onLogout = async () => {
-  if (typeof localStorage !== 'undefined') {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('current_household_id');
-  }
+  safeStorage.remove('auth_token');
+  safeStorage.remove('current_household_id');
   await router.push('/login');
 };
 

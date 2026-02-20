@@ -1,4 +1,5 @@
 import { ref } from 'vue';
+import { safeStorage } from '../utils/storage';
 import es from './es';
 import en from './en';
 import ca from './ca';
@@ -20,10 +21,8 @@ const formatMessage = (value, params) => {
 const getInitialLocale = () => {
   const candidates = [];
 
-  if (typeof localStorage !== 'undefined') {
-    const stored = localStorage.getItem('locale');
-    if (stored) candidates.push(stored);
-  }
+  const stored = safeStorage.get('locale');
+  if (stored) candidates.push(stored);
 
   if (typeof navigator !== 'undefined') {
     if (Array.isArray(navigator.languages)) candidates.push(...navigator.languages);
@@ -49,9 +48,7 @@ export const setLocale = (value) => {
     document.documentElement.lang = next;
   }
 
-  if (typeof localStorage !== 'undefined') {
-    localStorage.setItem('locale', next);
-  }
+  safeStorage.set('locale', next);
 };
 
 setLocale(locale.value);
