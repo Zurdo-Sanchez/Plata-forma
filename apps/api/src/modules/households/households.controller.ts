@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Headers, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Headers, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard, AuthRequest } from '../auth/auth.guard';
 import { AddMemberSchema, CreateHouseholdSchema, HouseholdIdSchema, UpdateHouseholdSchema } from './households.schemas';
 import { HouseholdsService } from './households.service';
@@ -86,5 +86,20 @@ export class HouseholdsController {
       acceptLanguage,
     );
     return { ok: true, message: t(locale, 'memberAdded'), member };
+  }
+
+  @Delete(':id')
+  async remove(
+    @Req() request: AuthRequest,
+    @Param('id') id: string,
+    @Headers('accept-language') acceptLanguage?: string,
+  ) {
+    const locale = resolveLocale(acceptLanguage);
+    const parsedId = HouseholdIdSchema.safeParse(id);
+    if (!parsedId.success) {
+      throw new BadRequestException({ message: t(locale, 'invalidBody') });
+    }
+    await this.householdsService.remove(request.user!.id, parsedId.data, acceptLanguage);
+    return { ok: true, message: t(locale, 'deleted') };
   }
 }

@@ -5,11 +5,11 @@ export declare class CategoriesController {
     constructor(categoriesService: CategoriesService);
     list(request: AuthRequest, householdId: string, acceptLanguage?: string): Promise<{
         id: string;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
-        type: import(".prisma/client").$Enums.CategoryType;
         householdId: string;
+        type: import(".prisma/client").$Enums.CategoryType;
         isActive: boolean;
     }[]>;
     create(request: AuthRequest, householdId: string, body: unknown, acceptLanguage?: string): Promise<{
@@ -17,21 +17,21 @@ export declare class CategoriesController {
         message: string;
         category: {
             id: string;
+            name: string;
             createdAt: Date;
             updatedAt: Date;
-            name: string;
-            type: import(".prisma/client").$Enums.CategoryType;
             householdId: string;
+            type: import(".prisma/client").$Enums.CategoryType;
             isActive: boolean;
         };
     }>;
     get(request: AuthRequest, id: string, acceptLanguage?: string): Promise<{
         id: string;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
-        type: import(".prisma/client").$Enums.CategoryType;
         householdId: string;
+        type: import(".prisma/client").$Enums.CategoryType;
         isActive: boolean;
     }>;
     update(request: AuthRequest, id: string, body: unknown, acceptLanguage?: string): Promise<{
@@ -39,11 +39,11 @@ export declare class CategoriesController {
         message: string;
         category: {
             id: string;
+            name: string;
             createdAt: Date;
             updatedAt: Date;
-            name: string;
-            type: import(".prisma/client").$Enums.CategoryType;
             householdId: string;
+            type: import(".prisma/client").$Enums.CategoryType;
             isActive: boolean;
         };
     }>;
@@ -52,11 +52,11 @@ export declare class CategoriesController {
         message: string;
         category: {
             id: string;
+            name: string;
             createdAt: Date;
             updatedAt: Date;
-            name: string;
-            type: import(".prisma/client").$Enums.CategoryType;
             householdId: string;
+            type: import(".prisma/client").$Enums.CategoryType;
             isActive: boolean;
         };
     }>;

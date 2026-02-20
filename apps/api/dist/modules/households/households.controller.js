@@ -68,6 +68,15 @@ let HouseholdsController = class HouseholdsController {
         const member = await this.householdsService.addMember(request.user.id, parsedId.data, parsed.data, acceptLanguage);
         return { ok: true, message: (0, households_messages_1.t)(locale, 'memberAdded'), member };
     }
+    async remove(request, id, acceptLanguage) {
+        const locale = (0, households_messages_1.resolveLocale)(acceptLanguage);
+        const parsedId = households_schemas_1.HouseholdIdSchema.safeParse(id);
+        if (!parsedId.success) {
+            throw new common_1.BadRequestException({ message: (0, households_messages_1.t)(locale, 'invalidBody') });
+        }
+        await this.householdsService.remove(request.user.id, parsedId.data, acceptLanguage);
+        return { ok: true, message: (0, households_messages_1.t)(locale, 'deleted') };
+    }
 };
 exports.HouseholdsController = HouseholdsController;
 __decorate([
@@ -115,6 +124,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, Object, String]),
     __metadata("design:returntype", Promise)
 ], HouseholdsController.prototype, "addMember", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.Headers)('accept-language')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, String]),
+    __metadata("design:returntype", Promise)
+], HouseholdsController.prototype, "remove", null);
 exports.HouseholdsController = HouseholdsController = __decorate([
     (0, common_1.Controller)('households'),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),

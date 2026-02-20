@@ -9,8 +9,8 @@ export declare class TransactionsService {
         lines: {
             id: number;
             createdAt: Date;
-            accountId: string;
             transactionId: string;
+            accountId: string;
             categoryId: string | null;
             amount: bigint;
             memo: string | null;
@@ -27,8 +27,8 @@ export declare class TransactionsService {
         lines: {
             id: number;
             createdAt: Date;
-            accountId: string;
             transactionId: string;
+            accountId: string;
             categoryId: string | null;
             amount: bigint;
             memo: string | null;
@@ -53,8 +53,8 @@ export declare class TransactionsService {
         lines: {
             id: number;
             createdAt: Date;
-            accountId: string;
             transactionId: string;
+            accountId: string;
             categoryId: string | null;
             amount: bigint;
             memo: string | null;
@@ -71,8 +71,8 @@ export declare class TransactionsService {
         lines: {
             id: number;
             createdAt: Date;
-            accountId: string;
             transactionId: string;
+            accountId: string;
             categoryId: string | null;
             amount: bigint;
             memo: string | null;

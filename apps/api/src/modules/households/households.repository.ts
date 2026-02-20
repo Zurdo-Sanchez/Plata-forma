@@ -40,6 +40,25 @@ export class HouseholdsRepository {
     });
   }
 
+  deleteHouseholdCascade(id: string): Promise<Household> {
+    return this.prisma.$transaction(async (trx) => {
+      await trx.transactionLine.deleteMany({
+        where: {
+          transaction: {
+            householdId: id,
+          },
+        },
+      });
+      await trx.transaction.deleteMany({ where: { householdId: id } });
+      await trx.creditCard.deleteMany({ where: { householdId: id } });
+      await trx.loan.deleteMany({ where: { householdId: id } });
+      await trx.account.deleteMany({ where: { householdId: id } });
+      await trx.category.deleteMany({ where: { householdId: id } });
+      await trx.householdMember.deleteMany({ where: { householdId: id } });
+      return trx.household.delete({ where: { id } });
+    });
+  }
+
   findMembership(userId: string, householdId: string): Promise<HouseholdMember | null> {
     return this.prisma.householdMember.findUnique({
       where: {

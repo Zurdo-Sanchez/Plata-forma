@@ -113,3 +113,21 @@ Errores comunes:
 - 401 `No autorizado.`
 - 403 `No tienes acceso a este hogar.`
 - 404 `Hogar no encontrado.`
+
+## DELETE /households/:id
+
+Elimina un hogar y todos sus datos (solo OWNER).
+
+Response 200:
+
+```json
+{
+  "ok": true,
+  "message": "Hogar eliminado correctamente."
+}
+```
+
+Errores comunes:
+- 400 `Datos inválidos.`
+- 401 `No autorizado.`
+- 403 `No tienes acceso a este hogar.`

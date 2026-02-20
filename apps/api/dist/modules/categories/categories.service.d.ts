@@ -7,47 +7,47 @@ export declare class CategoriesService {
     constructor(categoriesRepository: CategoriesRepository, householdsService: HouseholdsService);
     list(userId: string, householdId: string, acceptLanguage?: string): Promise<{
         id: string;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
-        type: import(".prisma/client").$Enums.CategoryType;
         householdId: string;
+        type: import(".prisma/client").$Enums.CategoryType;
         isActive: boolean;
     }[]>;
     create(userId: string, householdId: string, payload: CreateCategoryDto, acceptLanguage?: string): Promise<{
         id: string;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
-        type: import(".prisma/client").$Enums.CategoryType;
         householdId: string;
+        type: import(".prisma/client").$Enums.CategoryType;
         isActive: boolean;
     }>;
     get(userId: string, categoryId: string, acceptLanguage?: string): Promise<{
         id: string;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
-        type: import(".prisma/client").$Enums.CategoryType;
         householdId: string;
+        type: import(".prisma/client").$Enums.CategoryType;
         isActive: boolean;
     }>;
     update(userId: string, categoryId: string, payload: UpdateCategoryDto, acceptLanguage?: string): Promise<{
         id: string;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
-        type: import(".prisma/client").$Enums.CategoryType;
         householdId: string;
+        type: import(".prisma/client").$Enums.CategoryType;
         isActive: boolean;
     }>;
     archive(userId: string, categoryId: string, acceptLanguage?: string): Promise<{
         id: string;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
-        type: import(".prisma/client").$Enums.CategoryType;
         householdId: string;
+        type: import(".prisma/client").$Enums.CategoryType;
         isActive: boolean;
     }>;
 }

@@ -64,6 +64,11 @@ export class HouseholdsService {
     });
   }
 
+  async remove(userId: string, householdId: string, acceptLanguage?: string) {
+    await this.assertOwner(userId, householdId, acceptLanguage);
+    return this.repository.deleteHouseholdCascade(householdId);
+  }
+
   async assertMember(userId: string, householdId: string, acceptLanguage?: string) {
     const membership = await this.repository.findMembership(userId, householdId);
     if (!membership) {

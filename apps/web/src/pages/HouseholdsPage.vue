@@ -17,15 +17,48 @@
           </div>
           <div v-else class="panel-list">
             <div v-for="household in householdsStore.items" :key="household.id" class="panel-item">
-              <div>
+              <div v-if="editingId === household.id" class="panel-edit">
+                <label class="panel-label" :for="`edit-name-${household.id}`">{{ $t('households.name') }}</label>
+                <input
+                  :id="`edit-name-${household.id}`"
+                  v-model="editName"
+                  class="panel-input"
+                  type="text"
+                />
+                <label class="panel-label" :for="`edit-currency-${household.id}`">{{ $t('households.currency') }}</label>
+                <input
+                  :id="`edit-currency-${household.id}`"
+                  v-model="editCurrency"
+                  class="panel-input"
+                  type="text"
+                  maxlength="3"
+                />
+                <div class="panel-row">
+                  <button class="panel-action" type="button" @click="onUpdate(household.id)">
+                    {{ $t('households.updateAction') }}
+                  </button>
+                  <button class="panel-action" type="button" @click="cancelEdit">
+                    {{ $t('households.cancelAction') }}
+                  </button>
+                </div>
+              </div>
+              <div v-else>
                 <div class="panel-item-title">{{ household.name }}</div>
                 <div class="panel-item-meta">
                   {{ household.currency || $t('households.currencyFallback') }}
                 </div>
+                <div class="panel-row">
+                  <button class="panel-action" type="button" @click="selectHousehold(household.id)">
+                    {{ household.id === householdsStore.currentId ? $t('households.selected') : $t('households.select') }}
+                  </button>
+                  <button class="panel-action" type="button" @click="startEdit(household)">
+                    {{ $t('households.editAction') }}
+                  </button>
+                  <button class="panel-action" type="button" @click="onDelete(household.id)">
+                    {{ $t('households.deleteAction') }}
+                  </button>
+                </div>
               </div>
-              <button class="panel-action" type="button" @click="selectHousehold(household.id)">
-                {{ household.id === householdsStore.currentId ? $t('households.selected') : $t('households.select') }}
-              </button>
             </div>
           </div>
         </div>
@@ -82,9 +115,52 @@ const memberEmail = ref('');
 const memberRole = ref('MEMBER');
 const isCreating = ref(false);
 const isAdding = ref(false);
+const editingId = ref('');
+const editName = ref('');
+const editCurrency = ref('');
 
 const selectHousehold = (id) => {
   householdsStore.select(id);
+};
+
+const startEdit = (household) => {
+  editingId.value = household.id;
+  editName.value = household.name;
+  editCurrency.value = household.currency || '';
+};
+
+const cancelEdit = () => {
+  editingId.value = '';
+  editName.value = '';
+  editCurrency.value = '';
+};
+
+const onUpdate = async (id) => {
+  if (!editName.value.trim()) {
+    Notify.create({ type: 'negative', message: t('app.errors.required') });
+    return;
+  }
+  try {
+    const response = await householdsStore.update(id, {
+      name: editName.value.trim(),
+      currency: editCurrency.value.trim() || null
+    });
+    Notify.create({ type: 'positive', message: response?.message || t('app.messages.saved') });
+    cancelEdit();
+  } catch (error) {
+    Notify.create({ type: 'negative', message: error?.message || t('app.errors.generic') });
+  }
+};
+
+const onDelete = async (id) => {
+  if (!confirm(t('households.deleteConfirm'))) return;
+  try {
+    const response = await householdsStore.remove(id);
+    Notify.create({ type: 'positive', message: response?.message || t('app.messages.saved') });
+    if (editingId.value === id) cancelEdit();
+  } catch (error) {
+    Notify.create({ type: 'negative', message: error?.message || t('app.errors.generic') });
+  }
 };
 
 const onCreate = async () => {

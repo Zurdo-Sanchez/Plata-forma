@@ -67,6 +67,10 @@ let HouseholdsService = class HouseholdsService {
             user: { connect: { id: targetUser.id } },
         });
     }
+    async remove(userId, householdId, acceptLanguage) {
+        await this.assertOwner(userId, householdId, acceptLanguage);
+        return this.repository.deleteHouseholdCascade(householdId);
+    }
     async assertMember(userId, householdId, acceptLanguage) {
         const membership = await this.repository.findMembership(userId, householdId);
         if (!membership) {

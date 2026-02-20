@@ -12,6 +12,7 @@ const messages = {
         userNotFound: 'Usuario no encontrado.',
         created: 'Hogar creado correctamente.',
         updated: 'Hogar actualizado correctamente.',
+        deleted: 'Hogar eliminado correctamente.',
         memberAdded: 'Miembro agregado correctamente.',
     },
     ca: {
@@ -22,6 +23,7 @@ const messages = {
         userNotFound: 'Usuari no trobat.',
         created: 'Llar creada correctament.',
         updated: 'Llar actualitzada correctament.',
+        deleted: 'Llar eliminada correctament.',
         memberAdded: 'Membre afegit correctament.',
     },
     en: {
@@ -32,6 +34,7 @@ const messages = {
         userNotFound: 'User not found.',
         created: 'Household created successfully.',
         updated: 'Household updated successfully.',
+        deleted: 'Household deleted successfully.',
         memberAdded: 'Member added successfully.',
     },
 };

@@ -7,7 +7,9 @@ Permet crear llars, seleccionar la llar activa i gestionar membres.
 1. Anar a la pantalla Llars.
 2. Crear una llar amb nom i moneda opcional.
 3. Seleccionar la llar actual des de la llista.
-4. Afegir membres per email (nomes OWNER).
+4. Editar nom o moneda quan calgui.
+5. Eliminar una llar si ja no s'usa.
+6. Afegir membres per email (nomes OWNER).
 
 ## Exemple
 - Crear "Casa" amb moneda "USD".
@@ -15,4 +17,5 @@ Permet crear llars, seleccionar la llar activa i gestionar membres.
 
 ## Casos limit
 - Nomes OWNER pot editar o afegir membres.
+- Eliminar una llar esborra comptes, categories, transaccions, targetes, prestecs i reportes associats.
 - Si no hi ha llar seleccionada, altres pantalles mostren un avís.

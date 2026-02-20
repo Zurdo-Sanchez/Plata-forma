@@ -6,64 +6,64 @@ export declare class LoansController {
     list(request: AuthRequest, householdId: string, acceptLanguage?: string): Promise<({
         account: {
             id: string;
-            householdId: string;
             name: string;
+            currency: string | null;
             createdAt: Date;
             updatedAt: Date;
+            householdId: string;
             type: import(".prisma/client").$Enums.AccountType;
-            currency: string | null;
             isActive: boolean;
         };
     } & {
         id: string;
+        name: string;
+        createdAt: Date;
+        updatedAt: Date;
         householdId: string;
         accountId: string;
-        name: string;
         principalAmount: bigint;
         interestRateBps: number;
         startDate: Date;
         termMonths: number | null;
-        createdAt: Date;
-        updatedAt: Date;
     })[]>;
     create(request: AuthRequest, householdId: string, body: unknown, acceptLanguage?: string): Promise<{
         ok: boolean;
         message: string;
         loan: {
             id: string;
+            name: string;
+            createdAt: Date;
+            updatedAt: Date;
             householdId: string;
             accountId: string;
-            name: string;
             principalAmount: bigint;
             interestRateBps: number;
             startDate: Date;
             termMonths: number | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
     }>;
     get(request: AuthRequest, id: string, acceptLanguage?: string): Promise<{
         account: {
             id: string;
-            householdId: string;
             name: string;
+            currency: string | null;
             createdAt: Date;
             updatedAt: Date;
+            householdId: string;
             type: import(".prisma/client").$Enums.AccountType;
-            currency: string | null;
             isActive: boolean;
         };
     } & {
         id: string;
+        name: string;
+        createdAt: Date;
+        updatedAt: Date;
         householdId: string;
         accountId: string;
-        name: string;
         principalAmount: bigint;
         interestRateBps: number;
         startDate: Date;
         termMonths: number | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     update(request: AuthRequest, id: string, body: unknown, acceptLanguage?: string): Promise<{
         ok: boolean;
@@ -71,25 +71,25 @@ export declare class LoansController {
         loan: {
             account: {
                 id: string;
-                householdId: string;
                 name: string;
+                currency: string | null;
                 createdAt: Date;
                 updatedAt: Date;
+                householdId: string;
                 type: import(".prisma/client").$Enums.AccountType;
-                currency: string | null;
                 isActive: boolean;
             };
         } & {
             id: string;
+            name: string;
+            createdAt: Date;
+            updatedAt: Date;
             householdId: string;
             accountId: string;
-            name: string;
             principalAmount: bigint;
             interestRateBps: number;
             startDate: Date;
             termMonths: number | null;
-            createdAt: Date;
-            updatedAt: Date;
         };
     }>;
 }

@@ -51,6 +51,25 @@ export const useHouseholdsStore = defineStore('households', {
         method: 'POST',
         body: JSON.stringify(payload)
       });
+    },
+    async update(householdId, payload) {
+      const response = await apiRequest(`/households/${householdId}`, {
+        method: 'PATCH',
+        body: JSON.stringify(payload)
+      });
+      if (response?.household) {
+        this.items = this.items.map((item) => (item.id === householdId ? { ...item, ...response.household } : item));
+      }
+      return response;
+    },
+    async remove(householdId) {
+      const response = await apiRequest(`/households/${householdId}`, { method: 'DELETE' });
+      this.items = this.items.filter((item) => item.id !== householdId);
+      if (this.currentId === householdId) {
+        const next = this.items[0]?.id || '';
+        this.select(next);
+      }
+      return response;
     }
   }
 });

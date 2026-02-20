@@ -25,9 +25,9 @@
           <LanguageMenu />
         </div>
       </aside>
-      <main class="app-content">
+      <q-page-container class="app-content">
         <router-view />
-      </main>
+      </q-page-container>
     </div>
     <q-page-container v-else>
       <router-view />

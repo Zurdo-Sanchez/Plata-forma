@@ -9,51 +9,58 @@ export declare class HouseholdsService {
         }[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         name: string;
         currency: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     })[]>;
     create(userId: string, payload: CreateHouseholdDto): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         name: string;
         currency: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     get(userId: string, householdId: string, acceptLanguage?: string): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         name: string;
         currency: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     update(userId: string, householdId: string, payload: UpdateHouseholdDto, acceptLanguage?: string): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         name: string;
         currency: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     addMember(userId: string, householdId: string, payload: AddMemberDto, acceptLanguage?: string): Promise<{
         id: number;
         createdAt: Date;
         userId: string;
-        role: import(".prisma/client").$Enums.HouseholdRole;
         householdId: string;
+        role: import(".prisma/client").$Enums.HouseholdRole;
+    }>;
+    remove(userId: string, householdId: string, acceptLanguage?: string): Promise<{
+        id: string;
+        name: string;
+        currency: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     assertMember(userId: string, householdId: string, acceptLanguage?: string): Promise<{
         id: number;
         createdAt: Date;
         userId: string;
-        role: import(".prisma/client").$Enums.HouseholdRole;
         householdId: string;
+        role: import(".prisma/client").$Enums.HouseholdRole;
     }>;
     assertOwner(userId: string, householdId: string, acceptLanguage?: string): Promise<{
         id: number;
         createdAt: Date;
         userId: string;
-        role: import(".prisma/client").$Enums.HouseholdRole;
         householdId: string;
+        role: import(".prisma/client").$Enums.HouseholdRole;
     }>;
 }

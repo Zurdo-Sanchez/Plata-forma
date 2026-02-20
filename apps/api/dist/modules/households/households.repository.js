@@ -46,6 +46,24 @@ let HouseholdsRepository = class HouseholdsRepository {
             data,
         });
     }
+    deleteHouseholdCascade(id) {
+        return this.prisma.$transaction(async (trx) => {
+            await trx.transactionLine.deleteMany({
+                where: {
+                    transaction: {
+                        householdId: id,
+                    },
+                },
+            });
+            await trx.transaction.deleteMany({ where: { householdId: id } });
+            await trx.creditCard.deleteMany({ where: { householdId: id } });
+            await trx.loan.deleteMany({ where: { householdId: id } });
+            await trx.account.deleteMany({ where: { householdId: id } });
+            await trx.category.deleteMany({ where: { householdId: id } });
+            await trx.householdMember.deleteMany({ where: { householdId: id } });
+            return trx.household.delete({ where: { id } });
+        });
+    }
     findMembership(userId, householdId) {
         return this.prisma.householdMember.findUnique({
             where: {

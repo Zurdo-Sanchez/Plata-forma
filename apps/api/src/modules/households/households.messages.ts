@@ -9,6 +9,7 @@ const messages: Record<SupportedLocale, Record<string, string>> = {
     userNotFound: 'Usuario no encontrado.',
     created: 'Hogar creado correctamente.',
     updated: 'Hogar actualizado correctamente.',
+    deleted: 'Hogar eliminado correctamente.',
     memberAdded: 'Miembro agregado correctamente.',
   },
   ca: {
@@ -19,6 +20,7 @@ const messages: Record<SupportedLocale, Record<string, string>> = {
     userNotFound: 'Usuari no trobat.',
     created: 'Llar creada correctament.',
     updated: 'Llar actualitzada correctament.',
+    deleted: 'Llar eliminada correctament.',
     memberAdded: 'Membre afegit correctament.',
   },
   en: {
@@ -29,6 +31,7 @@ const messages: Record<SupportedLocale, Record<string, string>> = {
     userNotFound: 'User not found.',
     created: 'Household created successfully.',
     updated: 'Household updated successfully.',
+    deleted: 'Household deleted successfully.',
     memberAdded: 'Member added successfully.',
   },
 };
