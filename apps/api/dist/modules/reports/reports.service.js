@@ -26,27 +26,48 @@ let ReportsService = class ReportsService {
         if (!start || !end) {
             throw new common_1.BadRequestException({ message: (0, reports_messages_1.t)(locale, 'invalidBody') });
         }
-        const [categorySums, accountSums] = await Promise.all([
-            this.reportsRepository.sumByCategory(householdId, start, end),
+        const rangeStart = this.addMonths(start, -1);
+        const [transactions, accountSums] = await Promise.all([
+            this.reportsRepository.listTransactionsForReport(householdId, rangeStart, end),
             this.reportsRepository.sumByAccount(householdId, start, end),
         ]);
-        const categoryIds = categorySums.map((item) => item.categoryId).filter(Boolean);
         const accountIds = accountSums.map((item) => item.accountId).filter(Boolean);
-        const [categories, accounts] = await Promise.all([
-            this.reportsRepository.findCategoriesByIds(categoryIds),
-            this.reportsRepository.findAccountsByIds(accountIds),
-        ]);
-        const categoryMap = new Map(categories.map((cat) => [cat.id, cat]));
+        const accounts = await this.reportsRepository.findAccountsByIds(accountIds);
         const accountMap = new Map(accounts.map((acc) => [acc.id, acc]));
-        const byCategory = categorySums.map((item) => {
-            const category = item.categoryId ? categoryMap.get(item.categoryId) : null;
-            return {
-                categoryId: item.categoryId,
-                name: category?.name ?? (0, reports_messages_1.t)(locale, 'uncategorized'),
-                type: category?.type ?? null,
-                amount: item._sum.amount ?? BigInt(0),
-            };
-        });
+        const targetMonthKey = this.toMonthKey(start);
+        const byCategoryMap = new Map();
+        const totals = { income: BigInt(0), expense: BigInt(0) };
+        for (const transaction of transactions) {
+            const baseMonthKey = this.toMonthKey(transaction.date);
+            const hasCreditCard = transaction.lines.some((line) => line.account?.type === 'CREDIT_CARD');
+            for (const line of transaction.lines) {
+                const shouldShift = Boolean(line.categoryId && hasCreditCard);
+                const effectiveMonthKey = baseMonthKey + (shouldShift ? 1 : 0);
+                if (effectiveMonthKey !== targetMonthKey)
+                    continue;
+                const isSystem = this.isSystemAccount(line.account?.name);
+                const rawAmount = BigInt(line.amount ?? 0);
+                const effectiveAmount = isSystem ? -rawAmount : rawAmount;
+                const key = line.categoryId ?? null;
+                const existing = byCategoryMap.get(key);
+                const name = line.category?.name ?? (0, reports_messages_1.t)(locale, 'uncategorized');
+                const nextAmount = existing ? existing.amount + effectiveAmount : effectiveAmount;
+                byCategoryMap.set(key, {
+                    categoryId: key,
+                    name,
+                    amount: nextAmount,
+                });
+                if (line.categoryId) {
+                    if (effectiveAmount >= BigInt(0)) {
+                        totals.income += effectiveAmount;
+                    }
+                    else {
+                        totals.expense += -effectiveAmount;
+                    }
+                }
+            }
+        }
+        const byCategory = Array.from(byCategoryMap.values());
         const byAccount = accountSums.map((item) => {
             const account = accountMap.get(item.accountId);
             return {
@@ -56,13 +77,6 @@ let ReportsService = class ReportsService {
                 amount: item._sum.amount ?? BigInt(0),
             };
         });
-        const totals = byCategory.reduce((acc, item) => {
-            if (item.type === 'INCOME')
-                acc.income += item.amount;
-            if (item.type === 'EXPENSE')
-                acc.expense += item.amount;
-            return acc;
-        }, { income: BigInt(0), expense: BigInt(0) });
         return {
             month: query.month,
             range: { start, end },
@@ -83,6 +97,15 @@ let ReportsService = class ReportsService {
         const start = new Date(Date.UTC(year, month - 1, 1));
         const end = new Date(Date.UTC(year, month, 1));
         return { start, end };
+    }
+    toMonthKey(value) {
+        return value.getUTCFullYear() * 12 + value.getUTCMonth();
+    }
+    addMonths(value, offset) {
+        return new Date(Date.UTC(value.getUTCFullYear(), value.getUTCMonth() + offset, 1));
+    }
+    isSystemAccount(name) {
+        return Boolean(name && name.startsWith('__system__'));
     }
 };
 exports.ReportsService = ReportsService;

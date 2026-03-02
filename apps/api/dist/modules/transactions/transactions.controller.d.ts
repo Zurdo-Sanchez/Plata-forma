@@ -15,11 +15,11 @@ export declare class TransactionsController {
         }[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         householdId: string;
         date: Date;
         description: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     })[]>;
     create(request: AuthRequest, householdId: string, body: unknown, acceptLanguage?: string): Promise<{
         ok: boolean;
@@ -36,20 +36,20 @@ export declare class TransactionsController {
             }[];
         } & {
             id: string;
-            createdAt: Date;
-            updatedAt: Date;
             householdId: string;
             date: Date;
             description: string | null;
+            createdAt: Date;
+            updatedAt: Date;
         };
     }>;
     get(request: AuthRequest, id: string, acceptLanguage?: string): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         householdId: string;
         date: Date;
         description: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     update(request: AuthRequest, id: string, body: unknown, acceptLanguage?: string): Promise<{
         ok: boolean;
@@ -66,33 +66,23 @@ export declare class TransactionsController {
             }[];
         } & {
             id: string;
-            createdAt: Date;
-            updatedAt: Date;
             householdId: string;
             date: Date;
             description: string | null;
+            createdAt: Date;
+            updatedAt: Date;
         };
     }>;
     remove(request: AuthRequest, id: string, acceptLanguage?: string): Promise<{
         ok: boolean;
         message: string;
         transaction: {
-            lines: {
-                id: number;
-                createdAt: Date;
-                transactionId: string;
-                accountId: string;
-                categoryId: string | null;
-                amount: bigint;
-                memo: string | null;
-            }[];
-        } & {
             id: string;
-            createdAt: Date;
-            updatedAt: Date;
             householdId: string;
             date: Date;
             description: string | null;
+            createdAt: Date;
+            updatedAt: Date;
         };
     }>;
 }

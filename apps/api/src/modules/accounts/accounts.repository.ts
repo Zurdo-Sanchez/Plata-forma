@@ -6,9 +6,19 @@ import { PrismaService } from '../../prisma/prisma.service';
 export class AccountsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  private readonly SYSTEM_ACCOUNT_PREFIX = '__system__';
+
   listByHousehold(householdId: string) {
     return this.prisma.account.findMany({
-      where: { householdId },
+      where: {
+        householdId,
+        isActive: true,
+        name: {
+          not: {
+            startsWith: this.SYSTEM_ACCOUNT_PREFIX,
+          },
+        },
+      },
       orderBy: { createdAt: 'asc' },
     });
   }

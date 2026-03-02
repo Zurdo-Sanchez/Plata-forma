@@ -7,47 +7,47 @@ export declare class CategoriesService {
     constructor(categoriesRepository: CategoriesRepository, householdsService: HouseholdsService);
     list(userId: string, householdId: string, acceptLanguage?: string): Promise<{
         id: string;
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
         householdId: string;
+        name: string;
         type: import(".prisma/client").$Enums.CategoryType;
         isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }[]>;
     create(userId: string, householdId: string, payload: CreateCategoryDto, acceptLanguage?: string): Promise<{
         id: string;
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
         householdId: string;
+        name: string;
         type: import(".prisma/client").$Enums.CategoryType;
         isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     get(userId: string, categoryId: string, acceptLanguage?: string): Promise<{
         id: string;
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
         householdId: string;
+        name: string;
         type: import(".prisma/client").$Enums.CategoryType;
         isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     update(userId: string, categoryId: string, payload: UpdateCategoryDto, acceptLanguage?: string): Promise<{
         id: string;
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
         householdId: string;
+        name: string;
         type: import(".prisma/client").$Enums.CategoryType;
         isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     archive(userId: string, categoryId: string, acceptLanguage?: string): Promise<{
         id: string;
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
         householdId: string;
+        name: string;
         type: import(".prisma/client").$Enums.CategoryType;
         isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
 }

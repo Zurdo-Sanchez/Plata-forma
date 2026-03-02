@@ -3,18 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 export declare class CreditCardsRepository {
     private readonly prisma;
     constructor(prisma: PrismaService);
-    listByHousehold(householdId: string): Prisma.PrismaPromise<({
-        account: {
-            id: string;
-            householdId: string;
-            name: string;
-            createdAt: Date;
-            updatedAt: Date;
-            type: import(".prisma/client").$Enums.AccountType;
-            currency: string | null;
-            isActive: boolean;
-        };
-    } & {
+    listByHousehold(householdId: string): Prisma.PrismaPromise<{
         id: string;
         householdId: string;
         accountId: string;
@@ -24,7 +13,7 @@ export declare class CreditCardsRepository {
         limitAmount: bigint | null;
         createdAt: Date;
         updatedAt: Date;
-    })[]>;
+    }[]>;
     findById(id: string): Prisma.Prisma__CreditCardClient<({
         account: {
             id: string;
@@ -32,9 +21,9 @@ export declare class CreditCardsRepository {
             name: string;
             createdAt: Date;
             updatedAt: Date;
+            isActive: boolean;
             type: import(".prisma/client").$Enums.AccountType;
             currency: string | null;
-            isActive: boolean;
         };
     } & {
         id: string;
@@ -53,9 +42,9 @@ export declare class CreditCardsRepository {
         name: string;
         createdAt: Date;
         updatedAt: Date;
+        isActive: boolean;
         type: import(".prisma/client").$Enums.AccountType;
         currency: string | null;
-        isActive: boolean;
     } | null, null, import("@prisma/client/runtime/library").DefaultArgs>;
     createWithAccount(householdId: string, accountData: {
         name: string;
@@ -67,9 +56,9 @@ export declare class CreditCardsRepository {
             name: string;
             createdAt: Date;
             updatedAt: Date;
+            isActive: boolean;
             type: import(".prisma/client").$Enums.AccountType;
             currency: string | null;
-            isActive: boolean;
         };
     } & {
         id: string;
@@ -89,9 +78,9 @@ export declare class CreditCardsRepository {
             name: string;
             createdAt: Date;
             updatedAt: Date;
+            isActive: boolean;
             type: import(".prisma/client").$Enums.AccountType;
             currency: string | null;
-            isActive: boolean;
         };
     } & {
         id: string;
@@ -104,4 +93,15 @@ export declare class CreditCardsRepository {
         createdAt: Date;
         updatedAt: Date;
     }, never, import("@prisma/client/runtime/library").DefaultArgs>;
+    archiveCreditCard(id: string): Promise<{
+        id: string;
+        householdId: string;
+        accountId: string;
+        name: string;
+        closingDay: number;
+        dueDay: number;
+        limitAmount: bigint | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
 }

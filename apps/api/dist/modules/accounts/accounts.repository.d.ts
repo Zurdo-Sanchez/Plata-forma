@@ -3,15 +3,16 @@ import { PrismaService } from '../../prisma/prisma.service';
 export declare class AccountsRepository {
     private readonly prisma;
     constructor(prisma: PrismaService);
+    private readonly SYSTEM_ACCOUNT_PREFIX;
     listByHousehold(householdId: string): Prisma.PrismaPromise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
+        householdId: string;
         name: string;
         type: import(".prisma/client").$Enums.AccountType;
-        householdId: string;
         currency: string | null;
         isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }[]>;
     findById(id: string): Promise<Account | null>;
     createAccount(data: Prisma.AccountCreateInput): Promise<Account>;

@@ -6,6 +6,8 @@ import { PrismaService } from '../../prisma/prisma.service';
 export class ReportsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  private readonly SYSTEM_ACCOUNT_PREFIX = '__system__';
+
   sumByCategory(householdId: string, start: Date, end: Date) {
     return this.prisma.transactionLine.groupBy({
       by: ['categoryId'],
@@ -13,6 +15,7 @@ export class ReportsRepository {
       where: {
         transaction: {
           householdId,
+          isActive: true,
           date: {
             gte: start,
             lt: end,
@@ -29,9 +32,53 @@ export class ReportsRepository {
       where: {
         transaction: {
           householdId,
+          isActive: true,
           date: {
             gte: start,
             lt: end,
+          },
+        },
+        account: {
+          name: {
+            not: {
+              startsWith: this.SYSTEM_ACCOUNT_PREFIX,
+            },
+          },
+        },
+      },
+    });
+  }
+
+  listTransactionsForReport(householdId: string, start: Date, end: Date) {
+    return this.prisma.transaction.findMany({
+      where: {
+        householdId,
+        isActive: true,
+        date: {
+          gte: start,
+          lt: end,
+        },
+      },
+      select: {
+        id: true,
+        date: true,
+        lines: {
+          select: {
+            amount: true,
+            categoryId: true,
+            account: {
+              select: {
+                id: true,
+                name: true,
+                type: true,
+              },
+            },
+            category: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },

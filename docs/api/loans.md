@@ -8,7 +8,7 @@ Notas:
 
 ## GET /households/:householdId/loans
 
-Lista prestamos del hogar.
+Lista prestamos activos del hogar.
 
 Response 200:
 
@@ -89,6 +89,20 @@ Response 200:
   "ok": true,
   "message": "Prestamo actualizado correctamente.",
   "loan": { "id": "uuid", "interestRateBps": 900 }
+}
+```
+
+## DELETE /loans/:id
+
+Borrado suave: archiva el prestamo (isActive = false) y desactiva su cuenta.
+
+Response 200:
+
+```json
+{
+  "ok": true,
+  "message": "Prestamo eliminado correctamente.",
+  "loan": { "id": "uuid", "isActive": false }
 }
 ```
 

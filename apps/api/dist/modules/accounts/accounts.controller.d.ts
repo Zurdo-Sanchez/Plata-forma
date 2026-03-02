@@ -5,50 +5,50 @@ export declare class AccountsController {
     constructor(accountsService: AccountsService);
     list(request: AuthRequest, householdId: string, acceptLanguage?: string): Promise<{
         id: string;
+        householdId: string;
         name: string;
+        type: import(".prisma/client").$Enums.AccountType;
         currency: string | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        householdId: string;
-        type: import(".prisma/client").$Enums.AccountType;
-        isActive: boolean;
     }[]>;
     create(request: AuthRequest, householdId: string, body: unknown, acceptLanguage?: string): Promise<{
         ok: boolean;
         message: string;
         account: {
             id: string;
+            householdId: string;
             name: string;
+            type: import(".prisma/client").$Enums.AccountType;
             currency: string | null;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
-            householdId: string;
-            type: import(".prisma/client").$Enums.AccountType;
-            isActive: boolean;
         };
     }>;
     get(request: AuthRequest, id: string, acceptLanguage?: string): Promise<{
         id: string;
+        householdId: string;
         name: string;
+        type: import(".prisma/client").$Enums.AccountType;
         currency: string | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        householdId: string;
-        type: import(".prisma/client").$Enums.AccountType;
-        isActive: boolean;
     }>;
     update(request: AuthRequest, id: string, body: unknown, acceptLanguage?: string): Promise<{
         ok: boolean;
         message: string;
         account: {
             id: string;
+            householdId: string;
             name: string;
+            type: import(".prisma/client").$Enums.AccountType;
             currency: string | null;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
-            householdId: string;
-            type: import(".prisma/client").$Enums.AccountType;
-            isActive: boolean;
         };
     }>;
     archive(request: AuthRequest, id: string, acceptLanguage?: string): Promise<{
@@ -56,13 +56,13 @@ export declare class AccountsController {
         message: string;
         account: {
             id: string;
+            householdId: string;
             name: string;
+            type: import(".prisma/client").$Enums.AccountType;
             currency: string | null;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
-            householdId: string;
-            type: import(".prisma/client").$Enums.AccountType;
-            isActive: boolean;
         };
     }>;
 }

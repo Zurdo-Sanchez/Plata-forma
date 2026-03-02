@@ -11,10 +11,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TransactionsRepository = void 0;
 const common_1 = require("@nestjs/common");
+const client_1 = require("@prisma/client");
 const prisma_service_1 = require("../../prisma/prisma.service");
 let TransactionsRepository = class TransactionsRepository {
     constructor(prisma) {
         this.prisma = prisma;
+        this.SYSTEM_ACCOUNT_NAME = '__system__:equity';
     }
     listByHousehold(where) {
         return this.prisma.transaction.findMany({
@@ -42,18 +44,37 @@ let TransactionsRepository = class TransactionsRepository {
             include: { lines: true },
         });
     }
-    deleteTransaction(id) {
-        return this.prisma.transaction.delete({
+    archiveTransaction(id) {
+        return this.prisma.transaction.update({
             where: { id },
+            data: { isActive: false },
             include: { lines: true },
         });
+    }
+    async ensureSystemAccount(householdId) {
+        const existing = await this.prisma.account.findFirst({
+            where: { householdId, name: this.SYSTEM_ACCOUNT_NAME },
+            select: { id: true },
+        });
+        if (existing)
+            return existing.id;
+        const account = await this.prisma.account.create({
+            data: {
+                name: this.SYSTEM_ACCOUNT_NAME,
+                type: client_1.AccountType.CASH,
+                isActive: false,
+                household: { connect: { id: householdId } },
+            },
+            select: { id: true },
+        });
+        return account.id;
     }
     findAccountsByIds(ids) {
         if (ids.length === 0)
             return [];
         return this.prisma.account.findMany({
             where: { id: { in: ids } },
-            select: { id: true, householdId: true },
+            select: { id: true, householdId: true, isActive: true, name: true },
         });
     }
     findCategoriesByIds(ids) {
@@ -61,7 +82,7 @@ let TransactionsRepository = class TransactionsRepository {
             return [];
         return this.prisma.category.findMany({
             where: { id: { in: ids } },
-            select: { id: true, householdId: true },
+            select: { id: true, householdId: true, isActive: true },
         });
     }
 };

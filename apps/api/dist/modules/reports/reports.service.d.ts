@@ -19,7 +19,6 @@ export declare class ReportsService {
         byCategory: {
             categoryId: string | null;
             name: string;
-            type: import(".prisma/client").$Enums.CategoryType | null;
             amount: bigint;
         }[];
         byAccount: {
@@ -30,4 +29,7 @@ export declare class ReportsService {
         }[];
     }>;
     private parseMonth;
+    private toMonthKey;
+    private addMonths;
+    private isSystemAccount;
 }

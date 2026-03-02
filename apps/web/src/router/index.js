@@ -9,7 +9,8 @@ const router = createRouter({
 
 const hasAuthToken = () => {
   const token = safeStorage.get('auth_token');
-  return Boolean(token && token.trim().length);
+  if (!token) return false;
+  return token.split('.').length === 3;
 };
 
 router.beforeEach((to) => {

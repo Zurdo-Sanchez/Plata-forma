@@ -55,6 +55,15 @@ let CreditCardsController = class CreditCardsController {
         const card = await this.creditCardsService.update(request.user.id, parsedId.data, parsed.data, acceptLanguage);
         return { ok: true, message: (0, credit_cards_messages_1.t)(locale, 'updated'), card };
     }
+    async remove(request, id, acceptLanguage) {
+        const locale = (0, credit_cards_messages_1.resolveLocale)(acceptLanguage);
+        const parsedId = credit_cards_schemas_1.CreditCardIdSchema.safeParse(id);
+        if (!parsedId.success) {
+            throw new common_1.BadRequestException({ message: (0, credit_cards_messages_1.t)(locale, 'invalidBody') });
+        }
+        const card = await this.creditCardsService.archive(request.user.id, parsedId.data, acceptLanguage);
+        return { ok: true, message: (0, credit_cards_messages_1.t)(locale, 'deleted'), card };
+    }
 };
 exports.CreditCardsController = CreditCardsController;
 __decorate([
@@ -95,6 +104,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, Object, String]),
     __metadata("design:returntype", Promise)
 ], CreditCardsController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)('credit-cards/:id'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.Headers)('accept-language')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, String]),
+    __metadata("design:returntype", Promise)
+], CreditCardsController.prototype, "remove", null);
 exports.CreditCardsController = CreditCardsController = __decorate([
     (0, common_1.Controller)(),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),

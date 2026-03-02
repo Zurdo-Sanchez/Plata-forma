@@ -12,13 +12,31 @@ exports.TransactionLineSchema = zod_1.z.object({
 exports.CreateTransactionSchema = zod_1.z.object({
     date: zod_1.z.string().trim().min(8),
     description: zod_1.z.string().trim().max(255).optional(),
-    lines: zod_1.z.array(exports.TransactionLineSchema).min(2),
-});
+    lines: zod_1.z.array(exports.TransactionLineSchema).min(2).optional(),
+    entry: zod_1.z
+        .object({
+        accountId: zod_1.z.string().uuid(),
+        categoryId: zod_1.z.string().uuid(),
+        amount: zod_1.z.string().trim().regex(/^\d+$/),
+        type: zod_1.z.enum(['INCOME', 'EXPENSE']),
+        memo: zod_1.z.string().trim().max(255).optional(),
+    })
+        .optional(),
+}).refine((value) => Boolean(value.lines || value.entry), { message: 'invalidBody' });
 exports.UpdateTransactionSchema = zod_1.z
     .object({
     date: zod_1.z.string().trim().min(8).optional(),
     description: zod_1.z.string().trim().max(255).optional(),
     lines: zod_1.z.array(exports.TransactionLineSchema).min(2).optional(),
+    entry: zod_1.z
+        .object({
+        accountId: zod_1.z.string().uuid(),
+        categoryId: zod_1.z.string().uuid(),
+        amount: zod_1.z.string().trim().regex(/^\d+$/),
+        type: zod_1.z.enum(['INCOME', 'EXPENSE']),
+        memo: zod_1.z.string().trim().max(255).optional(),
+    })
+        .optional(),
 })
     .refine((value) => Object.keys(value).length > 0, { message: 'invalidBody' });
 exports.TransactionsQuerySchema = zod_1.z.object({

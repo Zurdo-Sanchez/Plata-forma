@@ -11,6 +11,7 @@ const messages = {
         invalidAccount: 'Cuenta inválida para préstamo.',
         created: 'Préstamo creado correctamente.',
         updated: 'Préstamo actualizado correctamente.',
+        deleted: 'Préstamo eliminado correctamente.',
     },
     ca: {
         invalidBody: 'Dades invàlides.',
@@ -19,6 +20,7 @@ const messages = {
         invalidAccount: 'Compte invàlid per al préstec.',
         created: 'Préstec creat correctament.',
         updated: 'Préstec actualitzat correctament.',
+        deleted: 'Préstec eliminat correctament.',
     },
     en: {
         invalidBody: 'Invalid data.',
@@ -27,6 +29,7 @@ const messages = {
         invalidAccount: 'Invalid account for loan.',
         created: 'Loan created successfully.',
         updated: 'Loan updated successfully.',
+        deleted: 'Loan deleted successfully.',
     },
 };
 const t = (locale, key) => (0, i18n_1.t)(messages, locale, key);

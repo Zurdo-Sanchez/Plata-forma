@@ -8,7 +8,7 @@ Notas:
 
 ## GET /households/:householdId/credit-cards
 
-Lista tarjetas del hogar.
+Lista tarjetas activas del hogar.
 
 Response 200:
 
@@ -88,6 +88,20 @@ Response 200:
   "ok": true,
   "message": "Tarjeta actualizada correctamente.",
   "card": { "id": "uuid", "closingDay": 25 }
+}
+```
+
+## DELETE /credit-cards/:id
+
+Borrado suave: archiva la tarjeta (isActive = false) y desactiva su cuenta.
+
+Response 200:
+
+```json
+{
+  "ok": true,
+  "message": "Tarjeta eliminada correctamente.",
+  "card": { "id": "uuid", "isActive": false }
 }
 ```
 

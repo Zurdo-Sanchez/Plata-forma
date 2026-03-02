@@ -4,7 +4,7 @@ Todos los endpoints requieren `Authorization: Bearer <token>`.
 
 ## GET /households/:householdId/accounts
 
-Lista las cuentas del hogar.
+Lista las cuentas activas del hogar.
 
 Response 200:
 
@@ -93,7 +93,7 @@ Response 200:
 
 ## DELETE /accounts/:id
 
-Archiva la cuenta (isActive = false).
+Borrado suave: archiva la cuenta (isActive = false).
 
 Response 200:
 

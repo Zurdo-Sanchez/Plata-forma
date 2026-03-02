@@ -11,6 +11,7 @@ const messages = {
         invalidAccount: 'Cuenta inválida para tarjeta.',
         created: 'Tarjeta creada correctamente.',
         updated: 'Tarjeta actualizada correctamente.',
+        deleted: 'Tarjeta eliminada correctamente.',
     },
     ca: {
         invalidBody: 'Dades invàlides.',
@@ -19,6 +20,7 @@ const messages = {
         invalidAccount: 'Compte invàlid per a targeta.',
         created: 'Targeta creada correctament.',
         updated: 'Targeta actualitzada correctament.',
+        deleted: 'Targeta eliminada correctament.',
     },
     en: {
         invalidBody: 'Invalid data.',
@@ -27,6 +29,7 @@ const messages = {
         invalidAccount: 'Invalid account for card.',
         created: 'Card created successfully.',
         updated: 'Card updated successfully.',
+        deleted: 'Card deleted successfully.',
     },
 };
 const t = (locale, key) => (0, i18n_1.t)(messages, locale, key);

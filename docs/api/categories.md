@@ -4,7 +4,7 @@ Todos los endpoints requieren `Authorization: Bearer <token>`.
 
 ## GET /households/:householdId/categories
 
-Lista las categorias del hogar.
+Lista las categorias activas del hogar.
 
 Response 200:
 
@@ -14,7 +14,6 @@ Response 200:
     "id": "uuid",
     "householdId": "uuid",
     "name": "Supermercado",
-    "type": "EXPENSE",
     "isActive": true
   }
 ]
@@ -28,8 +27,7 @@ Request:
 
 ```json
 {
-  "name": "Salario",
-  "type": "INCOME"
+  "name": "Salario"
 }
 ```
 
@@ -39,7 +37,7 @@ Response 201:
 {
   "ok": true,
   "message": "Categoria creada correctamente.",
-  "category": { "id": "uuid", "name": "Salario", "type": "INCOME" }
+  "category": { "id": "uuid", "name": "Salario" }
 }
 ```
 
@@ -54,7 +52,6 @@ Response 200:
   "id": "uuid",
   "householdId": "uuid",
   "name": "Salario",
-  "type": "INCOME",
   "isActive": true
 }
 ```
@@ -83,7 +80,7 @@ Response 200:
 
 ## DELETE /categories/:id
 
-Archiva la categoria (isActive = false).
+Borrado suave: archiva la categoria (isActive = false).
 
 Response 200:
 

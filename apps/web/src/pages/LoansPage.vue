@@ -19,12 +19,45 @@
           <div v-if="!items.length" class="panel-empty">{{ $t('loans.empty') }}</div>
           <div v-else class="panel-list">
             <div v-for="loan in items" :key="loan.id" class="panel-item">
-              <div>
+              <div v-if="editingId === loan.id" class="panel-edit">
+                <label class="panel-label" :for="`loan-name-${loan.id}`">{{ $t('loans.name') }}</label>
+                <input :id="`loan-name-${loan.id}`" v-model="editName" class="panel-input" type="text" />
+
+                <label class="panel-label" :for="`loan-principal-${loan.id}`">{{ $t('loans.principal') }}</label>
+                <input :id="`loan-principal-${loan.id}`" v-model="editPrincipal" class="panel-input" type="number" step="1" />
+
+                <label class="panel-label" :for="`loan-rate-${loan.id}`">{{ $t('loans.rate') }}</label>
+                <input :id="`loan-rate-${loan.id}`" v-model.number="editRate" class="panel-input" type="number" step="1" />
+
+                <label class="panel-label" :for="`loan-start-${loan.id}`">{{ $t('loans.startDate') }}</label>
+                <input :id="`loan-start-${loan.id}`" v-model="editStartDate" class="panel-input" type="date" />
+
+                <label class="panel-label" :for="`loan-term-${loan.id}`">{{ $t('loans.term') }}</label>
+                <input :id="`loan-term-${loan.id}`" v-model.number="editTermMonths" class="panel-input" type="number" min="1" />
+
+                <div class="panel-actions">
+                  <button class="panel-action" type="button" @click="saveEdit">
+                    {{ $t('loans.save') }}
+                  </button>
+                  <button class="panel-action" type="button" @click="cancelEdit">
+                    {{ $t('loans.cancel') }}
+                  </button>
+                </div>
+              </div>
+              <div v-else>
                 <div class="panel-item-title">{{ loan.name }}</div>
                 <div class="panel-item-meta">
                   {{ $t('loans.principalLabel') }} {{ loan.principalAmount }} · {{ $t('loans.rateLabel') }}
                   {{ loan.interestRateBps }} bps
                 </div>
+              </div>
+              <div class="panel-actions" v-if="editingId !== loan.id">
+                <button class="panel-action" type="button" @click="startEdit(loan)">
+                  {{ $t('loans.edit') }}
+                </button>
+                <button class="panel-action" type="button" @click="deleteLoan(loan.id)">
+                  {{ $t('loans.delete') }}
+                </button>
               </div>
             </div>
           </div>
@@ -75,6 +108,12 @@ const interestRateBps = ref(0);
 const startDate = ref('');
 const termMonths = ref(12);
 const isSaving = ref(false);
+const editingId = ref('');
+const editName = ref('');
+const editPrincipal = ref('');
+const editRate = ref(0);
+const editStartDate = ref('');
+const editTermMonths = ref(12);
 
 const normalizeAmount = (value) => {
   const str = String(value ?? '').trim();
@@ -90,6 +129,65 @@ const loadLoans = async () => {
     items.value = Array.isArray(data) ? data : [];
   } catch {
     items.value = [];
+  }
+};
+
+const startEdit = (loan) => {
+  editingId.value = loan.id;
+  editName.value = loan.name || '';
+  editPrincipal.value = loan.principalAmount ?? '';
+  editRate.value = loan.interestRateBps ?? 0;
+  editStartDate.value = loan.startDate ? String(loan.startDate).slice(0, 10) : '';
+  editTermMonths.value = loan.termMonths ?? 12;
+};
+
+const cancelEdit = () => {
+  editingId.value = '';
+  editName.value = '';
+  editPrincipal.value = '';
+  editRate.value = 0;
+  editStartDate.value = '';
+  editTermMonths.value = 12;
+};
+
+const saveEdit = async () => {
+  if (!editingId.value || !householdsStore.currentId) return;
+  if (!editName.value.trim() || !editStartDate.value) {
+    Notify.create({ type: 'negative', message: t('app.errors.required') });
+    return;
+  }
+  const normalizedPrincipal = normalizeAmount(editPrincipal.value);
+  if (!normalizedPrincipal) {
+    Notify.create({ type: 'negative', message: t('app.errors.required') });
+    return;
+  }
+  try {
+    const response = await apiRequest(`/loans/${editingId.value}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        name: editName.value.trim(),
+        principalAmount: normalizedPrincipal,
+        interestRateBps: editRate.value || 0,
+        startDate: editStartDate.value,
+        termMonths: editTermMonths.value || undefined
+      })
+    });
+    Notify.create({ type: 'positive', message: response?.message || t('app.messages.saved') });
+    cancelEdit();
+    await loadLoans();
+  } catch (error) {
+    Notify.create({ type: 'negative', message: error?.message || t('app.errors.generic') });
+  }
+};
+
+const deleteLoan = async (id) => {
+  if (!householdsStore.currentId) return;
+  try {
+    const response = await apiRequest(`/loans/${id}`, { method: 'DELETE' });
+    Notify.create({ type: 'positive', message: response?.message || t('app.messages.saved') });
+    await loadLoans();
+  } catch (error) {
+    Notify.create({ type: 'negative', message: error?.message || t('app.errors.generic') });
   }
 };
 

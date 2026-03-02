@@ -33,7 +33,7 @@ let LoansService = class LoansService {
         }
         if (payload.accountId) {
             const account = await this.loansRepository.findAccountById(payload.accountId);
-            if (!account || account.householdId !== householdId || account.type !== client_1.AccountType.LOAN) {
+            if (!account || account.householdId !== householdId || account.type !== client_1.AccountType.LOAN || !account.isActive) {
                 throw new common_1.BadRequestException({ message: (0, loans_messages_1.t)(locale, 'invalidAccount') });
             }
             return this.loansRepository.createLoan({
@@ -57,7 +57,7 @@ let LoansService = class LoansService {
     }
     async get(userId, loanId, acceptLanguage) {
         const loan = await this.loansRepository.findById(loanId);
-        if (!loan) {
+        if (!loan || !loan.isActive) {
             const locale = (0, loans_messages_1.resolveLocale)(acceptLanguage);
             throw new common_1.NotFoundException({ message: (0, loans_messages_1.t)(locale, 'notFound') });
         }
@@ -66,7 +66,7 @@ let LoansService = class LoansService {
     }
     async update(userId, loanId, payload, acceptLanguage) {
         const loan = await this.loansRepository.findById(loanId);
-        if (!loan) {
+        if (!loan || !loan.isActive) {
             const locale = (0, loans_messages_1.resolveLocale)(acceptLanguage);
             throw new common_1.NotFoundException({ message: (0, loans_messages_1.t)(locale, 'notFound') });
         }
@@ -80,12 +80,21 @@ let LoansService = class LoansService {
             }
         }
         return this.loansRepository.updateLoan(loanId, {
-            name: payload.name,
+            name: payload.name ?? loan.name,
             principalAmount: payload.principalAmount !== undefined ? BigInt(payload.principalAmount) : loan.principalAmount,
             interestRateBps: payload.interestRateBps ?? loan.interestRateBps,
             startDate: startDate ?? loan.startDate,
             termMonths: payload.termMonths ?? loan.termMonths,
         });
+    }
+    async archive(userId, loanId, acceptLanguage) {
+        const loan = await this.loansRepository.findById(loanId);
+        if (!loan || !loan.isActive) {
+            const locale = (0, loans_messages_1.resolveLocale)(acceptLanguage);
+            throw new common_1.NotFoundException({ message: (0, loans_messages_1.t)(locale, 'notFound') });
+        }
+        await this.householdsService.assertMember(userId, loan.householdId, acceptLanguage);
+        return this.loansRepository.archiveLoan(loanId);
     }
     parseDate(value) {
         const trimmed = value.trim();

@@ -29,7 +29,7 @@ export class AccountsService {
 
   async get(userId: string, accountId: string, acceptLanguage?: string) {
     const account = await this.accountsRepository.findById(accountId);
-    if (!account) {
+    if (!account || !account.isActive) {
       const locale = resolveLocale(acceptLanguage);
       throw new NotFoundException({ message: t(locale, 'notFound') });
     }
@@ -39,22 +39,22 @@ export class AccountsService {
 
   async update(userId: string, accountId: string, payload: UpdateAccountDto, acceptLanguage?: string) {
     const account = await this.accountsRepository.findById(accountId);
-    if (!account) {
+    if (!account || !account.isActive) {
       const locale = resolveLocale(acceptLanguage);
       throw new NotFoundException({ message: t(locale, 'notFound') });
     }
     await this.householdsService.assertMember(userId, account.householdId, acceptLanguage);
     return this.accountsRepository.updateAccount(accountId, {
-      name: payload.name,
-      type: payload.type,
-      currency: payload.currency ?? null,
+      name: payload.name ?? account.name,
+      type: payload.type ?? account.type,
+      currency: payload.currency !== undefined ? payload.currency : account.currency,
       isActive: payload.isActive ?? account.isActive,
     });
   }
 
   async archive(userId: string, accountId: string, acceptLanguage?: string) {
     const account = await this.accountsRepository.findById(accountId);
-    if (!account) {
+    if (!account || !account.isActive) {
       const locale = resolveLocale(acceptLanguage);
       throw new NotFoundException({ message: t(locale, 'notFound') });
     }

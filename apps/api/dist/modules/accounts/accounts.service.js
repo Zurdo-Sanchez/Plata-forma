@@ -35,7 +35,7 @@ let AccountsService = class AccountsService {
     }
     async get(userId, accountId, acceptLanguage) {
         const account = await this.accountsRepository.findById(accountId);
-        if (!account) {
+        if (!account || !account.isActive) {
             const locale = (0, accounts_messages_1.resolveLocale)(acceptLanguage);
             throw new common_1.NotFoundException({ message: (0, accounts_messages_1.t)(locale, 'notFound') });
         }
@@ -44,21 +44,21 @@ let AccountsService = class AccountsService {
     }
     async update(userId, accountId, payload, acceptLanguage) {
         const account = await this.accountsRepository.findById(accountId);
-        if (!account) {
+        if (!account || !account.isActive) {
             const locale = (0, accounts_messages_1.resolveLocale)(acceptLanguage);
             throw new common_1.NotFoundException({ message: (0, accounts_messages_1.t)(locale, 'notFound') });
         }
         await this.householdsService.assertMember(userId, account.householdId, acceptLanguage);
         return this.accountsRepository.updateAccount(accountId, {
-            name: payload.name,
-            type: payload.type,
-            currency: payload.currency ?? null,
+            name: payload.name ?? account.name,
+            type: payload.type ?? account.type,
+            currency: payload.currency !== undefined ? payload.currency : account.currency,
             isActive: payload.isActive ?? account.isActive,
         });
     }
     async archive(userId, accountId, acceptLanguage) {
         const account = await this.accountsRepository.findById(accountId);
-        if (!account) {
+        if (!account || !account.isActive) {
             const locale = (0, accounts_messages_1.resolveLocale)(acceptLanguage);
             throw new common_1.NotFoundException({ message: (0, accounts_messages_1.t)(locale, 'notFound') });
         }

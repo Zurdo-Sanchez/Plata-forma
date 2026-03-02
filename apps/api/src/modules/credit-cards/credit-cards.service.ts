@@ -23,7 +23,7 @@ export class CreditCardsService {
 
     if (payload.accountId) {
       const account = await this.creditCardsRepository.findAccountById(payload.accountId);
-      if (!account || account.householdId !== householdId || account.type !== AccountType.CREDIT_CARD) {
+      if (!account || account.householdId !== householdId || account.type !== AccountType.CREDIT_CARD || !account.isActive) {
         throw new BadRequestException({ message: t(locale, 'invalidAccount') });
       }
       return this.creditCardsRepository.createCreditCard({
@@ -47,7 +47,7 @@ export class CreditCardsService {
 
   async get(userId: string, cardId: string, acceptLanguage?: string) {
     const card = await this.creditCardsRepository.findById(cardId);
-    if (!card) {
+    if (!card || !card.isActive) {
       const locale = resolveLocale(acceptLanguage);
       throw new NotFoundException({ message: t(locale, 'notFound') });
     }
@@ -57,16 +57,26 @@ export class CreditCardsService {
 
   async update(userId: string, cardId: string, payload: UpdateCreditCardDto, acceptLanguage?: string) {
     const card = await this.creditCardsRepository.findById(cardId);
-    if (!card) {
+    if (!card || !card.isActive) {
       const locale = resolveLocale(acceptLanguage);
       throw new NotFoundException({ message: t(locale, 'notFound') });
     }
     await this.householdsService.assertMember(userId, card.householdId, acceptLanguage);
     return this.creditCardsRepository.updateCreditCard(cardId, {
-      name: payload.name,
-      closingDay: payload.closingDay,
-      dueDay: payload.dueDay,
+      name: payload.name ?? card.name,
+      closingDay: payload.closingDay ?? card.closingDay,
+      dueDay: payload.dueDay ?? card.dueDay,
       limitAmount: payload.limitAmount !== undefined ? BigInt(payload.limitAmount) : card.limitAmount,
     });
+  }
+
+  async archive(userId: string, cardId: string, acceptLanguage?: string) {
+    const card = await this.creditCardsRepository.findById(cardId);
+    if (!card || !card.isActive) {
+      const locale = resolveLocale(acceptLanguage);
+      throw new NotFoundException({ message: t(locale, 'notFound') });
+    }
+    await this.householdsService.assertMember(userId, card.householdId, acceptLanguage);
+    return this.creditCardsRepository.archiveCreditCard(cardId);
   }
 }

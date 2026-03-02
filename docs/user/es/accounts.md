@@ -6,8 +6,9 @@ Permite crear y administrar cuentas de banco, efectivo, tarjeta y prestamo.
 ## Como se usa
 1. Seleccionar un hogar.
 2. Crear una cuenta con nombre y tipo.
-3. Archivar cuentas que ya no se usan.
-4. Usar las cuentas al crear transacciones.
+3. Editar cuentas cuando cambien datos.
+4. Borrar cuentas que ya no se usan (borrado suave).
+5. Usar las cuentas al crear transacciones.
 
 ## Ejemplo
 - Cuenta "Banco" tipo BANK.
@@ -15,4 +16,5 @@ Permite crear y administrar cuentas de banco, efectivo, tarjeta y prestamo.
 
 ## Casos limite
 - Solo miembros del hogar pueden ver o editar cuentas.
-- Las cuentas archivadas no deben usarse en nuevas transacciones.
+- El borrado es suave: la cuenta queda inactiva y no aparece en listas nuevas.
+- Las cuentas inactivas no deben usarse en nuevas transacciones.

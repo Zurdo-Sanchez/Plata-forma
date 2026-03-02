@@ -55,6 +55,15 @@ let LoansController = class LoansController {
         const loan = await this.loansService.update(request.user.id, parsedId.data, parsed.data, acceptLanguage);
         return { ok: true, message: (0, loans_messages_1.t)(locale, 'updated'), loan };
     }
+    async remove(request, id, acceptLanguage) {
+        const locale = (0, loans_messages_1.resolveLocale)(acceptLanguage);
+        const parsedId = loans_schemas_1.LoanIdSchema.safeParse(id);
+        if (!parsedId.success) {
+            throw new common_1.BadRequestException({ message: (0, loans_messages_1.t)(locale, 'invalidBody') });
+        }
+        const loan = await this.loansService.archive(request.user.id, parsedId.data, acceptLanguage);
+        return { ok: true, message: (0, loans_messages_1.t)(locale, 'deleted'), loan };
+    }
 };
 exports.LoansController = LoansController;
 __decorate([
@@ -95,6 +104,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, Object, String]),
     __metadata("design:returntype", Promise)
 ], LoansController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)('loans/:id'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.Headers)('accept-language')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, String]),
+    __metadata("design:returntype", Promise)
+], LoansController.prototype, "remove", null);
 exports.LoansController = LoansController = __decorate([
     (0, common_1.Controller)(),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),

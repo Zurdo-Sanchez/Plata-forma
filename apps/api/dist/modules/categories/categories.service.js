@@ -27,14 +27,13 @@ let CategoriesService = class CategoriesService {
         await this.householdsService.assertMember(userId, householdId, acceptLanguage);
         return this.categoriesRepository.createCategory({
             name: payload.name,
-            type: payload.type,
             isActive: payload.isActive ?? true,
             household: { connect: { id: householdId } },
         });
     }
     async get(userId, categoryId, acceptLanguage) {
         const category = await this.categoriesRepository.findById(categoryId);
-        if (!category) {
+        if (!category || !category.isActive) {
             const locale = (0, categories_messages_1.resolveLocale)(acceptLanguage);
             throw new common_1.NotFoundException({ message: (0, categories_messages_1.t)(locale, 'notFound') });
         }
@@ -43,20 +42,19 @@ let CategoriesService = class CategoriesService {
     }
     async update(userId, categoryId, payload, acceptLanguage) {
         const category = await this.categoriesRepository.findById(categoryId);
-        if (!category) {
+        if (!category || !category.isActive) {
             const locale = (0, categories_messages_1.resolveLocale)(acceptLanguage);
             throw new common_1.NotFoundException({ message: (0, categories_messages_1.t)(locale, 'notFound') });
         }
         await this.householdsService.assertMember(userId, category.householdId, acceptLanguage);
         return this.categoriesRepository.updateCategory(categoryId, {
             name: payload.name,
-            type: payload.type,
             isActive: payload.isActive ?? category.isActive,
         });
     }
     async archive(userId, categoryId, acceptLanguage) {
         const category = await this.categoriesRepository.findById(categoryId);
-        if (!category) {
+        if (!category || !category.isActive) {
             const locale = (0, categories_messages_1.resolveLocale)(acceptLanguage);
             throw new common_1.NotFoundException({ message: (0, categories_messages_1.t)(locale, 'notFound') });
         }

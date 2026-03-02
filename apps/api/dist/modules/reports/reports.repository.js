@@ -15,6 +15,7 @@ const prisma_service_1 = require("../../prisma/prisma.service");
 let ReportsRepository = class ReportsRepository {
     constructor(prisma) {
         this.prisma = prisma;
+        this.SYSTEM_ACCOUNT_PREFIX = '__system__';
     }
     sumByCategory(householdId, start, end) {
         return this.prisma.transactionLine.groupBy({
@@ -23,6 +24,7 @@ let ReportsRepository = class ReportsRepository {
             where: {
                 transaction: {
                     householdId,
+                    isActive: true,
                     date: {
                         gte: start,
                         lt: end,
@@ -38,9 +40,52 @@ let ReportsRepository = class ReportsRepository {
             where: {
                 transaction: {
                     householdId,
+                    isActive: true,
                     date: {
                         gte: start,
                         lt: end,
+                    },
+                },
+                account: {
+                    name: {
+                        not: {
+                            startsWith: this.SYSTEM_ACCOUNT_PREFIX,
+                        },
+                    },
+                },
+            },
+        });
+    }
+    listTransactionsForReport(householdId, start, end) {
+        return this.prisma.transaction.findMany({
+            where: {
+                householdId,
+                isActive: true,
+                date: {
+                    gte: start,
+                    lt: end,
+                },
+            },
+            select: {
+                id: true,
+                date: true,
+                lines: {
+                    select: {
+                        amount: true,
+                        categoryId: true,
+                        account: {
+                            select: {
+                                id: true,
+                                name: true,
+                                type: true,
+                            },
+                        },
+                        category: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
                     },
                 },
             },

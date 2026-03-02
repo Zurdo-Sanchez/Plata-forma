@@ -1,7 +1,7 @@
 # Reports
 
 ## What it does
-Shows a monthly summary by category and by account.
+Shows a monthly summary by category and by account, including the credit card spend shift to the next month.
 
 ## How to use
 1. Select a household.
@@ -14,3 +14,4 @@ Shows a monthly summary by category and by account.
 ## Edge cases
 - If there are no transactions, amounts show as 0.
 - Amounts are shown in cents.
+- Credit card purchases are counted in the following month (e.g., January spend appears in February).

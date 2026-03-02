@@ -21,7 +21,7 @@ let TransactionsService = class TransactionsService {
     }
     async list(userId, householdId, query, acceptLanguage) {
         await this.householdsService.assertMember(userId, householdId, acceptLanguage);
-        const where = { householdId };
+        const where = { householdId, isActive: true };
         const dateFilter = {};
         const fromDate = query.from ? this.parseDate(query.from) : null;
         const toDate = query.to ? this.parseDate(query.to) : null;
@@ -61,7 +61,46 @@ let TransactionsService = class TransactionsService {
         if (!date) {
             throw new common_1.BadRequestException({ message: (0, transactions_messages_1.t)(locale, 'invalidBody') });
         }
-        const lines = await this.validateLines(householdId, payload.lines, acceptLanguage);
+        if (payload.entry) {
+            const entry = payload.entry;
+            const accounts = await this.transactionsRepository.findAccountsByIds([entry.accountId]);
+            if (accounts.length !== 1 ||
+                accounts[0].householdId !== householdId ||
+                (!accounts[0].isActive && !accounts[0].name?.startsWith('__system__'))) {
+                throw new common_1.BadRequestException({ message: (0, transactions_messages_1.t)(locale, 'invalidReference') });
+            }
+            const categories = await this.transactionsRepository.findCategoriesByIds([entry.categoryId]);
+            if (categories.length !== 1 || categories[0].householdId !== householdId || !categories[0].isActive) {
+                throw new common_1.BadRequestException({ message: (0, transactions_messages_1.t)(locale, 'invalidReference') });
+            }
+            const entryType = entry.type;
+            const amount = BigInt(entry.amount);
+            const isExpense = entryType === 'EXPENSE';
+            const signedAmount = isExpense ? -amount : amount;
+            const systemAccountId = await this.transactionsRepository.ensureSystemAccount(householdId);
+            return this.transactionsRepository.createTransaction({
+                household: { connect: { id: householdId } },
+                date,
+                description: payload.description || null,
+                lines: {
+                    create: [
+                        {
+                            account: { connect: { id: entry.accountId } },
+                            amount: signedAmount,
+                            memo: entry.memo || null,
+                            category: { connect: { id: entry.categoryId } },
+                        },
+                        {
+                            account: { connect: { id: systemAccountId } },
+                            amount: -signedAmount,
+                            memo: 'system',
+                            category: undefined,
+                        },
+                    ],
+                },
+            });
+        }
+        const lines = await this.validateLines(householdId, payload.lines || [], acceptLanguage);
         return this.transactionsRepository.createTransaction({
             household: { connect: { id: householdId } },
             date,
@@ -78,7 +117,7 @@ let TransactionsService = class TransactionsService {
     }
     async get(userId, transactionId, acceptLanguage) {
         const transaction = await this.transactionsRepository.findById(transactionId);
-        if (!transaction) {
+        if (!transaction || !transaction.isActive) {
             const locale = (0, transactions_messages_1.resolveLocale)(acceptLanguage);
             throw new common_1.NotFoundException({ message: (0, transactions_messages_1.t)(locale, 'notFound') });
         }
@@ -87,7 +126,7 @@ let TransactionsService = class TransactionsService {
     }
     async update(userId, transactionId, payload, acceptLanguage) {
         const existing = await this.transactionsRepository.findById(transactionId);
-        if (!existing) {
+        if (!existing || !existing.isActive) {
             const locale = (0, transactions_messages_1.resolveLocale)(acceptLanguage);
             throw new common_1.NotFoundException({ message: (0, transactions_messages_1.t)(locale, 'notFound') });
         }
@@ -104,7 +143,41 @@ let TransactionsService = class TransactionsService {
         if (payload.description !== undefined) {
             data.description = payload.description || null;
         }
-        if (payload.lines) {
+        if (payload.entry) {
+            const entry = payload.entry;
+            const accounts = await this.transactionsRepository.findAccountsByIds([entry.accountId]);
+            if (accounts.length !== 1 ||
+                accounts[0].householdId !== existing.householdId ||
+                (!accounts[0].isActive && !accounts[0].name?.startsWith('__system__'))) {
+                throw new common_1.BadRequestException({ message: (0, transactions_messages_1.t)(locale, 'invalidReference') });
+            }
+            const categories = await this.transactionsRepository.findCategoriesByIds([entry.categoryId]);
+            if (categories.length !== 1 || categories[0].householdId !== existing.householdId || !categories[0].isActive) {
+                throw new common_1.BadRequestException({ message: (0, transactions_messages_1.t)(locale, 'invalidReference') });
+            }
+            const amount = BigInt(entry.amount);
+            const isExpense = entry.type === 'EXPENSE';
+            const signedAmount = isExpense ? -amount : amount;
+            const systemAccountId = await this.transactionsRepository.ensureSystemAccount(existing.householdId);
+            data.lines = {
+                deleteMany: {},
+                create: [
+                    {
+                        account: { connect: { id: entry.accountId } },
+                        amount: signedAmount,
+                        memo: entry.memo || null,
+                        category: { connect: { id: entry.categoryId } },
+                    },
+                    {
+                        account: { connect: { id: systemAccountId } },
+                        amount: -signedAmount,
+                        memo: 'system',
+                        category: undefined,
+                    },
+                ],
+            };
+        }
+        else if (payload.lines) {
             const lines = await this.validateLines(existing.householdId, payload.lines, acceptLanguage);
             data.lines = {
                 deleteMany: {},
@@ -120,12 +193,12 @@ let TransactionsService = class TransactionsService {
     }
     async remove(userId, transactionId, acceptLanguage) {
         const existing = await this.transactionsRepository.findById(transactionId);
-        if (!existing) {
+        if (!existing || !existing.isActive) {
             const locale = (0, transactions_messages_1.resolveLocale)(acceptLanguage);
             throw new common_1.NotFoundException({ message: (0, transactions_messages_1.t)(locale, 'notFound') });
         }
         await this.householdsService.assertMember(userId, existing.householdId, acceptLanguage);
-        return this.transactionsRepository.deleteTransaction(transactionId);
+        return this.transactionsRepository.archiveTransaction(transactionId);
     }
     parseDate(value) {
         const trimmed = value.trim();
@@ -152,13 +225,15 @@ let TransactionsService = class TransactionsService {
         }
         const accountIds = [...new Set(lines.map((line) => line.accountId))];
         const accounts = await this.transactionsRepository.findAccountsByIds(accountIds);
-        if (accounts.length !== accountIds.length || accounts.some((acc) => acc.householdId !== householdId)) {
+        if (accounts.length !== accountIds.length ||
+            accounts.some((acc) => acc.householdId !== householdId || (!acc.isActive && !acc.name?.startsWith('__system__')))) {
             throw new common_1.BadRequestException({ message: (0, transactions_messages_1.t)(locale, 'invalidReference') });
         }
         const categoryIds = [...new Set(lines.map((line) => line.categoryId).filter(Boolean))];
         if (categoryIds.length) {
             const categories = await this.transactionsRepository.findCategoriesByIds(categoryIds);
-            if (categories.length !== categoryIds.length || categories.some((cat) => cat.householdId !== householdId)) {
+            if (categories.length !== categoryIds.length ||
+                categories.some((cat) => cat.householdId !== householdId || !cat.isActive)) {
                 throw new common_1.BadRequestException({ message: (0, transactions_messages_1.t)(locale, 'invalidReference') });
             }
         }

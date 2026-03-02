@@ -23,7 +23,8 @@ const resolveApiBase = () => {
   return `${fallbackProtocol}//${fallbackHost}:3333`;
 };
 
-const apiBase = resolveApiBase();
+const apiBase = 'http://172.18.0.3:3333';
+//const apiBase = resolveApiBase();
 
 const parseJson = async (response) => {
   try {
@@ -41,9 +42,9 @@ export const apiRequest = async (path, options = {}, { withAuth = true } = {}) =
     ...(options.headers || {})
   };
 
-  if (withAuth && typeof localStorage !== 'undefined') {
+  if (withAuth) {
     const token = safeStorage.get('auth_token');
-    if (token) {
+    if (token && token.split('.').length === 3) {
       headers.Authorization = `Bearer ${token}`;
     }
   }

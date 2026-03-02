@@ -19,13 +19,30 @@
           <div v-if="!items.length" class="panel-empty">{{ $t('categories.empty') }}</div>
           <div v-else class="panel-list">
             <div v-for="category in items" :key="category.id" class="panel-item">
-              <div>
-                <div class="panel-item-title">{{ category.name }}</div>
-                <div class="panel-item-meta">{{ category.type }}</div>
+              <div v-if="editingId === category.id" class="panel-edit">
+                <label class="panel-label" :for="`category-name-${category.id}`">{{ $t('categories.name') }}</label>
+                <input :id="`category-name-${category.id}`" v-model="editName" class="panel-input" type="text" />
+
+                <div class="panel-actions">
+                  <button class="panel-action" type="button" @click="saveEdit">
+                    {{ $t('categories.save') }}
+                  </button>
+                  <button class="panel-action" type="button" @click="cancelEdit">
+                    {{ $t('categories.cancel') }}
+                  </button>
+                </div>
               </div>
-              <button class="panel-action" type="button" @click="archiveCategory(category.id)">
-                {{ $t('categories.archive') }}
-              </button>
+              <div v-else>
+                <div class="panel-item-title">{{ category.name }}</div>
+              </div>
+              <div class="panel-actions" v-if="editingId !== category.id">
+                <button class="panel-action" type="button" @click="startEdit(category)">
+                  {{ $t('categories.edit') }}
+                </button>
+                <button class="panel-action" type="button" @click="archiveCategory(category.id)">
+                  {{ $t('categories.archive') }}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -35,13 +52,6 @@
           <form class="panel-form" @submit.prevent="onCreate">
             <label class="panel-label" for="category-name">{{ $t('categories.name') }}</label>
             <input id="category-name" v-model="name" class="panel-input" type="text" />
-
-            <label class="panel-label" for="category-type">{{ $t('categories.type') }}</label>
-            <select id="category-type" v-model="type" class="panel-input">
-              <option value="EXPENSE">{{ $t('categories.types.expense') }}</option>
-              <option value="INCOME">{{ $t('categories.types.income') }}</option>
-              <option value="TRANSFER">{{ $t('categories.types.transfer') }}</option>
-            </select>
 
             <button class="panel-button" type="submit" :disabled="isSaving">
               {{ $t('categories.createAction') }}
@@ -65,8 +75,9 @@ const $t = t;
 const householdsStore = useHouseholdsStore(pinia);
 const items = ref([]);
 const name = ref('');
-const type = ref('EXPENSE');
 const isSaving = ref(false);
+const editingId = ref('');
+const editName = ref('');
 
 const loadCategories = async () => {
   if (!householdsStore.currentId) return;
@@ -75,6 +86,37 @@ const loadCategories = async () => {
     items.value = Array.isArray(data) ? data : [];
   } catch {
     items.value = [];
+  }
+};
+
+const startEdit = (category) => {
+  editingId.value = category.id;
+  editName.value = category.name || '';
+};
+
+const cancelEdit = () => {
+  editingId.value = '';
+  editName.value = '';
+};
+
+const saveEdit = async () => {
+  if (!editingId.value || !householdsStore.currentId) return;
+  if (!editName.value.trim()) {
+    Notify.create({ type: 'negative', message: t('app.errors.required') });
+    return;
+  }
+  try {
+    const response = await apiRequest(`/categories/${editingId.value}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        name: editName.value.trim()
+      })
+    });
+    Notify.create({ type: 'positive', message: response?.message || t('app.messages.saved') });
+    cancelEdit();
+    await loadCategories();
+  } catch (error) {
+    Notify.create({ type: 'negative', message: error?.message || t('app.errors.generic') });
   }
 };
 
@@ -89,8 +131,7 @@ const onCreate = async () => {
     const response = await apiRequest(`/households/${householdsStore.currentId}/categories`, {
       method: 'POST',
       body: JSON.stringify({
-        name: name.value.trim(),
-        type: type.value
+        name: name.value.trim()
       })
     });
     Notify.create({ type: 'positive', message: response?.message || t('app.messages.saved') });

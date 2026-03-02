@@ -49,7 +49,6 @@
             <div v-for="item in report.byCategory" :key="item.categoryId || item.name" class="panel-item">
               <div>
                 <div class="panel-item-title">{{ item.name }}</div>
-                <div class="panel-item-meta">{{ item.type || '-' }}</div>
               </div>
               <div class="panel-item-title">{{ item.amount }}</div>
             </div>

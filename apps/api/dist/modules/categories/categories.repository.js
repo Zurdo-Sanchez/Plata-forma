@@ -18,7 +18,7 @@ let CategoriesRepository = class CategoriesRepository {
     }
     listByHousehold(householdId) {
         return this.prisma.category.findMany({
-            where: { householdId },
+            where: { householdId, isActive: true },
             orderBy: { createdAt: 'asc' },
         });
     }

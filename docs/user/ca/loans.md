@@ -8,6 +8,7 @@ Registra prestecs de la llar amb import principal i taxa.
 2. Registrar prestec amb nom, principal i data d'inici.
 3. La taxa s'introdueix en bps (punts basics).
 4. Opcional: definir termini en mesos.
+5. Editar o eliminar prestecs quan calgui.
 
 ## Exemple
 - Prestec "Hipoteca" principal `12000000` i taxa `850` bps.
@@ -15,3 +16,4 @@ Registra prestecs de la llar amb import principal i taxa.
 ## Casos limit
 - El principal s'introdueix en centims (enter).
 - La data d'inici es obligatoria.
+- El borrat es suau: el prestec queda inactiu i no apareix en llistes noves.

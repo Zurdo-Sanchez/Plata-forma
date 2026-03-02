@@ -16,10 +16,10 @@ export declare const TransactionLineSchema: z.ZodObject<{
     categoryId?: string | undefined;
     memo?: string | undefined;
 }>;
-export declare const CreateTransactionSchema: z.ZodObject<{
+export declare const CreateTransactionSchema: z.ZodEffects<z.ZodObject<{
     date: z.ZodString;
     description: z.ZodOptional<z.ZodString>;
-    lines: z.ZodArray<z.ZodObject<{
+    lines: z.ZodOptional<z.ZodArray<z.ZodObject<{
         accountId: z.ZodString;
         categoryId: z.ZodOptional<z.ZodString>;
         amount: z.ZodString;
@@ -34,25 +34,90 @@ export declare const CreateTransactionSchema: z.ZodObject<{
         amount: string;
         categoryId?: string | undefined;
         memo?: string | undefined;
-    }>, "many">;
+    }>, "many">>;
+    entry: z.ZodOptional<z.ZodObject<{
+        accountId: z.ZodString;
+        categoryId: z.ZodString;
+        amount: z.ZodString;
+        type: z.ZodEnum<["INCOME", "EXPENSE"]>;
+        memo: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        accountId: string;
+        categoryId: string;
+        amount: string;
+        type: "INCOME" | "EXPENSE";
+        memo?: string | undefined;
+    }, {
+        accountId: string;
+        categoryId: string;
+        amount: string;
+        type: "INCOME" | "EXPENSE";
+        memo?: string | undefined;
+    }>>;
 }, "strip", z.ZodTypeAny, {
     date: string;
-    lines: {
+    description?: string | undefined;
+    lines?: {
         accountId: string;
         amount: string;
         categoryId?: string | undefined;
         memo?: string | undefined;
-    }[];
-    description?: string | undefined;
+    }[] | undefined;
+    entry?: {
+        accountId: string;
+        categoryId: string;
+        amount: string;
+        type: "INCOME" | "EXPENSE";
+        memo?: string | undefined;
+    } | undefined;
 }, {
     date: string;
-    lines: {
+    description?: string | undefined;
+    lines?: {
         accountId: string;
         amount: string;
         categoryId?: string | undefined;
         memo?: string | undefined;
-    }[];
+    }[] | undefined;
+    entry?: {
+        accountId: string;
+        categoryId: string;
+        amount: string;
+        type: "INCOME" | "EXPENSE";
+        memo?: string | undefined;
+    } | undefined;
+}>, {
+    date: string;
     description?: string | undefined;
+    lines?: {
+        accountId: string;
+        amount: string;
+        categoryId?: string | undefined;
+        memo?: string | undefined;
+    }[] | undefined;
+    entry?: {
+        accountId: string;
+        categoryId: string;
+        amount: string;
+        type: "INCOME" | "EXPENSE";
+        memo?: string | undefined;
+    } | undefined;
+}, {
+    date: string;
+    description?: string | undefined;
+    lines?: {
+        accountId: string;
+        amount: string;
+        categoryId?: string | undefined;
+        memo?: string | undefined;
+    }[] | undefined;
+    entry?: {
+        accountId: string;
+        categoryId: string;
+        amount: string;
+        type: "INCOME" | "EXPENSE";
+        memo?: string | undefined;
+    } | undefined;
 }>;
 export declare const UpdateTransactionSchema: z.ZodEffects<z.ZodObject<{
     date: z.ZodOptional<z.ZodString>;
@@ -73,6 +138,25 @@ export declare const UpdateTransactionSchema: z.ZodEffects<z.ZodObject<{
         categoryId?: string | undefined;
         memo?: string | undefined;
     }>, "many">>;
+    entry: z.ZodOptional<z.ZodObject<{
+        accountId: z.ZodString;
+        categoryId: z.ZodString;
+        amount: z.ZodString;
+        type: z.ZodEnum<["INCOME", "EXPENSE"]>;
+        memo: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        accountId: string;
+        categoryId: string;
+        amount: string;
+        type: "INCOME" | "EXPENSE";
+        memo?: string | undefined;
+    }, {
+        accountId: string;
+        categoryId: string;
+        amount: string;
+        type: "INCOME" | "EXPENSE";
+        memo?: string | undefined;
+    }>>;
 }, "strip", z.ZodTypeAny, {
     date?: string | undefined;
     description?: string | undefined;
@@ -82,6 +166,13 @@ export declare const UpdateTransactionSchema: z.ZodEffects<z.ZodObject<{
         categoryId?: string | undefined;
         memo?: string | undefined;
     }[] | undefined;
+    entry?: {
+        accountId: string;
+        categoryId: string;
+        amount: string;
+        type: "INCOME" | "EXPENSE";
+        memo?: string | undefined;
+    } | undefined;
 }, {
     date?: string | undefined;
     description?: string | undefined;
@@ -91,6 +182,13 @@ export declare const UpdateTransactionSchema: z.ZodEffects<z.ZodObject<{
         categoryId?: string | undefined;
         memo?: string | undefined;
     }[] | undefined;
+    entry?: {
+        accountId: string;
+        categoryId: string;
+        amount: string;
+        type: "INCOME" | "EXPENSE";
+        memo?: string | undefined;
+    } | undefined;
 }>, {
     date?: string | undefined;
     description?: string | undefined;
@@ -100,6 +198,13 @@ export declare const UpdateTransactionSchema: z.ZodEffects<z.ZodObject<{
         categoryId?: string | undefined;
         memo?: string | undefined;
     }[] | undefined;
+    entry?: {
+        accountId: string;
+        categoryId: string;
+        amount: string;
+        type: "INCOME" | "EXPENSE";
+        memo?: string | undefined;
+    } | undefined;
 }, {
     date?: string | undefined;
     description?: string | undefined;
@@ -109,6 +214,13 @@ export declare const UpdateTransactionSchema: z.ZodEffects<z.ZodObject<{
         categoryId?: string | undefined;
         memo?: string | undefined;
     }[] | undefined;
+    entry?: {
+        accountId: string;
+        categoryId: string;
+        amount: string;
+        type: "INCOME" | "EXPENSE";
+        memo?: string | undefined;
+    } | undefined;
 }>;
 export declare const TransactionsQuerySchema: z.ZodObject<{
     from: z.ZodOptional<z.ZodString>;

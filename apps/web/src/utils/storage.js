@@ -2,7 +2,11 @@ export const safeStorage = {
   get(key) {
     try {
       if (typeof localStorage === 'undefined') return null;
-      return localStorage.getItem(key);
+      const value = localStorage.getItem(key);
+      if (!value) return null;
+      const trimmed = value.trim();
+      if (!trimmed || trimmed === 'null' || trimmed === 'undefined') return null;
+      return trimmed;
     } catch {
       return null;
     }

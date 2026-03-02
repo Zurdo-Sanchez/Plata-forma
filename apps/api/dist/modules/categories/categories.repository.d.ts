@@ -5,12 +5,12 @@ export declare class CategoriesRepository {
     constructor(prisma: PrismaService);
     listByHousehold(householdId: string): Prisma.PrismaPromise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
+        householdId: string;
         name: string;
         type: import(".prisma/client").$Enums.CategoryType;
-        householdId: string;
         isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }[]>;
     findById(id: string): Promise<Category | null>;
     createCategory(data: Prisma.CategoryCreateInput): Promise<Category>;

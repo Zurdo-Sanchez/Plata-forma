@@ -8,7 +8,7 @@ export class CreditCardsRepository {
 
   listByHousehold(householdId: string) {
     return this.prisma.creditCard.findMany({
-      where: { householdId },
+      where: { householdId, isActive: true },
       include: { account: true },
       orderBy: { createdAt: 'asc' },
     });
@@ -66,6 +66,23 @@ export class CreditCardsRepository {
       where: { id },
       data,
       include: { account: true },
+    });
+  }
+
+  async archiveCreditCard(id: string) {
+    return this.prisma.$transaction(async (trx) => {
+      const card = await trx.creditCard.update({
+        where: { id },
+        data: { isActive: false },
+        include: { account: true },
+      });
+      if (card.accountId) {
+        await trx.account.update({
+          where: { id: card.accountId },
+          data: { isActive: false },
+        });
+      }
+      return card;
     });
   }
 }

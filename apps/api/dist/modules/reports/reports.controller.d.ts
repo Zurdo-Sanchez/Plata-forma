@@ -17,7 +17,6 @@ export declare class ReportsController {
         byCategory: {
             categoryId: string | null;
             name: string;
-            type: import(".prisma/client").$Enums.CategoryType | null;
             amount: bigint;
         }[];
         byAccount: {

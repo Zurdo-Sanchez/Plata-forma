@@ -20,7 +20,6 @@ export class CategoriesService {
     await this.householdsService.assertMember(userId, householdId, acceptLanguage);
     return this.categoriesRepository.createCategory({
       name: payload.name,
-      type: payload.type,
       isActive: payload.isActive ?? true,
       household: { connect: { id: householdId } },
     });
@@ -28,7 +27,7 @@ export class CategoriesService {
 
   async get(userId: string, categoryId: string, acceptLanguage?: string) {
     const category = await this.categoriesRepository.findById(categoryId);
-    if (!category) {
+    if (!category || !category.isActive) {
       const locale = resolveLocale(acceptLanguage);
       throw new NotFoundException({ message: t(locale, 'notFound') });
     }
@@ -38,21 +37,20 @@ export class CategoriesService {
 
   async update(userId: string, categoryId: string, payload: UpdateCategoryDto, acceptLanguage?: string) {
     const category = await this.categoriesRepository.findById(categoryId);
-    if (!category) {
+    if (!category || !category.isActive) {
       const locale = resolveLocale(acceptLanguage);
       throw new NotFoundException({ message: t(locale, 'notFound') });
     }
     await this.householdsService.assertMember(userId, category.householdId, acceptLanguage);
     return this.categoriesRepository.updateCategory(categoryId, {
       name: payload.name,
-      type: payload.type,
       isActive: payload.isActive ?? category.isActive,
     });
   }
 
   async archive(userId: string, categoryId: string, acceptLanguage?: string) {
     const category = await this.categoriesRepository.findById(categoryId);
-    if (!category) {
+    if (!category || !category.isActive) {
       const locale = resolveLocale(acceptLanguage);
       throw new NotFoundException({ message: t(locale, 'notFound') });
     }

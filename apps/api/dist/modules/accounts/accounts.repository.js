@@ -15,10 +15,19 @@ const prisma_service_1 = require("../../prisma/prisma.service");
 let AccountsRepository = class AccountsRepository {
     constructor(prisma) {
         this.prisma = prisma;
+        this.SYSTEM_ACCOUNT_PREFIX = '__system__';
     }
     listByHousehold(householdId) {
         return this.prisma.account.findMany({
-            where: { householdId },
+            where: {
+                householdId,
+                isActive: true,
+                name: {
+                    not: {
+                        startsWith: this.SYSTEM_ACCOUNT_PREFIX,
+                    },
+                },
+            },
             orderBy: { createdAt: 'asc' },
         });
     }

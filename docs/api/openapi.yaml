@@ -43,6 +43,99 @@ paths:
           description: Invalid credentials
         '429':
           description: Account locked
+  /households/{householdId}/transactions:
+    post:
+      summary: Create a transaction
+      parameters:
+        - name: householdId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTransactionRequest'
+      responses:
+        '201':
+          description: Transaction created
+  /households/{householdId}/reports/monthly:
+    get:
+      summary: Monthly report
+      parameters:
+        - name: householdId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: true
+          schema:
+            type: string
+            example: 2026-02
+      responses:
+        '200':
+          description: Monthly report summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonthlyReportResponse'
+  /transactions/{id}:
+    patch:
+      summary: Update a transaction
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTransactionRequest'
+      responses:
+        '200':
+          description: Transaction updated
+    delete:
+      summary: Delete (soft) a transaction
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Transaction archived
+  /credit-cards/{id}:
+    delete:
+      summary: Delete (soft) a credit card
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Credit card archived
+  /loans/{id}:
+    delete:
+      summary: Delete (soft) a loan
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Loan archived
 components:
   schemas:
     RegisterRequest:
@@ -87,3 +180,107 @@ components:
           type: string
         userId:
           type: string
+    TransactionEntry:
+      type: object
+      required: [accountId, categoryId, amount, type]
+      properties:
+        accountId:
+          type: string
+        categoryId:
+          type: string
+        amount:
+          type: string
+          description: Amount in cents as an integer string
+        type:
+          type: string
+          enum: [INCOME, EXPENSE]
+        memo:
+          type: string
+    TransactionLine:
+      type: object
+      required: [accountId, amount]
+      properties:
+        accountId:
+          type: string
+        categoryId:
+          type: string
+        amount:
+          type: string
+        memo:
+          type: string
+    CreateTransactionRequest:
+      type: object
+      required: [date]
+      properties:
+        date:
+          type: string
+          example: 2026-02-19
+        description:
+          type: string
+        entry:
+          $ref: '#/components/schemas/TransactionEntry'
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionLine'
+    UpdateTransactionRequest:
+      type: object
+      properties:
+        date:
+          type: string
+          example: 2026-02-19
+        description:
+          type: string
+        entry:
+          $ref: '#/components/schemas/TransactionEntry'
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionLine'
+    MonthlyReportResponse:
+      type: object
+      properties:
+        month:
+          type: string
+        range:
+          type: object
+          properties:
+            start:
+              type: string
+              format: date-time
+            end:
+              type: string
+              format: date-time
+        totals:
+          type: object
+          properties:
+            income:
+              type: string
+            expense:
+              type: string
+            net:
+              type: string
+        byCategory:
+          type: array
+          items:
+            type: object
+            properties:
+              categoryId:
+                type: string
+              name:
+                type: string
+              amount:
+                type: string
+        byAccount:
+          type: array
+          items:
+            type: object
+            properties:
+              accountId:
+                type: string
+              name:
+                type: string
+              type:
+                type: string
+              amount:
+                type: string

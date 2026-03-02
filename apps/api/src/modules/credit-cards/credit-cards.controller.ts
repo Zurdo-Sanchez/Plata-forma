@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Headers, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Headers, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard, AuthRequest } from '../auth/auth.guard';
 import { CreditCardsService } from './credit-cards.service';
 import { CreateCreditCardSchema, CreditCardIdSchema, UpdateCreditCardSchema } from './credit-cards.schemas';
@@ -66,5 +66,20 @@ export class CreditCardsController {
     }
     const card = await this.creditCardsService.update(request.user!.id, parsedId.data, parsed.data, acceptLanguage);
     return { ok: true, message: t(locale, 'updated'), card };
+  }
+
+  @Delete('credit-cards/:id')
+  async remove(
+    @Req() request: AuthRequest,
+    @Param('id') id: string,
+    @Headers('accept-language') acceptLanguage?: string,
+  ) {
+    const locale = resolveLocale(acceptLanguage);
+    const parsedId = CreditCardIdSchema.safeParse(id);
+    if (!parsedId.success) {
+      throw new BadRequestException({ message: t(locale, 'invalidBody') });
+    }
+    const card = await this.creditCardsService.archive(request.user!.id, parsedId.data, acceptLanguage);
+    return { ok: true, message: t(locale, 'deleted'), card };
   }
 }

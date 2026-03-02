@@ -27,7 +27,7 @@ export class LoansService {
 
     if (payload.accountId) {
       const account = await this.loansRepository.findAccountById(payload.accountId);
-      if (!account || account.householdId !== householdId || account.type !== AccountType.LOAN) {
+      if (!account || account.householdId !== householdId || account.type !== AccountType.LOAN || !account.isActive) {
         throw new BadRequestException({ message: t(locale, 'invalidAccount') });
       }
       return this.loansRepository.createLoan({
@@ -53,7 +53,7 @@ export class LoansService {
 
   async get(userId: string, loanId: string, acceptLanguage?: string) {
     const loan = await this.loansRepository.findById(loanId);
-    if (!loan) {
+    if (!loan || !loan.isActive) {
       const locale = resolveLocale(acceptLanguage);
       throw new NotFoundException({ message: t(locale, 'notFound') });
     }
@@ -63,7 +63,7 @@ export class LoansService {
 
   async update(userId: string, loanId: string, payload: UpdateLoanDto, acceptLanguage?: string) {
     const loan = await this.loansRepository.findById(loanId);
-    if (!loan) {
+    if (!loan || !loan.isActive) {
       const locale = resolveLocale(acceptLanguage);
       throw new NotFoundException({ message: t(locale, 'notFound') });
     }
@@ -79,12 +79,22 @@ export class LoansService {
     }
 
     return this.loansRepository.updateLoan(loanId, {
-      name: payload.name,
+      name: payload.name ?? loan.name,
       principalAmount: payload.principalAmount !== undefined ? BigInt(payload.principalAmount) : loan.principalAmount,
       interestRateBps: payload.interestRateBps ?? loan.interestRateBps,
       startDate: startDate ?? loan.startDate,
       termMonths: payload.termMonths ?? loan.termMonths,
     });
+  }
+
+  async archive(userId: string, loanId: string, acceptLanguage?: string) {
+    const loan = await this.loansRepository.findById(loanId);
+    if (!loan || !loan.isActive) {
+      const locale = resolveLocale(acceptLanguage);
+      throw new NotFoundException({ message: t(locale, 'notFound') });
+    }
+    await this.householdsService.assertMember(userId, loan.householdId, acceptLanguage);
+    return this.loansRepository.archiveLoan(loanId);
   }
 
   private parseDate(value: string): Date | null {

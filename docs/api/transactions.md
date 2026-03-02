@@ -4,7 +4,8 @@ Todos los endpoints requieren `Authorization: Bearer <token>`.
 
 Notas:
 - `amount` se envia como string entero en centavos.
-- Las lineas deben sumar 0 (doble partida).
+- La API permite modo simple (`entry`) o modo avanzado (`lines`).
+- En modo simple el `type` define si es ingreso o gasto (la categoria solo clasifica).
 
 ## GET /households/:householdId/transactions
 
@@ -38,7 +39,7 @@ Response 200:
 
 ## POST /households/:householdId/transactions
 
-Crea una transaccion con lineas.
+Crea una transaccion. Puedes usar modo simple o avanzado.
 
 Request:
 
@@ -46,10 +47,13 @@ Request:
 {
   "date": "2026-02-19",
   "description": "Supermercado",
-  "lines": [
-    { "accountId": "uuid", "categoryId": "uuid", "amount": "-5000", "memo": "Banco" },
-    { "accountId": "uuid", "categoryId": "uuid", "amount": "5000", "memo": "Gasto" }
-  ]
+  "entry": {
+    "accountId": "uuid",
+    "categoryId": "uuid",
+    "amount": "5000",
+    "type": "EXPENSE",
+    "memo": "Gasto"
+  }
 }
 ```
 
@@ -60,6 +64,19 @@ Response 201:
   "ok": true,
   "message": "Transaccion creada correctamente.",
   "transaction": { "id": "uuid", "lines": [{ "amount": "-5000" }, { "amount": "5000" }] }
+}
+```
+
+Modo avanzado (ledger completo):
+
+```json
+{
+  "date": "2026-02-19",
+  "description": "Supermercado",
+  "lines": [
+    { "accountId": "uuid", "categoryId": "uuid", "amount": "-5000" },
+    { "accountId": "uuid", "categoryId": "uuid", "amount": "5000" }
+  ]
 }
 ```
 
@@ -81,13 +98,29 @@ Response 200:
 
 ## PATCH /transactions/:id
 
-Actualiza fecha, descripcion o lineas.
+Actualiza fecha, descripcion, lineas o entrada simple (`entry`).
 
 Request:
 
 ```json
 {
   "description": "Supermercado semanal"
+}
+```
+
+Modo simple (entry):
+
+```json
+{
+  "date": "2026-02-19",
+  "description": "Supermercado",
+  "entry": {
+    "accountId": "uuid",
+    "categoryId": "uuid",
+    "amount": "5000",
+    "type": "EXPENSE",
+    "memo": "Gasto"
+  }
 }
 ```
 
@@ -103,7 +136,7 @@ Response 200:
 
 ## DELETE /transactions/:id
 
-Elimina la transaccion.
+Borrado suave: archiva la transaccion (isActive = false).
 
 Response 200:
 

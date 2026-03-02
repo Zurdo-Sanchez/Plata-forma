@@ -1,7 +1,7 @@
 # Dashboard
 
 ## What it does
-Shows the monthly summary for the current household and a quick logout action.
+Shows the monthly summary for the current household and a quick logout action. Credit card spending is reflected in the following month.
 
 ## How to use
 1. Sign in.

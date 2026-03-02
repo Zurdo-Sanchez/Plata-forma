@@ -17,11 +17,11 @@ export declare class TransactionsService {
         }[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         householdId: string;
         date: Date;
         description: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     })[]>;
     create(userId: string, householdId: string, payload: CreateTransactionDto, acceptLanguage?: string): Promise<{
         lines: {
@@ -35,19 +35,19 @@ export declare class TransactionsService {
         }[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         householdId: string;
         date: Date;
         description: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     get(userId: string, transactionId: string, acceptLanguage?: string): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         householdId: string;
         date: Date;
         description: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     update(userId: string, transactionId: string, payload: UpdateTransactionDto, acceptLanguage?: string): Promise<{
         lines: {
@@ -61,29 +61,19 @@ export declare class TransactionsService {
         }[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         householdId: string;
         date: Date;
         description: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     remove(userId: string, transactionId: string, acceptLanguage?: string): Promise<{
-        lines: {
-            id: number;
-            createdAt: Date;
-            transactionId: string;
-            accountId: string;
-            categoryId: string | null;
-            amount: bigint;
-            memo: string | null;
-        }[];
-    } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         householdId: string;
         date: Date;
         description: string | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     private parseDate;
     private parseBigint;

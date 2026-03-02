@@ -7,52 +7,52 @@ export declare class AccountsService {
     constructor(accountsRepository: AccountsRepository, householdsService: HouseholdsService);
     list(userId: string, householdId: string, acceptLanguage?: string): Promise<{
         id: string;
+        householdId: string;
         name: string;
+        type: import(".prisma/client").$Enums.AccountType;
         currency: string | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        householdId: string;
-        type: import(".prisma/client").$Enums.AccountType;
-        isActive: boolean;
     }[]>;
     create(userId: string, householdId: string, payload: CreateAccountDto, acceptLanguage?: string): Promise<{
         id: string;
+        householdId: string;
         name: string;
+        type: import(".prisma/client").$Enums.AccountType;
         currency: string | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        householdId: string;
-        type: import(".prisma/client").$Enums.AccountType;
-        isActive: boolean;
     }>;
     get(userId: string, accountId: string, acceptLanguage?: string): Promise<{
         id: string;
+        householdId: string;
         name: string;
+        type: import(".prisma/client").$Enums.AccountType;
         currency: string | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        householdId: string;
-        type: import(".prisma/client").$Enums.AccountType;
-        isActive: boolean;
     }>;
     update(userId: string, accountId: string, payload: UpdateAccountDto, acceptLanguage?: string): Promise<{
         id: string;
+        householdId: string;
         name: string;
+        type: import(".prisma/client").$Enums.AccountType;
         currency: string | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        householdId: string;
-        type: import(".prisma/client").$Enums.AccountType;
-        isActive: boolean;
     }>;
     archive(userId: string, accountId: string, acceptLanguage?: string): Promise<{
         id: string;
+        householdId: string;
         name: string;
+        type: import(".prisma/client").$Enums.AccountType;
         currency: string | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        householdId: string;
-        type: import(".prisma/client").$Enums.AccountType;
-        isActive: boolean;
     }>;
 }

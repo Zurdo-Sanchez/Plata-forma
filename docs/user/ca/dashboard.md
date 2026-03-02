@@ -1,7 +1,7 @@
 # Dashboard
 
 ## Que fa
-Mostra el resum mensual de la llar actual i un acces rapid per sortir.
+Mostra el resum mensual de la llar actual i un acces rapid per sortir. La despesa amb targeta es reflecteix al mes següent.
 
 ## Com s'utilitza
 1. Iniciar sessio.

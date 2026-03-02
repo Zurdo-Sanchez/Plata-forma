@@ -29,7 +29,7 @@ let CreditCardsService = class CreditCardsService {
         const locale = (0, credit_cards_messages_1.resolveLocale)(acceptLanguage);
         if (payload.accountId) {
             const account = await this.creditCardsRepository.findAccountById(payload.accountId);
-            if (!account || account.householdId !== householdId || account.type !== client_1.AccountType.CREDIT_CARD) {
+            if (!account || account.householdId !== householdId || account.type !== client_1.AccountType.CREDIT_CARD || !account.isActive) {
                 throw new common_1.BadRequestException({ message: (0, credit_cards_messages_1.t)(locale, 'invalidAccount') });
             }
             return this.creditCardsRepository.createCreditCard({
@@ -51,7 +51,7 @@ let CreditCardsService = class CreditCardsService {
     }
     async get(userId, cardId, acceptLanguage) {
         const card = await this.creditCardsRepository.findById(cardId);
-        if (!card) {
+        if (!card || !card.isActive) {
             const locale = (0, credit_cards_messages_1.resolveLocale)(acceptLanguage);
             throw new common_1.NotFoundException({ message: (0, credit_cards_messages_1.t)(locale, 'notFound') });
         }
@@ -60,17 +60,26 @@ let CreditCardsService = class CreditCardsService {
     }
     async update(userId, cardId, payload, acceptLanguage) {
         const card = await this.creditCardsRepository.findById(cardId);
-        if (!card) {
+        if (!card || !card.isActive) {
             const locale = (0, credit_cards_messages_1.resolveLocale)(acceptLanguage);
             throw new common_1.NotFoundException({ message: (0, credit_cards_messages_1.t)(locale, 'notFound') });
         }
         await this.householdsService.assertMember(userId, card.householdId, acceptLanguage);
         return this.creditCardsRepository.updateCreditCard(cardId, {
-            name: payload.name,
-            closingDay: payload.closingDay,
-            dueDay: payload.dueDay,
+            name: payload.name ?? card.name,
+            closingDay: payload.closingDay ?? card.closingDay,
+            dueDay: payload.dueDay ?? card.dueDay,
             limitAmount: payload.limitAmount !== undefined ? BigInt(payload.limitAmount) : card.limitAmount,
         });
+    }
+    async archive(userId, cardId, acceptLanguage) {
+        const card = await this.creditCardsRepository.findById(cardId);
+        if (!card || !card.isActive) {
+            const locale = (0, credit_cards_messages_1.resolveLocale)(acceptLanguage);
+            throw new common_1.NotFoundException({ message: (0, credit_cards_messages_1.t)(locale, 'notFound') });
+        }
+        await this.householdsService.assertMember(userId, card.householdId, acceptLanguage);
+        return this.creditCardsRepository.archiveCreditCard(cardId);
     }
 };
 exports.CreditCardsService = CreditCardsService;

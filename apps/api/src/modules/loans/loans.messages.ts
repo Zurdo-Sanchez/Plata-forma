@@ -8,6 +8,7 @@ const messages: Record<SupportedLocale, Record<string, string>> = {
     invalidAccount: 'Cuenta inválida para préstamo.',
     created: 'Préstamo creado correctamente.',
     updated: 'Préstamo actualizado correctamente.',
+    deleted: 'Préstamo eliminado correctamente.',
   },
   ca: {
     invalidBody: 'Dades invàlides.',
@@ -16,6 +17,7 @@ const messages: Record<SupportedLocale, Record<string, string>> = {
     invalidAccount: 'Compte invàlid per al préstec.',
     created: 'Préstec creat correctament.',
     updated: 'Préstec actualitzat correctament.',
+    deleted: 'Préstec eliminat correctament.',
   },
   en: {
     invalidBody: 'Invalid data.',
@@ -24,6 +26,7 @@ const messages: Record<SupportedLocale, Record<string, string>> = {
     invalidAccount: 'Invalid account for loan.',
     created: 'Loan created successfully.',
     updated: 'Loan updated successfully.',
+    deleted: 'Loan deleted successfully.',
   },
 };
 

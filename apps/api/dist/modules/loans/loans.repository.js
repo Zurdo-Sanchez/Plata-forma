@@ -19,7 +19,7 @@ let LoansRepository = class LoansRepository {
     }
     listByHousehold(householdId) {
         return this.prisma.loan.findMany({
-            where: { householdId },
+            where: { householdId, isActive: true },
             include: { account: true },
             orderBy: { createdAt: 'asc' },
         });
@@ -66,6 +66,22 @@ let LoansRepository = class LoansRepository {
             where: { id },
             data,
             include: { account: true },
+        });
+    }
+    async archiveLoan(id) {
+        return this.prisma.$transaction(async (trx) => {
+            const loan = await trx.loan.update({
+                where: { id },
+                data: { isActive: false },
+                include: { account: true },
+            });
+            if (loan.accountId) {
+                await trx.account.update({
+                    where: { id: loan.accountId },
+                    data: { isActive: false },
+                });
+            }
+            return loan;
         });
     }
 };

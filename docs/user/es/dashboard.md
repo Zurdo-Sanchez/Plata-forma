@@ -1,7 +1,7 @@
 # Dashboard
 
 ## Que hace
-Muestra el resumen mensual del hogar actual y un acceso rapido para salir.
+Muestra el resumen mensual del hogar actual y un acceso rapido para salir. Los gastos con tarjeta se reflejan en el mes siguiente.
 
 ## Como se usa
 1. Iniciar sesion.

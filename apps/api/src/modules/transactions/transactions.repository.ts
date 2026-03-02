@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Transaction } from '@prisma/client';
+import { AccountType, Prisma, Transaction } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class TransactionsRepository {
   constructor(private readonly prisma: PrismaService) {}
+
+  private readonly SYSTEM_ACCOUNT_NAME = '__system__:equity';
 
   listByHousehold(where: Prisma.TransactionWhereInput) {
     return this.prisma.transaction.findMany({
@@ -36,18 +38,37 @@ export class TransactionsRepository {
     });
   }
 
-  deleteTransaction(id: string) {
-    return this.prisma.transaction.delete({
+  archiveTransaction(id: string) {
+    return this.prisma.transaction.update({
       where: { id },
+      data: { isActive: false },
       include: { lines: true },
     });
+  }
+
+  async ensureSystemAccount(householdId: string) {
+    const existing = await this.prisma.account.findFirst({
+      where: { householdId, name: this.SYSTEM_ACCOUNT_NAME },
+      select: { id: true },
+    });
+    if (existing) return existing.id;
+    const account = await this.prisma.account.create({
+      data: {
+        name: this.SYSTEM_ACCOUNT_NAME,
+        type: AccountType.CASH,
+        isActive: false,
+        household: { connect: { id: householdId } },
+      },
+      select: { id: true },
+    });
+    return account.id;
   }
 
   findAccountsByIds(ids: string[]) {
     if (ids.length === 0) return [];
     return this.prisma.account.findMany({
       where: { id: { in: ids } },
-      select: { id: true, householdId: true },
+      select: { id: true, householdId: true, isActive: true, name: true },
     });
   }
 
@@ -55,7 +76,7 @@ export class TransactionsRepository {
     if (ids.length === 0) return [];
     return this.prisma.category.findMany({
       where: { id: { in: ids } },
-      select: { id: true, householdId: true },
+      select: { id: true, householdId: true, isActive: true },
     });
   }
 }

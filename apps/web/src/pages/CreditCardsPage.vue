@@ -19,12 +19,56 @@
           <div v-if="!items.length" class="panel-empty">{{ $t('creditCards.empty') }}</div>
           <div v-else class="panel-list">
             <div v-for="card in items" :key="card.id" class="panel-item">
-              <div>
+              <div v-if="editingId === card.id" class="panel-edit">
+                <label class="panel-label" :for="`card-name-${card.id}`">{{ $t('creditCards.name') }}</label>
+                <input :id="`card-name-${card.id}`" v-model="editName" class="panel-input" type="text" />
+
+                <label class="panel-label" :for="`card-closing-${card.id}`">{{ $t('creditCards.closingDay') }}</label>
+                <input
+                  :id="`card-closing-${card.id}`"
+                  v-model.number="editClosingDay"
+                  class="panel-input"
+                  type="number"
+                  min="1"
+                  max="28"
+                />
+
+                <label class="panel-label" :for="`card-due-${card.id}`">{{ $t('creditCards.dueDay') }}</label>
+                <input
+                  :id="`card-due-${card.id}`"
+                  v-model.number="editDueDay"
+                  class="panel-input"
+                  type="number"
+                  min="1"
+                  max="28"
+                />
+
+                <label class="panel-label" :for="`card-limit-${card.id}`">{{ $t('creditCards.limitAmount') }}</label>
+                <input :id="`card-limit-${card.id}`" v-model="editLimitAmount" class="panel-input" type="number" step="1" />
+
+                <div class="panel-actions">
+                  <button class="panel-action" type="button" @click="saveEdit">
+                    {{ $t('creditCards.save') }}
+                  </button>
+                  <button class="panel-action" type="button" @click="cancelEdit">
+                    {{ $t('creditCards.cancel') }}
+                  </button>
+                </div>
+              </div>
+              <div v-else>
                 <div class="panel-item-title">{{ card.name }}</div>
                 <div class="panel-item-meta">
                   {{ $t('creditCards.closingDayLabel') }} {{ card.closingDay }} ·
                   {{ $t('creditCards.dueDayLabel') }} {{ card.dueDay }}
                 </div>
+              </div>
+              <div class="panel-actions" v-if="editingId !== card.id">
+                <button class="panel-action" type="button" @click="startEdit(card)">
+                  {{ $t('creditCards.edit') }}
+                </button>
+                <button class="panel-action" type="button" @click="deleteCard(card.id)">
+                  {{ $t('creditCards.delete') }}
+                </button>
               </div>
             </div>
           </div>
@@ -71,6 +115,11 @@ const closingDay = ref(1);
 const dueDay = ref(10);
 const limitAmount = ref('');
 const isSaving = ref(false);
+const editingId = ref('');
+const editName = ref('');
+const editClosingDay = ref(1);
+const editDueDay = ref(10);
+const editLimitAmount = ref('');
 
 const normalizeAmount = (value) => {
   const str = String(value ?? '').trim();
@@ -86,6 +135,62 @@ const loadCards = async () => {
     items.value = Array.isArray(data) ? data : [];
   } catch {
     items.value = [];
+  }
+};
+
+const startEdit = (card) => {
+  editingId.value = card.id;
+  editName.value = card.name || '';
+  editClosingDay.value = card.closingDay ?? 1;
+  editDueDay.value = card.dueDay ?? 10;
+  editLimitAmount.value = card.limitAmount ?? '';
+};
+
+const cancelEdit = () => {
+  editingId.value = '';
+  editName.value = '';
+  editClosingDay.value = 1;
+  editDueDay.value = 10;
+  editLimitAmount.value = '';
+};
+
+const saveEdit = async () => {
+  if (!editingId.value || !householdsStore.currentId) return;
+  if (!editName.value.trim()) {
+    Notify.create({ type: 'negative', message: t('app.errors.required') });
+    return;
+  }
+  const normalizedLimit = normalizeAmount(editLimitAmount.value);
+  if (editLimitAmount.value && !normalizedLimit) {
+    Notify.create({ type: 'negative', message: t('app.errors.required') });
+    return;
+  }
+  try {
+    const response = await apiRequest(`/credit-cards/${editingId.value}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        name: editName.value.trim(),
+        closingDay: editClosingDay.value,
+        dueDay: editDueDay.value,
+        limitAmount: normalizedLimit || undefined
+      })
+    });
+    Notify.create({ type: 'positive', message: response?.message || t('app.messages.saved') });
+    cancelEdit();
+    await loadCards();
+  } catch (error) {
+    Notify.create({ type: 'negative', message: error?.message || t('app.errors.generic') });
+  }
+};
+
+const deleteCard = async (id) => {
+  if (!householdsStore.currentId) return;
+  try {
+    const response = await apiRequest(`/credit-cards/${id}`, { method: 'DELETE' });
+    Notify.create({ type: 'positive', message: response?.message || t('app.messages.saved') });
+    await loadCards();
+  } catch (error) {
+    Notify.create({ type: 'negative', message: error?.message || t('app.errors.generic') });
   }
 };
 

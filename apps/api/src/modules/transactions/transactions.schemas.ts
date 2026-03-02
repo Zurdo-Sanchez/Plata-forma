@@ -12,14 +12,32 @@ export const TransactionLineSchema = z.object({
 export const CreateTransactionSchema = z.object({
   date: z.string().trim().min(8),
   description: z.string().trim().max(255).optional(),
-  lines: z.array(TransactionLineSchema).min(2),
-});
+  lines: z.array(TransactionLineSchema).min(2).optional(),
+  entry: z
+    .object({
+      accountId: z.string().uuid(),
+      categoryId: z.string().uuid(),
+      amount: z.string().trim().regex(/^\d+$/),
+      type: z.enum(['INCOME', 'EXPENSE']),
+      memo: z.string().trim().max(255).optional(),
+    })
+    .optional(),
+}).refine((value) => Boolean(value.lines || value.entry), { message: 'invalidBody' });
 
 export const UpdateTransactionSchema = z
   .object({
     date: z.string().trim().min(8).optional(),
     description: z.string().trim().max(255).optional(),
     lines: z.array(TransactionLineSchema).min(2).optional(),
+    entry: z
+      .object({
+        accountId: z.string().uuid(),
+        categoryId: z.string().uuid(),
+        amount: z.string().trim().regex(/^\d+$/),
+        type: z.enum(['INCOME', 'EXPENSE']),
+        memo: z.string().trim().max(255).optional(),
+      })
+      .optional(),
   })
   .refine((value) => Object.keys(value).length > 0, { message: 'invalidBody' });
 

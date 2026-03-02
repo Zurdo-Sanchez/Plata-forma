@@ -5,81 +5,81 @@ export declare class CreditCardsService {
     private readonly creditCardsRepository;
     private readonly householdsService;
     constructor(creditCardsRepository: CreditCardsRepository, householdsService: HouseholdsService);
-    list(userId: string, householdId: string, acceptLanguage?: string): Promise<({
-        account: {
-            id: string;
-            name: string;
-            currency: string | null;
-            createdAt: Date;
-            updatedAt: Date;
-            householdId: string;
-            type: import(".prisma/client").$Enums.AccountType;
-            isActive: boolean;
-        };
-    } & {
+    list(userId: string, householdId: string, acceptLanguage?: string): Promise<{
         id: string;
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
         householdId: string;
         accountId: string;
+        name: string;
         closingDay: number;
         dueDay: number;
         limitAmount: bigint | null;
-    })[]>;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
     create(userId: string, householdId: string, payload: CreateCreditCardDto, acceptLanguage?: string): Promise<{
         id: string;
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
         householdId: string;
         accountId: string;
+        name: string;
         closingDay: number;
         dueDay: number;
         limitAmount: bigint | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     get(userId: string, cardId: string, acceptLanguage?: string): Promise<{
         account: {
             id: string;
+            householdId: string;
             name: string;
-            currency: string | null;
             createdAt: Date;
             updatedAt: Date;
-            householdId: string;
-            type: import(".prisma/client").$Enums.AccountType;
             isActive: boolean;
+            type: import(".prisma/client").$Enums.AccountType;
+            currency: string | null;
         };
     } & {
         id: string;
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
         householdId: string;
         accountId: string;
+        name: string;
         closingDay: number;
         dueDay: number;
         limitAmount: bigint | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     update(userId: string, cardId: string, payload: UpdateCreditCardDto, acceptLanguage?: string): Promise<{
         account: {
             id: string;
+            householdId: string;
             name: string;
-            currency: string | null;
             createdAt: Date;
             updatedAt: Date;
-            householdId: string;
-            type: import(".prisma/client").$Enums.AccountType;
             isActive: boolean;
+            type: import(".prisma/client").$Enums.AccountType;
+            currency: string | null;
         };
     } & {
         id: string;
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
         householdId: string;
         accountId: string;
+        name: string;
         closingDay: number;
         dueDay: number;
         limitAmount: bigint | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    archive(userId: string, cardId: string, acceptLanguage?: string): Promise<{
+        id: string;
+        householdId: string;
+        accountId: string;
+        name: string;
+        closingDay: number;
+        dueDay: number;
+        limitAmount: bigint | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
 }
