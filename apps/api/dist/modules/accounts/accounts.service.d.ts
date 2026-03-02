@@ -15,6 +15,9 @@ export declare class AccountsService {
         createdAt: Date;
         updatedAt: Date;
     }[]>;
+    balances(userId: string, householdId: string, acceptLanguage?: string): Promise<{
+        totals: Record<string, bigint>;
+    }>;
     create(userId: string, householdId: string, payload: CreateAccountDto, acceptLanguage?: string): Promise<{
         id: string;
         householdId: string;

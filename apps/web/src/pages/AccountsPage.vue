@@ -47,6 +47,9 @@
                 <div class="panel-item-title">{{ account.name }}</div>
                 <div class="panel-item-meta">{{ account.type }} · {{ account.currency || $t('accounts.currencyFallback') }}</div>
               </div>
+              <div class="panel-item-meta account-balance">
+                {{ $t('accounts.total') }}: {{ formatCurrency(resolveTotal(account.id)) }}
+              </div>
               <div class="panel-actions" v-if="editingId !== account.id">
                 <button class="panel-action" type="button" @click="startEdit(account)">
                   {{ $t('accounts.edit') }}
@@ -105,17 +108,61 @@ const editingId = ref('');
 const editName = ref('');
 const editType = ref('BANK');
 const editCurrency = ref('');
+const totals = ref({});
 
 const loadAccounts = async () => {
   if (!householdsStore.currentId) return;
   try {
     const data = await apiRequest(`/households/${householdsStore.currentId}/accounts`, { method: 'GET' });
     items.value = Array.isArray(data) ? data : [];
+    await loadBalances();
   } catch {
     items.value = [];
   }
 };
 
+const loadBalances = async () => {
+  if (!householdsStore.currentId) return;
+  try {
+    const data = await apiRequest(`/households/${householdsStore.currentId}/accounts/balances`, { method: 'GET' });
+    totals.value = data?.totals || {};
+  } catch {
+    totals.value = {};
+  }
+};
+
+const resolveCurrency = () => householdsStore.currentHousehold?.currency || 'EUR';
+
+const formatCurrency = (amountValue) => {
+  const currency = resolveCurrency();
+  let amount = BigInt(0);
+  try {
+    amount = BigInt(String(amountValue ?? 0));
+  } catch {
+    amount = BigInt(0);
+  }
+  const isNegative = amount < BigInt(0);
+  const absolute = isNegative ? -amount : amount;
+  const valueNumber = Number(absolute);
+  if (Number.isFinite(valueNumber) && valueNumber <= Number.MAX_SAFE_INTEGER) {
+    const normalized = valueNumber / 100;
+    try {
+      return new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(isNegative ? -normalized : normalized);
+    } catch {
+      return `${isNegative ? '-' : ''}${normalized.toFixed(2)} ${currency}`;
+    }
+  }
+  const whole = absolute / BigInt(100);
+  const fraction = (absolute % BigInt(100)).toString().padStart(2, '0');
+  return `${isNegative ? '-' : ''}${whole.toString()}.${fraction} ${currency}`;
+};
+
+const resolveTotal = (accountId) => totals.value?.[accountId] ?? 0;
 const onCreate = async () => {
   if (isSaving.value || !householdsStore.currentId) return;
   if (!name.value.trim()) {
@@ -203,3 +250,10 @@ onMounted(() => {
   loadAccounts();
 });
 </script>
+
+<style scoped>
+.account-balance {
+  margin-left: auto;
+  text-align: right;
+}
+</style>

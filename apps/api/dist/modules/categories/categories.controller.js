@@ -25,6 +25,14 @@ let CategoriesController = class CategoriesController {
     async list(request, householdId, acceptLanguage) {
         return this.categoriesService.list(request.user.id, householdId, acceptLanguage);
     }
+    async balances(request, householdId, query, acceptLanguage) {
+        const locale = (0, categories_messages_1.resolveLocale)(acceptLanguage);
+        const month = query.month;
+        if (!month) {
+            throw new common_1.BadRequestException({ message: (0, categories_messages_1.t)(locale, 'invalidBody') });
+        }
+        return this.categoriesService.balances(request.user.id, householdId, month, acceptLanguage);
+    }
     async create(request, householdId, body, acceptLanguage) {
         const locale = (0, categories_messages_1.resolveLocale)(acceptLanguage);
         const parsed = categories_schemas_1.CreateCategorySchema.safeParse(body);
@@ -75,6 +83,16 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, String]),
     __metadata("design:returntype", Promise)
 ], CategoriesController.prototype, "list", null);
+__decorate([
+    (0, common_1.Get)('households/:householdId/categories/balances'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('householdId')),
+    __param(2, (0, common_1.Query)()),
+    __param(3, (0, common_1.Headers)('accept-language')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, Object, String]),
+    __metadata("design:returntype", Promise)
+], CategoriesController.prototype, "balances", null);
 __decorate([
     (0, common_1.Post)('households/:householdId/categories'),
     __param(0, (0, common_1.Req)()),

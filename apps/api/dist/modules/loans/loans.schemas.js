@@ -5,7 +5,7 @@ const zod_1 = require("zod");
 exports.LoanIdSchema = zod_1.z.string().uuid();
 exports.CreateLoanSchema = zod_1.z.object({
     name: zod_1.z.string().trim().min(2).max(120),
-    principalAmount: zod_1.z.string().trim().regex(/^\d+$/),
+    principalAmount: zod_1.z.string().trim().regex(/^\d+(?:[.,]\d{1,2})?$/),
     interestRateBps: zod_1.z.number().int().min(0),
     startDate: zod_1.z.string().trim().min(8),
     termMonths: zod_1.z.number().int().min(1).optional(),
@@ -14,7 +14,7 @@ exports.CreateLoanSchema = zod_1.z.object({
 exports.UpdateLoanSchema = zod_1.z
     .object({
     name: zod_1.z.string().trim().min(2).max(120).optional(),
-    principalAmount: zod_1.z.string().trim().regex(/^\d+$/).optional(),
+    principalAmount: zod_1.z.string().trim().regex(/^\d+(?:[.,]\d{1,2})?$/).optional(),
     interestRateBps: zod_1.z.number().int().min(0).optional(),
     startDate: zod_1.z.string().trim().min(8).optional(),
     termMonths: zod_1.z.number().int().min(1).optional(),

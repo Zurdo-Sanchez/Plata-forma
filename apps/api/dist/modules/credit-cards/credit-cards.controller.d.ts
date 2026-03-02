@@ -3,40 +3,14 @@ import { CreditCardsService } from './credit-cards.service';
 export declare class CreditCardsController {
     private readonly creditCardsService;
     constructor(creditCardsService: CreditCardsService);
-    list(request: AuthRequest, householdId: string, acceptLanguage?: string): Promise<{
-        id: string;
-        householdId: string;
-        accountId: string;
-        name: string;
-        closingDay: number;
-        dueDay: number;
-        limitAmount: bigint | null;
-        createdAt: Date;
-        updatedAt: Date;
-    }[]>;
-    create(request: AuthRequest, householdId: string, body: unknown, acceptLanguage?: string): Promise<{
-        ok: boolean;
-        message: string;
-        card: {
-            id: string;
-            householdId: string;
-            accountId: string;
-            name: string;
-            closingDay: number;
-            dueDay: number;
-            limitAmount: bigint | null;
-            createdAt: Date;
-            updatedAt: Date;
-        };
-    }>;
-    get(request: AuthRequest, id: string, acceptLanguage?: string): Promise<{
+    list(request: AuthRequest, householdId: string, acceptLanguage?: string): Promise<({
         account: {
             id: string;
             householdId: string;
             name: string;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
-            isActive: boolean;
             type: import(".prisma/client").$Enums.AccountType;
             currency: string | null;
         };
@@ -48,6 +22,46 @@ export declare class CreditCardsController {
         closingDay: number;
         dueDay: number;
         limitAmount: bigint | null;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    })[]>;
+    create(request: AuthRequest, householdId: string, body: unknown, acceptLanguage?: string): Promise<{
+        ok: boolean;
+        message: string;
+        card: {
+            id: string;
+            householdId: string;
+            accountId: string;
+            name: string;
+            closingDay: number;
+            dueDay: number;
+            limitAmount: bigint | null;
+            isActive: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+        };
+    }>;
+    get(request: AuthRequest, id: string, acceptLanguage?: string): Promise<{
+        account: {
+            id: string;
+            householdId: string;
+            name: string;
+            isActive: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+            type: import(".prisma/client").$Enums.AccountType;
+            currency: string | null;
+        };
+    } & {
+        id: string;
+        householdId: string;
+        accountId: string;
+        name: string;
+        closingDay: number;
+        dueDay: number;
+        limitAmount: bigint | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -59,9 +73,9 @@ export declare class CreditCardsController {
                 id: string;
                 householdId: string;
                 name: string;
+                isActive: boolean;
                 createdAt: Date;
                 updatedAt: Date;
-                isActive: boolean;
                 type: import(".prisma/client").$Enums.AccountType;
                 currency: string | null;
             };
@@ -73,6 +87,7 @@ export declare class CreditCardsController {
             closingDay: number;
             dueDay: number;
             limitAmount: bigint | null;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
         };
@@ -81,6 +96,17 @@ export declare class CreditCardsController {
         ok: boolean;
         message: string;
         card: {
+            account: {
+                id: string;
+                householdId: string;
+                name: string;
+                isActive: boolean;
+                createdAt: Date;
+                updatedAt: Date;
+                type: import(".prisma/client").$Enums.AccountType;
+                currency: string | null;
+            };
+        } & {
             id: string;
             householdId: string;
             accountId: string;
@@ -88,6 +114,7 @@ export declare class CreditCardsController {
             closingDay: number;
             dueDay: number;
             limitAmount: bigint | null;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
         };

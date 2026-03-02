@@ -30,6 +30,14 @@ let TransactionsController = class TransactionsController {
         }
         return this.transactionsService.list(request.user.id, householdId, parsed.data, acceptLanguage);
     }
+    async balances(request, householdId, query, acceptLanguage) {
+        const parsed = transactions_schemas_1.TransactionsBalancesQuerySchema.safeParse(query);
+        if (!parsed.success) {
+            const locale = (0, transactions_messages_1.resolveLocale)(acceptLanguage);
+            throw new common_1.BadRequestException({ message: (0, transactions_messages_1.t)(locale, 'invalidBody') });
+        }
+        return this.transactionsService.balances(request.user.id, householdId, parsed.data.month, acceptLanguage);
+    }
     async create(request, householdId, body, acceptLanguage) {
         const locale = (0, transactions_messages_1.resolveLocale)(acceptLanguage);
         const parsed = transactions_schemas_1.CreateTransactionSchema.safeParse(body);
@@ -81,6 +89,16 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, Object, String]),
     __metadata("design:returntype", Promise)
 ], TransactionsController.prototype, "list", null);
+__decorate([
+    (0, common_1.Get)('households/:householdId/transactions/balances'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('householdId')),
+    __param(2, (0, common_1.Query)()),
+    __param(3, (0, common_1.Headers)('accept-language')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, Object, String]),
+    __metadata("design:returntype", Promise)
+], TransactionsController.prototype, "balances", null);
 __decorate([
     (0, common_1.Post)('households/:householdId/transactions'),
     __param(0, (0, common_1.Req)()),

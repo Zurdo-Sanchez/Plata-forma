@@ -23,6 +23,17 @@ let AccountsService = class AccountsService {
         await this.householdsService.assertMember(userId, householdId, acceptLanguage);
         return this.accountsRepository.listByHousehold(householdId);
     }
+    async balances(userId, householdId, acceptLanguage) {
+        await this.householdsService.assertMember(userId, householdId, acceptLanguage);
+        const sums = await this.accountsRepository.sumByAccountAllTime(householdId);
+        const totals = {};
+        for (const item of sums) {
+            if (!item.accountId)
+                continue;
+            totals[item.accountId] = item._sum.amount ?? BigInt(0);
+        }
+        return { totals };
+    }
     async create(userId, householdId, payload, acceptLanguage) {
         await this.householdsService.assertMember(userId, householdId, acceptLanguage);
         return this.accountsRepository.createAccount({

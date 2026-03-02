@@ -6,8 +6,8 @@ Records accounting movements with multiple lines (ledger).
 ## How to use
 1. Select a household.
 2. Create a transaction with date and description.
-3. Choose account, category, type (income/expense), and amount (in cents).
-4. The type defines whether it is income or expense; the category only classifies the movement.
+3. Choose origin and destination (account or category) and amount (in cents).
+4. Origin and destination can be accounts or categories.
 5. Edit or delete transactions when needed.
 
 ## Example

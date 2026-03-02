@@ -21,6 +21,18 @@ Response 200:
 ]
 ```
 
+## GET /households/:householdId/accounts/balances
+
+Devuelve el total por cuenta (todas las transacciones).
+
+Response 200:
+
+```json
+{
+  "totals": { "uuid": "15000" }
+}
+```
+
 ## POST /households/:householdId/accounts
 
 Crea una cuenta dentro del hogar.

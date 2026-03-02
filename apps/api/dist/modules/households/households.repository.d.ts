@@ -9,17 +9,17 @@ export declare class HouseholdsRepository {
         }[];
     } & {
         id: string;
-        name: string;
-        currency: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        currency: string | null;
     })[]>;
     findById(id: string): Prisma.Prisma__HouseholdClient<{
         id: string;
-        name: string;
-        currency: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        currency: string | null;
     } | null, null, import("@prisma/client/runtime/library").DefaultArgs>;
     createHousehold(data: Prisma.HouseholdCreateInput): Promise<Household>;
     updateHousehold(id: string, data: Prisma.HouseholdUpdateInput): Promise<Household>;

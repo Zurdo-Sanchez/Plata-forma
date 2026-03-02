@@ -44,7 +44,7 @@
                 />
 
                 <label class="panel-label" :for="`card-limit-${card.id}`">{{ $t('creditCards.limitAmount') }}</label>
-                <input :id="`card-limit-${card.id}`" v-model="editLimitAmount" class="panel-input" type="number" step="1" />
+                <input :id="`card-limit-${card.id}`" v-model="editLimitAmount" class="panel-input" type="number" step="0.01" />
 
                 <div class="panel-actions">
                   <button class="panel-action" type="button" @click="saveEdit">
@@ -87,7 +87,7 @@
             <input id="card-due" v-model.number="dueDay" class="panel-input" type="number" min="1" max="28" />
 
             <label class="panel-label" for="card-limit">{{ $t('creditCards.limitAmount') }}</label>
-            <input id="card-limit" v-model="limitAmount" class="panel-input" type="number" step="1" />
+            <input id="card-limit" v-model="limitAmount" class="panel-input" type="number" step="0.01" />
 
             <button class="panel-button" type="submit" :disabled="isSaving">
               {{ $t('creditCards.createAction') }}
@@ -121,11 +121,37 @@ const editClosingDay = ref(1);
 const editDueDay = ref(10);
 const editLimitAmount = ref('');
 
+const formatAmountInput = (amountValue) => {
+  let amount = BigInt(0);
+  try {
+    amount = BigInt(String(amountValue ?? 0));
+  } catch {
+    amount = BigInt(0);
+  }
+  const isNegative = amount < BigInt(0);
+  const absolute = isNegative ? -amount : amount;
+  const whole = absolute / BigInt(100);
+  const fraction = (absolute % BigInt(100)).toString().padStart(2, '0');
+  return `${isNegative ? '-' : ''}${whole.toString()}.${fraction}`;
+};
+
 const normalizeAmount = (value) => {
-  const str = String(value ?? '').trim();
-  if (!str) return null;
-  if (!/^\d+$/.test(str)) return null;
-  return str;
+  const raw = String(value ?? '').trim();
+  if (!raw) return null;
+  let normalized = raw.replace(/[^0-9,.\-]/g, '');
+  const hasComma = normalized.includes(',');
+  const hasDot = normalized.includes('.');
+  if (hasComma && hasDot) {
+    normalized =
+      normalized.lastIndexOf(',') > normalized.lastIndexOf('.')
+        ? normalized.replace(/\./g, '').replace(',', '.')
+        : normalized.replace(/,/g, '');
+  } else if (hasComma && !hasDot) {
+    normalized = normalized.replace(',', '.');
+  }
+  const numeric = Number(normalized);
+  if (!Number.isFinite(numeric)) return null;
+  return Math.abs(numeric).toFixed(2);
 };
 
 const loadCards = async () => {
@@ -143,7 +169,7 @@ const startEdit = (card) => {
   editName.value = card.name || '';
   editClosingDay.value = card.closingDay ?? 1;
   editDueDay.value = card.dueDay ?? 10;
-  editLimitAmount.value = card.limitAmount ?? '';
+  editLimitAmount.value = formatAmountInput(card.limitAmount ?? 0);
 };
 
 const cancelEdit = () => {

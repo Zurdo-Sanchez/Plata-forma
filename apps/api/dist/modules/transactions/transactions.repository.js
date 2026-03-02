@@ -25,6 +25,39 @@ let TransactionsRepository = class TransactionsRepository {
             orderBy: { date: 'desc' },
         });
     }
+    sumByAccountForRange(householdId, start, end) {
+        return this.prisma.transactionLine.groupBy({
+            by: ['accountId'],
+            _sum: { amount: true },
+            where: {
+                transaction: {
+                    householdId,
+                    isActive: true,
+                    date: {
+                        gte: start,
+                        lt: end,
+                    },
+                },
+            },
+        });
+    }
+    sumByCategoryForRange(householdId, start, end) {
+        return this.prisma.transactionLine.groupBy({
+            by: ['categoryId'],
+            _sum: { amount: true },
+            where: {
+                categoryId: { not: null },
+                transaction: {
+                    householdId,
+                    isActive: true,
+                    date: {
+                        gte: start,
+                        lt: end,
+                    },
+                },
+            },
+        });
+    }
     findById(id) {
         return this.prisma.transaction.findUnique({
             where: { id },
@@ -83,6 +116,36 @@ let TransactionsRepository = class TransactionsRepository {
         return this.prisma.category.findMany({
             where: { id: { in: ids } },
             select: { id: true, householdId: true, isActive: true },
+        });
+    }
+    findDuplicateEntry(householdId, date, fromLine, toLine) {
+        return this.prisma.transaction.findFirst({
+            where: {
+                householdId,
+                isActive: true,
+                date,
+                AND: [
+                    {
+                        lines: {
+                            some: {
+                                accountId: fromLine.accountId,
+                                categoryId: fromLine.categoryId,
+                                amount: fromLine.amount,
+                            },
+                        },
+                    },
+                    {
+                        lines: {
+                            some: {
+                                accountId: toLine.accountId,
+                                categoryId: toLine.categoryId,
+                                amount: toLine.amount,
+                            },
+                        },
+                    },
+                ],
+            },
+            include: { lines: true },
         });
     }
 };

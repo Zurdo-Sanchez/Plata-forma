@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Headers, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Headers, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard, AuthRequest } from '../auth/auth.guard';
 import { CategoriesService } from './categories.service';
 import { CategoryIdSchema, CreateCategorySchema, UpdateCategorySchema } from './categories.schemas';
@@ -16,6 +16,21 @@ export class CategoriesController {
     @Headers('accept-language') acceptLanguage?: string,
   ) {
     return this.categoriesService.list(request.user!.id, householdId, acceptLanguage);
+  }
+
+  @Get('households/:householdId/categories/balances')
+  async balances(
+    @Req() request: AuthRequest,
+    @Param('householdId') householdId: string,
+    @Query() query: Record<string, string>,
+    @Headers('accept-language') acceptLanguage?: string,
+  ) {
+    const locale = resolveLocale(acceptLanguage);
+    const month = query.month;
+    if (!month) {
+      throw new BadRequestException({ message: t(locale, 'invalidBody') });
+    }
+    return this.categoriesService.balances(request.user!.id, householdId, month, acceptLanguage);
   }
 
   @Post('households/:householdId/categories')

@@ -7,7 +7,7 @@ exports.CreateCreditCardSchema = zod_1.z.object({
     name: zod_1.z.string().trim().min(2).max(120),
     closingDay: zod_1.z.number().int().min(1).max(28),
     dueDay: zod_1.z.number().int().min(1).max(28),
-    limitAmount: zod_1.z.string().trim().regex(/^\d+$/).optional(),
+    limitAmount: zod_1.z.string().trim().regex(/^\d+(?:[.,]\d{1,2})?$/).optional(),
     accountId: zod_1.z.string().uuid().optional(),
 });
 exports.UpdateCreditCardSchema = zod_1.z
@@ -15,7 +15,7 @@ exports.UpdateCreditCardSchema = zod_1.z
     name: zod_1.z.string().trim().min(2).max(120).optional(),
     closingDay: zod_1.z.number().int().min(1).max(28).optional(),
     dueDay: zod_1.z.number().int().min(1).max(28).optional(),
-    limitAmount: zod_1.z.string().trim().regex(/^\d+$/).optional(),
+    limitAmount: zod_1.z.string().trim().regex(/^\d+(?:[.,]\d{1,2})?$/).optional(),
 })
     .refine((value) => Object.keys(value).length > 0, { message: 'invalidBody' });
 //# sourceMappingURL=credit-cards.schemas.js.map

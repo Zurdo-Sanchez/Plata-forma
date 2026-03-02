@@ -18,6 +18,15 @@ export class AccountsController {
     return this.accountsService.list(request.user!.id, householdId, acceptLanguage);
   }
 
+  @Get('households/:householdId/accounts/balances')
+  async balances(
+    @Req() request: AuthRequest,
+    @Param('householdId') householdId: string,
+    @Headers('accept-language') acceptLanguage?: string,
+  ) {
+    return this.accountsService.balances(request.user!.id, householdId, acceptLanguage);
+  }
+
   @Post('households/:householdId/accounts')
   async create(
     @Req() request: AuthRequest,

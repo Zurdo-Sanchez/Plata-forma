@@ -9,38 +9,38 @@ export declare class HouseholdsController {
         }[];
     } & {
         id: string;
-        name: string;
-        currency: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        currency: string | null;
     })[]>;
     create(request: AuthRequest, body: unknown, acceptLanguage?: string): Promise<{
         ok: boolean;
         message: string;
         household: {
             id: string;
-            name: string;
-            currency: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
+            currency: string | null;
         };
     }>;
     get(request: AuthRequest, id: string, acceptLanguage?: string): Promise<{
         id: string;
-        name: string;
-        currency: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        currency: string | null;
     }>;
     update(request: AuthRequest, id: string, body: unknown, acceptLanguage?: string): Promise<{
         ok: boolean;
         message: string;
         household: {
             id: string;
-            name: string;
-            currency: string | null;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
+            currency: string | null;
         };
     }>;
     addMember(request: AuthRequest, id: string, body: unknown, acceptLanguage?: string): Promise<{
@@ -50,8 +50,8 @@ export declare class HouseholdsController {
             id: number;
             createdAt: Date;
             userId: string;
-            householdId: string;
             role: import(".prisma/client").$Enums.HouseholdRole;
+            householdId: string;
         };
     }>;
     remove(request: AuthRequest, id: string, acceptLanguage?: string): Promise<{

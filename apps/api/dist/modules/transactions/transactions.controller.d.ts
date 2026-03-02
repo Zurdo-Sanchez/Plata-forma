@@ -18,9 +18,19 @@ export declare class TransactionsController {
         householdId: string;
         date: Date;
         description: string | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     })[]>;
+    balances(request: AuthRequest, householdId: string, query: Record<string, string>, acceptLanguage?: string): Promise<{
+        month: string;
+        range: {
+            start: Date;
+            end: Date;
+        };
+        accounts: Record<string, bigint>;
+        categories: Record<string, bigint>;
+    }>;
     create(request: AuthRequest, householdId: string, body: unknown, acceptLanguage?: string): Promise<{
         ok: boolean;
         message: string;
@@ -39,6 +49,7 @@ export declare class TransactionsController {
             householdId: string;
             date: Date;
             description: string | null;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
         };
@@ -48,6 +59,7 @@ export declare class TransactionsController {
         householdId: string;
         date: Date;
         description: string | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -69,6 +81,7 @@ export declare class TransactionsController {
             householdId: string;
             date: Date;
             description: string | null;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
         };
@@ -77,10 +90,21 @@ export declare class TransactionsController {
         ok: boolean;
         message: string;
         transaction: {
+            lines: {
+                id: number;
+                createdAt: Date;
+                transactionId: string;
+                accountId: string;
+                categoryId: string | null;
+                amount: bigint;
+                memo: string | null;
+            }[];
+        } & {
             id: string;
             householdId: string;
             date: Date;
             description: string | null;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
         };

@@ -14,6 +14,18 @@ export declare class AccountsRepository {
         createdAt: Date;
         updatedAt: Date;
     }[]>;
+    sumByAccountAllTime(householdId: string): Prisma.GetTransactionLineGroupByPayload<{
+        by: "accountId"[];
+        _sum: {
+            amount: true;
+        };
+        where: {
+            transaction: {
+                householdId: string;
+                isActive: true;
+            };
+        };
+    }>;
     findById(id: string): Promise<Account | null>;
     createAccount(data: Prisma.AccountCreateInput): Promise<Account>;
     updateAccount(id: string, data: Prisma.AccountUpdateInput): Promise<Account>;

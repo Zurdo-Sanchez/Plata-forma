@@ -13,6 +13,9 @@ export declare class AccountsController {
         createdAt: Date;
         updatedAt: Date;
     }[]>;
+    balances(request: AuthRequest, householdId: string, acceptLanguage?: string): Promise<{
+        totals: Record<string, bigint>;
+    }>;
     create(request: AuthRequest, householdId: string, body: unknown, acceptLanguage?: string): Promise<{
         ok: boolean;
         message: string;

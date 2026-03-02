@@ -16,6 +16,41 @@ export class TransactionsRepository {
     });
   }
 
+  sumByAccountForRange(householdId: string, start: Date, end: Date) {
+    return this.prisma.transactionLine.groupBy({
+      by: ['accountId'],
+      _sum: { amount: true },
+      where: {
+        transaction: {
+          householdId,
+          isActive: true,
+          date: {
+            gte: start,
+            lt: end,
+          },
+        },
+      },
+    });
+  }
+
+  sumByCategoryForRange(householdId: string, start: Date, end: Date) {
+    return this.prisma.transactionLine.groupBy({
+      by: ['categoryId'],
+      _sum: { amount: true },
+      where: {
+        categoryId: { not: null },
+        transaction: {
+          householdId,
+          isActive: true,
+          date: {
+            gte: start,
+            lt: end,
+          },
+        },
+      },
+    });
+  }
+
   findById(id: string): Promise<Transaction | null> {
     return this.prisma.transaction.findUnique({
       where: { id },
@@ -77,6 +112,42 @@ export class TransactionsRepository {
     return this.prisma.category.findMany({
       where: { id: { in: ids } },
       select: { id: true, householdId: true, isActive: true },
+    });
+  }
+
+  findDuplicateEntry(
+    householdId: string,
+    date: Date,
+    fromLine: { accountId: string; categoryId: string | null; amount: bigint },
+    toLine: { accountId: string; categoryId: string | null; amount: bigint },
+  ) {
+    return this.prisma.transaction.findFirst({
+      where: {
+        householdId,
+        isActive: true,
+        date,
+        AND: [
+          {
+            lines: {
+              some: {
+                accountId: fromLine.accountId,
+                categoryId: fromLine.categoryId,
+                amount: fromLine.amount,
+              },
+            },
+          },
+          {
+            lines: {
+              some: {
+                accountId: toLine.accountId,
+                categoryId: toLine.categoryId,
+                amount: toLine.amount,
+              },
+            },
+          },
+        ],
+      },
+      include: { lines: true },
     });
   }
 }

@@ -57,4 +57,46 @@ export class CategoriesService {
     await this.householdsService.assertMember(userId, category.householdId, acceptLanguage);
     return this.categoriesRepository.updateCategory(categoryId, { isActive: false });
   }
+
+  async balances(userId: string, householdId: string, month: string, acceptLanguage?: string) {
+    await this.householdsService.assertMember(userId, householdId, acceptLanguage);
+    const locale = resolveLocale(acceptLanguage);
+    const { start, end } = this.parseMonth(month);
+    if (!start || !end) {
+      throw new BadRequestException({ message: t(locale, 'invalidBody') });
+    }
+
+    const yearStart = new Date(Date.UTC(start.getUTCFullYear(), 0, 1));
+    const yearEnd = new Date(Date.UTC(start.getUTCFullYear() + 1, 0, 1));
+
+    const [monthSums, yearSums] = await Promise.all([
+      this.categoriesRepository.sumByCategoryForRange(householdId, start, end),
+      this.categoriesRepository.sumByCategoryForRange(householdId, yearStart, yearEnd),
+    ]);
+
+    const monthly: Record<string, bigint> = {};
+    const yearly: Record<string, bigint> = {};
+
+    for (const item of monthSums) {
+      if (!item.categoryId) continue;
+      monthly[item.categoryId] = item._sum.amount ?? BigInt(0);
+    }
+
+    for (const item of yearSums) {
+      if (!item.categoryId) continue;
+      yearly[item.categoryId] = item._sum.amount ?? BigInt(0);
+    }
+
+    return { month, monthly, yearly };
+  }
+
+  private parseMonth(value: string) {
+    const [year, month] = value.split('-').map((part) => Number(part));
+    if (!year || !month || month < 1 || month > 12) {
+      return { start: null, end: null };
+    }
+    const start = new Date(Date.UTC(year, month - 1, 1));
+    const end = new Date(Date.UTC(year, month, 1));
+    return { start, end };
+  }
 }

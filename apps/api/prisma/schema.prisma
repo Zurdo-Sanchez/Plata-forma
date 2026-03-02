@@ -112,7 +112,7 @@ model Category {
   lines     TransactionLine[]
 
   @@index([householdId])
-  @@unique([householdId, name])
+  @@unique([householdId, name, isActive])
   @@map("categories")
 }
 

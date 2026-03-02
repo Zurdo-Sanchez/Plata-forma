@@ -24,7 +24,7 @@
                 <input :id="`loan-name-${loan.id}`" v-model="editName" class="panel-input" type="text" />
 
                 <label class="panel-label" :for="`loan-principal-${loan.id}`">{{ $t('loans.principal') }}</label>
-                <input :id="`loan-principal-${loan.id}`" v-model="editPrincipal" class="panel-input" type="number" step="1" />
+                <input :id="`loan-principal-${loan.id}`" v-model="editPrincipal" class="panel-input" type="number" step="0.01" />
 
                 <label class="panel-label" :for="`loan-rate-${loan.id}`">{{ $t('loans.rate') }}</label>
                 <input :id="`loan-rate-${loan.id}`" v-model.number="editRate" class="panel-input" type="number" step="1" />
@@ -47,7 +47,7 @@
               <div v-else>
                 <div class="panel-item-title">{{ loan.name }}</div>
                 <div class="panel-item-meta">
-                  {{ $t('loans.principalLabel') }} {{ loan.principalAmount }} · {{ $t('loans.rateLabel') }}
+                  {{ $t('loans.principalLabel') }} {{ formatCurrency(loan.principalAmount) }} · {{ $t('loans.rateLabel') }}
                   {{ loan.interestRateBps }} bps
                 </div>
               </div>
@@ -70,7 +70,7 @@
             <input id="loan-name" v-model="name" class="panel-input" type="text" />
 
             <label class="panel-label" for="loan-principal">{{ $t('loans.principal') }}</label>
-            <input id="loan-principal" v-model="principalAmount" class="panel-input" type="number" step="1" />
+            <input id="loan-principal" v-model="principalAmount" class="panel-input" type="number" step="0.01" />
 
             <label class="panel-label" for="loan-rate">{{ $t('loans.rate') }}</label>
             <input id="loan-rate" v-model.number="interestRateBps" class="panel-input" type="number" step="1" />
@@ -115,11 +115,68 @@ const editRate = ref(0);
 const editStartDate = ref('');
 const editTermMonths = ref(12);
 
+const resolveCurrency = () => householdsStore.currentHousehold?.currency || 'EUR';
+
+const formatCurrency = (amountValue) => {
+  const currency = resolveCurrency();
+  let amount = BigInt(0);
+  try {
+    amount = BigInt(String(amountValue ?? 0));
+  } catch {
+    amount = BigInt(0);
+  }
+  const isNegative = amount < BigInt(0);
+  const absolute = isNegative ? -amount : amount;
+  const valueNumber = Number(absolute);
+  if (Number.isFinite(valueNumber) && valueNumber <= Number.MAX_SAFE_INTEGER) {
+    const normalized = valueNumber / 100;
+    try {
+      return new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(isNegative ? -normalized : normalized);
+    } catch {
+      return `${isNegative ? '-' : ''}${normalized.toFixed(2)} ${currency}`;
+    }
+  }
+  const whole = absolute / BigInt(100);
+  const fraction = (absolute % BigInt(100)).toString().padStart(2, '0');
+  return `${isNegative ? '-' : ''}${whole.toString()}.${fraction} ${currency}`;
+};
+
+const formatAmountInput = (amountValue) => {
+  let amount = BigInt(0);
+  try {
+    amount = BigInt(String(amountValue ?? 0));
+  } catch {
+    amount = BigInt(0);
+  }
+  const isNegative = amount < BigInt(0);
+  const absolute = isNegative ? -amount : amount;
+  const whole = absolute / BigInt(100);
+  const fraction = (absolute % BigInt(100)).toString().padStart(2, '0');
+  return `${isNegative ? '-' : ''}${whole.toString()}.${fraction}`;
+};
+
 const normalizeAmount = (value) => {
-  const str = String(value ?? '').trim();
-  if (!str) return null;
-  if (!/^\d+$/.test(str)) return null;
-  return str;
+  const raw = String(value ?? '').trim();
+  if (!raw) return null;
+  let normalized = raw.replace(/[^0-9,.\-]/g, '');
+  const hasComma = normalized.includes(',');
+  const hasDot = normalized.includes('.');
+  if (hasComma && hasDot) {
+    normalized =
+      normalized.lastIndexOf(',') > normalized.lastIndexOf('.')
+        ? normalized.replace(/\./g, '').replace(',', '.')
+        : normalized.replace(/,/g, '');
+  } else if (hasComma && !hasDot) {
+    normalized = normalized.replace(',', '.');
+  }
+  const numeric = Number(normalized);
+  if (!Number.isFinite(numeric)) return null;
+  return Math.abs(numeric).toFixed(2);
 };
 
 const loadLoans = async () => {
@@ -135,7 +192,7 @@ const loadLoans = async () => {
 const startEdit = (loan) => {
   editingId.value = loan.id;
   editName.value = loan.name || '';
-  editPrincipal.value = loan.principalAmount ?? '';
+  editPrincipal.value = formatAmountInput(loan.principalAmount ?? 0);
   editRate.value = loan.interestRateBps ?? 0;
   editStartDate.value = loan.startDate ? String(loan.startDate).slice(0, 10) : '';
   editTermMonths.value = loan.termMonths ?? 12;

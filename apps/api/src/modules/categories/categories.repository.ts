@@ -24,4 +24,22 @@ export class CategoriesRepository {
   updateCategory(id: string, data: Prisma.CategoryUpdateInput): Promise<Category> {
     return this.prisma.category.update({ where: { id }, data });
   }
+
+  sumByCategoryForRange(householdId: string, start: Date, end: Date) {
+    return this.prisma.transactionLine.groupBy({
+      by: ['categoryId'],
+      _sum: { amount: true },
+      where: {
+        categoryId: { not: null },
+        transaction: {
+          householdId,
+          isActive: true,
+          date: {
+            gte: start,
+            lt: end,
+          },
+        },
+      },
+    });
+  }
 }

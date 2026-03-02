@@ -16,6 +16,17 @@ export class AccountsService {
     return this.accountsRepository.listByHousehold(householdId);
   }
 
+  async balances(userId: string, householdId: string, acceptLanguage?: string) {
+    await this.householdsService.assertMember(userId, householdId, acceptLanguage);
+    const sums = await this.accountsRepository.sumByAccountAllTime(householdId);
+    const totals: Record<string, bigint> = {};
+    for (const item of sums) {
+      if (!item.accountId) continue;
+      totals[item.accountId] = item._sum.amount ?? BigInt(0);
+    }
+    return { totals };
+  }
+
   async create(userId: string, householdId: string, payload: CreateAccountDto, acceptLanguage?: string) {
     await this.householdsService.assertMember(userId, householdId, acceptLanguage);
     return this.accountsRepository.createAccount({

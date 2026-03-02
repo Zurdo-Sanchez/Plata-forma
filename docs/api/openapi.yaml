@@ -112,6 +112,54 @@ paths:
       responses:
         '200':
           description: Transaction archived
+  /households/{householdId}/transactions/balances:
+    get:
+      summary: Monthly balances by account and category
+      parameters:
+        - name: householdId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: true
+          schema:
+            type: string
+            example: 2026-02
+      responses:
+        '200':
+          description: Monthly balances
+  /households/{householdId}/categories/balances:
+    get:
+      summary: Monthly and yearly category totals
+      parameters:
+        - name: householdId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: true
+          schema:
+            type: string
+            example: 2026-02
+      responses:
+        '200':
+          description: Category totals
+  /households/{householdId}/accounts/balances:
+    get:
+      summary: Account totals
+      parameters:
+        - name: householdId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Account totals
   /credit-cards/{id}:
     delete:
       summary: Delete (soft) a credit card
@@ -182,19 +230,25 @@ components:
           type: string
     TransactionEntry:
       type: object
-      required: [accountId, categoryId, amount, type]
+      required: [from, to, amount]
       properties:
-        accountId:
-          type: string
-        categoryId:
-          type: string
+        from:
+          $ref: '#/components/schemas/EntrySide'
+        to:
+          $ref: '#/components/schemas/EntrySide'
         amount:
           type: string
           description: Amount in cents as an integer string
-        type:
-          type: string
-          enum: [INCOME, EXPENSE]
         memo:
+          type: string
+    EntrySide:
+      type: object
+      required: [kind, id]
+      properties:
+        kind:
+          type: string
+          enum: [ACCOUNT, CATEGORY]
+        id:
           type: string
     TransactionLine:
       type: object

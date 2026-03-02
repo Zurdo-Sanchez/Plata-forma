@@ -25,6 +25,9 @@ let AccountsController = class AccountsController {
     async list(request, householdId, acceptLanguage) {
         return this.accountsService.list(request.user.id, householdId, acceptLanguage);
     }
+    async balances(request, householdId, acceptLanguage) {
+        return this.accountsService.balances(request.user.id, householdId, acceptLanguage);
+    }
     async create(request, householdId, body, acceptLanguage) {
         const locale = (0, accounts_messages_1.resolveLocale)(acceptLanguage);
         const parsed = accounts_schemas_1.CreateAccountSchema.safeParse(body);
@@ -75,6 +78,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, String]),
     __metadata("design:returntype", Promise)
 ], AccountsController.prototype, "list", null);
+__decorate([
+    (0, common_1.Get)('households/:householdId/accounts/balances'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('householdId')),
+    __param(2, (0, common_1.Headers)('accept-language')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, String]),
+    __metadata("design:returntype", Promise)
+], AccountsController.prototype, "balances", null);
 __decorate([
     (0, common_1.Post)('households/:householdId/accounts'),
     __param(0, (0, common_1.Req)()),

@@ -19,6 +19,23 @@ Response 200:
 ]
 ```
 
+## GET /households/:householdId/categories/balances
+
+Devuelve el acumulado mensual y anual por categoria.
+
+Query params:
+- `month` (YYYY-MM)
+
+Response 200:
+
+```json
+{
+  "month": "2026-02",
+  "monthly": { "uuid": "-5000" },
+  "yearly": { "uuid": "-12000" }
+}
+```
+
 ## POST /households/:householdId/categories
 
 Crea una categoria.

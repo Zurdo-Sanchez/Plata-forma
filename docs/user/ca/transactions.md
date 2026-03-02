@@ -6,8 +6,8 @@ Registra moviments comptables amb multiples linies (ledger).
 ## Com s'utilitza
 1. Seleccionar una llar.
 2. Crear una transaccio amb data i descripcio.
-3. Escollir compte, categoria, tipus (ingrés/despesa) i import (en centims).
-4. El tipus defineix si es ingrés o despesa; la categoria només classifica el moviment.
+3. Escollir origen i destí (compte o categoria) i import (en centims).
+4. L'origen i el destí poden ser comptes o categories.
 5. Editar o eliminar transaccions quan calgui.
 
 ## Exemple

@@ -7,7 +7,6 @@ export declare class CategoriesRepository {
         id: string;
         householdId: string;
         name: string;
-        type: import(".prisma/client").$Enums.CategoryType;
         isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
@@ -15,4 +14,23 @@ export declare class CategoriesRepository {
     findById(id: string): Promise<Category | null>;
     createCategory(data: Prisma.CategoryCreateInput): Promise<Category>;
     updateCategory(id: string, data: Prisma.CategoryUpdateInput): Promise<Category>;
+    sumByCategoryForRange(householdId: string, start: Date, end: Date): Prisma.GetTransactionLineGroupByPayload<{
+        by: "categoryId"[];
+        _sum: {
+            amount: true;
+        };
+        where: {
+            categoryId: {
+                not: null;
+            };
+            transaction: {
+                householdId: string;
+                isActive: true;
+                date: {
+                    gte: Date;
+                    lt: Date;
+                };
+            };
+        };
+    }>;
 }

@@ -3,6 +3,7 @@ import { AuthGuard, AuthRequest } from '../auth/auth.guard';
 import {
   CreateTransactionSchema,
   TransactionIdSchema,
+  TransactionsBalancesQuerySchema,
   TransactionsQuerySchema,
   UpdateTransactionSchema,
 } from './transactions.schemas';
@@ -27,6 +28,21 @@ export class TransactionsController {
       throw new BadRequestException({ message: t(locale, 'invalidBody') });
     }
     return this.transactionsService.list(request.user!.id, householdId, parsed.data, acceptLanguage);
+  }
+
+  @Get('households/:householdId/transactions/balances')
+  async balances(
+    @Req() request: AuthRequest,
+    @Param('householdId') householdId: string,
+    @Query() query: Record<string, string>,
+    @Headers('accept-language') acceptLanguage?: string,
+  ) {
+    const parsed = TransactionsBalancesQuerySchema.safeParse(query);
+    if (!parsed.success) {
+      const locale = resolveLocale(acceptLanguage);
+      throw new BadRequestException({ message: t(locale, 'invalidBody') });
+    }
+    return this.transactionsService.balances(request.user!.id, householdId, parsed.data.month, acceptLanguage);
   }
 
   @Post('households/:householdId/transactions')

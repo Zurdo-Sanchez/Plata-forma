@@ -9,7 +9,6 @@ export declare class CategoriesService {
         id: string;
         householdId: string;
         name: string;
-        type: import(".prisma/client").$Enums.CategoryType;
         isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
@@ -18,7 +17,6 @@ export declare class CategoriesService {
         id: string;
         householdId: string;
         name: string;
-        type: import(".prisma/client").$Enums.CategoryType;
         isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
@@ -27,7 +25,6 @@ export declare class CategoriesService {
         id: string;
         householdId: string;
         name: string;
-        type: import(".prisma/client").$Enums.CategoryType;
         isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
@@ -36,7 +33,6 @@ export declare class CategoriesService {
         id: string;
         householdId: string;
         name: string;
-        type: import(".prisma/client").$Enums.CategoryType;
         isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
@@ -45,9 +41,14 @@ export declare class CategoriesService {
         id: string;
         householdId: string;
         name: string;
-        type: import(".prisma/client").$Enums.CategoryType;
         isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
+    balances(userId: string, householdId: string, month: string, acceptLanguage?: string): Promise<{
+        month: string;
+        monthly: Record<string, bigint>;
+        yearly: Record<string, bigint>;
+    }>;
+    private parseMonth;
 }

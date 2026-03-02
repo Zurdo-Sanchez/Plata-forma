@@ -20,9 +20,19 @@ export declare class TransactionsService {
         householdId: string;
         date: Date;
         description: string | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     })[]>;
+    balances(userId: string, householdId: string, month: string, acceptLanguage?: string): Promise<{
+        month: string;
+        range: {
+            start: Date;
+            end: Date;
+        };
+        accounts: Record<string, bigint>;
+        categories: Record<string, bigint>;
+    }>;
     create(userId: string, householdId: string, payload: CreateTransactionDto, acceptLanguage?: string): Promise<{
         lines: {
             id: number;
@@ -38,6 +48,7 @@ export declare class TransactionsService {
         householdId: string;
         date: Date;
         description: string | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -46,6 +57,7 @@ export declare class TransactionsService {
         householdId: string;
         date: Date;
         description: string | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -64,18 +76,31 @@ export declare class TransactionsService {
         householdId: string;
         date: Date;
         description: string | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
     remove(userId: string, transactionId: string, acceptLanguage?: string): Promise<{
+        lines: {
+            id: number;
+            createdAt: Date;
+            transactionId: string;
+            accountId: string;
+            categoryId: string | null;
+            amount: bigint;
+            memo: string | null;
+        }[];
+    } & {
         id: string;
         householdId: string;
         date: Date;
         description: string | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
     private parseDate;
-    private parseBigint;
+    private parseMonth;
+    private parseAmountToCents;
     private validateLines;
 }

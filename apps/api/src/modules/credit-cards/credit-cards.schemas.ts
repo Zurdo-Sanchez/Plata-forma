@@ -6,7 +6,7 @@ export const CreateCreditCardSchema = z.object({
   name: z.string().trim().min(2).max(120),
   closingDay: z.number().int().min(1).max(28),
   dueDay: z.number().int().min(1).max(28),
-  limitAmount: z.string().trim().regex(/^\d+$/).optional(),
+  limitAmount: z.string().trim().regex(/^\d+(?:[.,]\d{1,2})?$/).optional(),
   accountId: z.string().uuid().optional(),
 });
 
@@ -15,7 +15,7 @@ export const UpdateCreditCardSchema = z
     name: z.string().trim().min(2).max(120).optional(),
     closingDay: z.number().int().min(1).max(28).optional(),
     dueDay: z.number().int().min(1).max(28).optional(),
-    limitAmount: z.string().trim().regex(/^\d+$/).optional(),
+    limitAmount: z.string().trim().regex(/^\d+(?:[.,]\d{1,2})?$/).optional(),
   })
   .refine((value) => Object.keys(value).length > 0, { message: 'invalidBody' });
 

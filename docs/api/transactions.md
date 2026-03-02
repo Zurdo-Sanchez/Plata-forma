@@ -5,7 +5,7 @@ Todos los endpoints requieren `Authorization: Bearer <token>`.
 Notas:
 - `amount` se envia como string entero en centavos.
 - La API permite modo simple (`entry`) o modo avanzado (`lines`).
-- En modo simple el `type` define si es ingreso o gasto (la categoria solo clasifica).
+- En modo simple se define `from` y `to`, que pueden ser `ACCOUNT` o `CATEGORY`.
 
 ## GET /households/:householdId/transactions
 
@@ -37,6 +37,24 @@ Response 200:
 ]
 ```
 
+## GET /households/:householdId/transactions/balances
+
+Devuelve el saldo mensual por cuenta y categoria.
+
+Query params:
+- `month` (YYYY-MM)
+
+Response 200:
+
+```json
+{
+  "month": "2026-02",
+  "range": { "start": "2026-02-01T00:00:00.000Z", "end": "2026-03-01T00:00:00.000Z" },
+  "accounts": { "uuid": "-5000" },
+  "categories": { "uuid": "-5000" }
+}
+```
+
 ## POST /households/:householdId/transactions
 
 Crea una transaccion. Puedes usar modo simple o avanzado.
@@ -48,10 +66,9 @@ Request:
   "date": "2026-02-19",
   "description": "Supermercado",
   "entry": {
-    "accountId": "uuid",
-    "categoryId": "uuid",
+    "from": { "kind": "CATEGORY", "id": "uuid" },
+    "to": { "kind": "ACCOUNT", "id": "uuid" },
     "amount": "5000",
-    "type": "EXPENSE",
     "memo": "Gasto"
   }
 }
@@ -115,10 +132,9 @@ Modo simple (entry):
   "date": "2026-02-19",
   "description": "Supermercado",
   "entry": {
-    "accountId": "uuid",
-    "categoryId": "uuid",
+    "from": { "kind": "CATEGORY", "id": "uuid" },
+    "to": { "kind": "ACCOUNT", "id": "uuid" },
     "amount": "5000",
-    "type": "EXPENSE",
     "memo": "Gasto"
   }
 }

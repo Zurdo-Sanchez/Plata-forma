@@ -31,6 +31,23 @@ let CategoriesRepository = class CategoriesRepository {
     updateCategory(id, data) {
         return this.prisma.category.update({ where: { id }, data });
     }
+    sumByCategoryForRange(householdId, start, end) {
+        return this.prisma.transactionLine.groupBy({
+            by: ['categoryId'],
+            _sum: { amount: true },
+            where: {
+                categoryId: { not: null },
+                transaction: {
+                    householdId,
+                    isActive: true,
+                    date: {
+                        gte: start,
+                        lt: end,
+                    },
+                },
+            },
+        });
+    }
 };
 exports.CategoriesRepository = CategoriesRepository;
 exports.CategoriesRepository = CategoriesRepository = __decorate([

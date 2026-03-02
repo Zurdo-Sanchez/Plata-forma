@@ -6,8 +6,8 @@ Registra movimientos contables con multiples lineas (ledger).
 ## Como se usa
 1. Seleccionar un hogar.
 2. Crear una transaccion con fecha y descripcion.
-3. Elegir cuenta, categoria, tipo (ingreso/gasto) y monto (en centavos).
-4. El tipo define si es ingreso o gasto; la categoria solo clasifica el movimiento.
+3. Elegir origen y destino (cuenta o categoria) y monto (en centavos).
+4. El origen y destino pueden ser cuentas o categorias.
 5. Editar o borrar transacciones cuando sea necesario.
 
 ## Ejemplo

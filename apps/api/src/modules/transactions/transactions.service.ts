@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { TransactionsRepository } from './transactions.repository';
 import { CreateTransactionDto, TransactionLineDto, TransactionsQueryDto, UpdateTransactionDto } from './transactions.schemas';
 import { HouseholdsService } from '../households/households.service';
@@ -33,8 +33,8 @@ export class TransactionsService {
       if (query.accountId) lineFilter.accountId = query.accountId;
       if (query.categoryId) lineFilter.categoryId = query.categoryId;
 
-      const min = this.parseBigint(query.minAmount);
-      const max = this.parseBigint(query.maxAmount);
+      const min = this.parseAmountToCents(query.minAmount);
+      const max = this.parseAmountToCents(query.maxAmount);
       if (min !== null || max !== null) {
         lineFilter.amount = {};
         if (min !== null) lineFilter.amount.gte = min;
@@ -47,6 +47,35 @@ export class TransactionsService {
     return this.transactionsRepository.listByHousehold(where);
   }
 
+  async balances(userId: string, householdId: string, month: string, acceptLanguage?: string) {
+    await this.householdsService.assertMember(userId, householdId, acceptLanguage);
+    const locale = resolveLocale(acceptLanguage);
+    const { start, end } = this.parseMonth(month);
+    if (!start || !end) {
+      throw new BadRequestException({ message: t(locale, 'invalidBody') });
+    }
+
+    const [accountSums, categorySums] = await Promise.all([
+      this.transactionsRepository.sumByAccountForRange(householdId, start, end),
+      this.transactionsRepository.sumByCategoryForRange(householdId, start, end),
+    ]);
+
+    const accounts: Record<string, bigint> = {};
+    const categories: Record<string, bigint> = {};
+
+    for (const item of accountSums) {
+      if (!item.accountId) continue;
+      accounts[item.accountId] = item._sum.amount ?? BigInt(0);
+    }
+
+    for (const item of categorySums) {
+      if (!item.categoryId) continue;
+      categories[item.categoryId] = item._sum.amount ?? BigInt(0);
+    }
+
+    return { month, range: { start, end }, accounts, categories };
+  }
+
   async create(userId: string, householdId: string, payload: CreateTransactionDto, acceptLanguage?: string) {
     await this.householdsService.assertMember(userId, householdId, acceptLanguage);
     const locale = resolveLocale(acceptLanguage);
@@ -56,25 +85,79 @@ export class TransactionsService {
     }
     if (payload.entry) {
       const entry = payload.entry;
-      const accounts = await this.transactionsRepository.findAccountsByIds([entry.accountId]);
+      const accountIds = [entry.from, entry.to]
+        .filter((side) => side.kind === 'ACCOUNT')
+        .map((side) => side.id);
+      const categoryIds = [entry.from, entry.to]
+        .filter((side) => side.kind === 'CATEGORY')
+        .map((side) => side.id);
+
+      const [accounts, categories] = await Promise.all([
+        this.transactionsRepository.findAccountsByIds(accountIds),
+        this.transactionsRepository.findCategoriesByIds(categoryIds),
+      ]);
+
       if (
-        accounts.length !== 1 ||
-        accounts[0].householdId !== householdId ||
-        (!accounts[0].isActive && !accounts[0].name?.startsWith('__system__'))
+        accounts.length !== accountIds.length ||
+        accounts.some(
+          (acc) => acc.householdId !== householdId || (!acc.isActive && !acc.name?.startsWith('__system__')),
+        )
       ) {
         throw new BadRequestException({ message: t(locale, 'invalidReference') });
       }
 
-      const categories = await this.transactionsRepository.findCategoriesByIds([entry.categoryId]);
-      if (categories.length !== 1 || categories[0].householdId !== householdId || !categories[0].isActive) {
+      if (
+        categories.length !== categoryIds.length ||
+        categories.some((cat) => cat.householdId !== householdId || !cat.isActive)
+      ) {
         throw new BadRequestException({ message: t(locale, 'invalidReference') });
       }
 
-      const entryType = entry.type;
-      const amount = BigInt(entry.amount);
-      const isExpense = entryType === 'EXPENSE';
-      const signedAmount = isExpense ? -amount : amount;
+      const amount = this.parseAmountToCents(entry.amount);
+      if (amount === null) {
+        throw new BadRequestException({ message: t(locale, 'invalidBody') });
+      }
       const systemAccountId = await this.transactionsRepository.ensureSystemAccount(householdId);
+
+      const resolveLine = (side: { kind: 'ACCOUNT' | 'CATEGORY'; id: string }, signedAmount: bigint) => {
+        if (side.kind === 'ACCOUNT') {
+          return {
+            account: { connect: { id: side.id } },
+            category: undefined,
+            amount: signedAmount,
+          };
+        }
+        return {
+          account: { connect: { id: systemAccountId } },
+          category: { connect: { id: side.id } },
+          amount: signedAmount,
+        };
+      };
+
+      const resolveLineFilter = (side: { kind: 'ACCOUNT' | 'CATEGORY'; id: string }, signedAmount: bigint) => {
+        if (side.kind === 'ACCOUNT') {
+          return {
+            accountId: side.id,
+            categoryId: null,
+            amount: signedAmount,
+          };
+        }
+        return {
+          accountId: systemAccountId,
+          categoryId: side.id,
+          amount: signedAmount,
+        };
+      };
+
+      const duplicate = await this.transactionsRepository.findDuplicateEntry(
+        householdId,
+        date,
+        resolveLineFilter(entry.from, -amount),
+        resolveLineFilter(entry.to, amount),
+      );
+      if (duplicate) {
+        throw new ConflictException({ message: t(locale, 'duplicate') });
+      }
 
       return this.transactionsRepository.createTransaction({
         household: { connect: { id: householdId } },
@@ -83,16 +166,12 @@ export class TransactionsService {
         lines: {
           create: [
             {
-              account: { connect: { id: entry.accountId } },
-              amount: signedAmount,
+              ...resolveLine(entry.from, -amount),
               memo: entry.memo || null,
-              category: { connect: { id: entry.categoryId } },
             },
             {
-              account: { connect: { id: systemAccountId } },
-              amount: -signedAmount,
-              memo: 'system',
-              category: undefined,
+              ...resolveLine(entry.to, amount),
+              memo: entry.memo || null,
             },
           ],
         },
@@ -149,40 +228,60 @@ export class TransactionsService {
 
     if (payload.entry) {
       const entry = payload.entry;
-      const accounts = await this.transactionsRepository.findAccountsByIds([entry.accountId]);
+      const accountIds = [entry.from, entry.to]
+        .filter((side) => side.kind === 'ACCOUNT')
+        .map((side) => side.id);
+      const categoryIds = [entry.from, entry.to]
+        .filter((side) => side.kind === 'CATEGORY')
+        .map((side) => side.id);
+
+      const [accounts, categories] = await Promise.all([
+        this.transactionsRepository.findAccountsByIds(accountIds),
+        this.transactionsRepository.findCategoriesByIds(categoryIds),
+      ]);
+
       if (
-        accounts.length !== 1 ||
-        accounts[0].householdId !== existing.householdId ||
-        (!accounts[0].isActive && !accounts[0].name?.startsWith('__system__'))
+        accounts.length !== accountIds.length ||
+        accounts.some(
+          (acc) => acc.householdId !== existing.householdId || (!acc.isActive && !acc.name?.startsWith('__system__')),
+        )
       ) {
         throw new BadRequestException({ message: t(locale, 'invalidReference') });
       }
 
-      const categories = await this.transactionsRepository.findCategoriesByIds([entry.categoryId]);
-      if (categories.length !== 1 || categories[0].householdId !== existing.householdId || !categories[0].isActive) {
+      if (
+        categories.length !== categoryIds.length ||
+        categories.some((cat) => cat.householdId !== existing.householdId || !cat.isActive)
+      ) {
         throw new BadRequestException({ message: t(locale, 'invalidReference') });
       }
 
-      const amount = BigInt(entry.amount);
-      const isExpense = entry.type === 'EXPENSE';
-      const signedAmount = isExpense ? -amount : amount;
+      const amount = this.parseAmountToCents(entry.amount);
+      if (amount === null) {
+        throw new BadRequestException({ message: t(locale, 'invalidBody') });
+      }
       const systemAccountId = await this.transactionsRepository.ensureSystemAccount(existing.householdId);
+
+      const resolveLine = (side: { kind: 'ACCOUNT' | 'CATEGORY'; id: string }, signedAmount: bigint) => {
+        if (side.kind === 'ACCOUNT') {
+          return {
+            account: { connect: { id: side.id } },
+            category: undefined,
+            amount: signedAmount,
+          };
+        }
+        return {
+          account: { connect: { id: systemAccountId } },
+          category: { connect: { id: side.id } },
+          amount: signedAmount,
+        };
+      };
 
       data.lines = {
         deleteMany: {},
         create: [
-          {
-            account: { connect: { id: entry.accountId } },
-            amount: signedAmount,
-            memo: entry.memo || null,
-            category: { connect: { id: entry.categoryId } },
-          },
-          {
-            account: { connect: { id: systemAccountId } },
-            amount: -signedAmount,
-            memo: 'system',
-            category: undefined,
-          },
+          { ...resolveLine(entry.from, -amount), memo: entry.memo || null },
+          { ...resolveLine(entry.to, amount), memo: entry.memo || null },
         ],
       };
     } else if (payload.lines) {
@@ -218,23 +317,59 @@ export class TransactionsService {
     return Number.isNaN(date.getTime()) ? null : date;
   }
 
-  private parseBigint(value?: string): bigint | null {
-    if (!value) return null;
-    try {
-      return BigInt(value);
-    } catch {
-      return null;
+  private parseMonth(value: string) {
+    const [year, month] = value.split('-').map((part) => Number(part));
+    if (!year || !month || month < 1 || month > 12) {
+      return { start: null, end: null };
     }
+    const start = new Date(Date.UTC(year, month - 1, 1));
+    const end = new Date(Date.UTC(year, month, 1));
+    return { start, end };
+  }
+
+  private parseAmountToCents(value?: string): bigint | null {
+    if (!value) return null;
+    const trimmed = value.trim();
+    if (!trimmed) return null;
+    const normalized = trimmed
+      .replace(/[^0-9,.\-]/g, '')
+      .replace(/\.(?=.*\.)/g, '')
+      .replace(/,(?=.*,)/g, '');
+    const hasComma = normalized.includes(',');
+    const hasDot = normalized.includes('.');
+    let numeric = normalized;
+    if (hasComma && hasDot) {
+      numeric =
+        normalized.lastIndexOf(',') > normalized.lastIndexOf('.')
+          ? normalized.replace(/\./g, '').replace(',', '.')
+          : normalized.replace(/,/g, '');
+    } else if (hasComma && !hasDot) {
+      numeric = normalized.replace(',', '.');
+    }
+    const parsed = Number(numeric);
+    if (!Number.isFinite(parsed)) return null;
+    return BigInt(Math.round(parsed * 100));
   }
 
   private async validateLines(householdId: string, lines: TransactionLineDto[], acceptLanguage?: string) {
     const locale = resolveLocale(acceptLanguage);
-    const sum = lines.reduce((acc, line) => acc + BigInt(line.amount), BigInt(0));
+    const parsedLines = lines
+      .map((line) => ({
+        ...line,
+        amount: this.parseAmountToCents(line.amount),
+      }))
+      .filter((line) => line.amount !== null) as Array<Omit<TransactionLineDto, 'amount'> & { amount: bigint }>;
+
+    if (parsedLines.length !== lines.length) {
+      throw new BadRequestException({ message: t(locale, 'invalidBody') });
+    }
+
+    const sum = parsedLines.reduce((acc, line) => acc + BigInt(line.amount), BigInt(0));
     if (sum !== BigInt(0)) {
       throw new BadRequestException({ message: t(locale, 'unbalanced') });
     }
 
-    const accountIds = [...new Set(lines.map((line) => line.accountId))];
+    const accountIds = [...new Set(parsedLines.map((line) => line.accountId))];
     const accounts = await this.transactionsRepository.findAccountsByIds(accountIds);
     if (
       accounts.length !== accountIds.length ||
@@ -245,7 +380,7 @@ export class TransactionsService {
       throw new BadRequestException({ message: t(locale, 'invalidReference') });
     }
 
-    const categoryIds = [...new Set(lines.map((line) => line.categoryId).filter(Boolean) as string[])];
+    const categoryIds = [...new Set(parsedLines.map((line) => line.categoryId).filter(Boolean) as string[])];
     if (categoryIds.length) {
       const categories = await this.transactionsRepository.findCategoriesByIds(categoryIds);
       if (
@@ -256,9 +391,6 @@ export class TransactionsService {
       }
     }
 
-    return lines.map((line) => ({
-      ...line,
-      amount: BigInt(line.amount),
-    }));
+    return parsedLines;
   }
 }

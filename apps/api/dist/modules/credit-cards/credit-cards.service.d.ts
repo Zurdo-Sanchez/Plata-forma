@@ -5,7 +5,18 @@ export declare class CreditCardsService {
     private readonly creditCardsRepository;
     private readonly householdsService;
     constructor(creditCardsRepository: CreditCardsRepository, householdsService: HouseholdsService);
-    list(userId: string, householdId: string, acceptLanguage?: string): Promise<{
+    list(userId: string, householdId: string, acceptLanguage?: string): Promise<({
+        account: {
+            id: string;
+            householdId: string;
+            name: string;
+            isActive: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+            type: import(".prisma/client").$Enums.AccountType;
+            currency: string | null;
+        };
+    } & {
         id: string;
         householdId: string;
         accountId: string;
@@ -13,9 +24,10 @@ export declare class CreditCardsService {
         closingDay: number;
         dueDay: number;
         limitAmount: bigint | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-    }[]>;
+    })[]>;
     create(userId: string, householdId: string, payload: CreateCreditCardDto, acceptLanguage?: string): Promise<{
         id: string;
         householdId: string;
@@ -24,6 +36,7 @@ export declare class CreditCardsService {
         closingDay: number;
         dueDay: number;
         limitAmount: bigint | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -32,9 +45,9 @@ export declare class CreditCardsService {
             id: string;
             householdId: string;
             name: string;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
-            isActive: boolean;
             type: import(".prisma/client").$Enums.AccountType;
             currency: string | null;
         };
@@ -46,6 +59,7 @@ export declare class CreditCardsService {
         closingDay: number;
         dueDay: number;
         limitAmount: bigint | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -54,9 +68,9 @@ export declare class CreditCardsService {
             id: string;
             householdId: string;
             name: string;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
-            isActive: boolean;
             type: import(".prisma/client").$Enums.AccountType;
             currency: string | null;
         };
@@ -68,10 +82,22 @@ export declare class CreditCardsService {
         closingDay: number;
         dueDay: number;
         limitAmount: bigint | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
     archive(userId: string, cardId: string, acceptLanguage?: string): Promise<{
+        account: {
+            id: string;
+            householdId: string;
+            name: string;
+            isActive: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+            type: import(".prisma/client").$Enums.AccountType;
+            currency: string | null;
+        };
+    } & {
         id: string;
         householdId: string;
         accountId: string;
@@ -79,7 +105,9 @@ export declare class CreditCardsService {
         closingDay: number;
         dueDay: number;
         limitAmount: bigint | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
+    private parseAmountToCents;
 }

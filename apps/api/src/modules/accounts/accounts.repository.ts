@@ -23,6 +23,19 @@ export class AccountsRepository {
     });
   }
 
+  sumByAccountAllTime(householdId: string) {
+    return this.prisma.transactionLine.groupBy({
+      by: ['accountId'],
+      _sum: { amount: true },
+      where: {
+        transaction: {
+          householdId,
+          isActive: true,
+        },
+      },
+    });
+  }
+
   findById(id: string): Promise<Account | null> {
     return this.prisma.account.findUnique({ where: { id } });
   }

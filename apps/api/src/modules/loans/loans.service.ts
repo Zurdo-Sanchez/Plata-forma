@@ -30,9 +30,13 @@ export class LoansService {
       if (!account || account.householdId !== householdId || account.type !== AccountType.LOAN || !account.isActive) {
         throw new BadRequestException({ message: t(locale, 'invalidAccount') });
       }
+      const principalAmount = this.parseAmountToCents(payload.principalAmount);
+      if (principalAmount === null) {
+        throw new BadRequestException({ message: t(locale, 'invalidBody') });
+      }
       return this.loansRepository.createLoan({
         name: payload.name,
-        principalAmount: BigInt(payload.principalAmount),
+        principalAmount,
         interestRateBps: payload.interestRateBps,
         startDate,
         termMonths: payload.termMonths ?? null,
@@ -41,9 +45,13 @@ export class LoansService {
       });
     }
 
+    const principalAmount = this.parseAmountToCents(payload.principalAmount);
+    if (principalAmount === null) {
+      throw new BadRequestException({ message: t(locale, 'invalidBody') });
+    }
     return this.loansRepository.createWithAccount(householdId, { name: payload.name }, {
       name: payload.name,
-      principalAmount: BigInt(payload.principalAmount),
+      principalAmount,
       interestRateBps: payload.interestRateBps,
       startDate,
       termMonths: payload.termMonths ?? null,
@@ -78,9 +86,15 @@ export class LoansService {
       }
     }
 
+    const principalAmount =
+      payload.principalAmount !== undefined ? this.parseAmountToCents(payload.principalAmount) : loan.principalAmount;
+    if (payload.principalAmount !== undefined && principalAmount === null) {
+      throw new BadRequestException({ message: t(locale, 'invalidBody') });
+    }
+
     return this.loansRepository.updateLoan(loanId, {
       name: payload.name ?? loan.name,
-      principalAmount: payload.principalAmount !== undefined ? BigInt(payload.principalAmount) : loan.principalAmount,
+      principalAmount,
       interestRateBps: payload.interestRateBps ?? loan.interestRateBps,
       startDate: startDate ?? loan.startDate,
       termMonths: payload.termMonths ?? loan.termMonths,
@@ -102,5 +116,29 @@ export class LoansService {
     if (!trimmed) return null;
     const date = new Date(trimmed.includes('T') ? trimmed : `${trimmed}T00:00:00`);
     return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  private parseAmountToCents(value?: string): bigint | null {
+    if (!value) return null;
+    const trimmed = value.trim();
+    if (!trimmed) return null;
+    const normalized = trimmed
+      .replace(/[^0-9,.\-]/g, '')
+      .replace(/\.(?=.*\.)/g, '')
+      .replace(/,(?=.*,)/g, '');
+    const hasComma = normalized.includes(',');
+    const hasDot = normalized.includes('.');
+    let numeric = normalized;
+    if (hasComma && hasDot) {
+      numeric =
+        normalized.lastIndexOf(',') > normalized.lastIndexOf('.')
+          ? normalized.replace(/\./g, '').replace(',', '.')
+          : normalized.replace(/,/g, '');
+    } else if (hasComma && !hasDot) {
+      numeric = normalized.replace(',', '.');
+    }
+    const parsed = Number(numeric);
+    if (!Number.isFinite(parsed)) return null;
+    return BigInt(Math.round(parsed * 100));
   }
 }

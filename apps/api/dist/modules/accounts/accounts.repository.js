@@ -31,6 +31,18 @@ let AccountsRepository = class AccountsRepository {
             orderBy: { createdAt: 'asc' },
         });
     }
+    sumByAccountAllTime(householdId) {
+        return this.prisma.transactionLine.groupBy({
+            by: ['accountId'],
+            _sum: { amount: true },
+            where: {
+                transaction: {
+                    householdId,
+                    isActive: true,
+                },
+            },
+        });
+    }
     findById(id) {
         return this.prisma.account.findUnique({ where: { id } });
     }

@@ -5,8 +5,13 @@ export const TransactionIdSchema = z.string().uuid();
 export const TransactionLineSchema = z.object({
   accountId: z.string().uuid(),
   categoryId: z.string().uuid().optional(),
-  amount: z.string().trim().regex(/^-?\d+$/),
+  amount: z.string().trim().regex(/^-?\d+(?:[.,]\d{1,2})?$/),
   memo: z.string().trim().max(255).optional(),
+});
+
+const TransactionEntrySideSchema = z.object({
+  kind: z.enum(['ACCOUNT', 'CATEGORY']),
+  id: z.string().uuid(),
 });
 
 export const CreateTransactionSchema = z.object({
@@ -15,10 +20,9 @@ export const CreateTransactionSchema = z.object({
   lines: z.array(TransactionLineSchema).min(2).optional(),
   entry: z
     .object({
-      accountId: z.string().uuid(),
-      categoryId: z.string().uuid(),
-      amount: z.string().trim().regex(/^\d+$/),
-      type: z.enum(['INCOME', 'EXPENSE']),
+      from: TransactionEntrySideSchema,
+      to: TransactionEntrySideSchema,
+      amount: z.string().trim().regex(/^\d+(?:[.,]\d{1,2})?$/),
       memo: z.string().trim().max(255).optional(),
     })
     .optional(),
@@ -31,10 +35,9 @@ export const UpdateTransactionSchema = z
     lines: z.array(TransactionLineSchema).min(2).optional(),
     entry: z
       .object({
-        accountId: z.string().uuid(),
-        categoryId: z.string().uuid(),
-        amount: z.string().trim().regex(/^\d+$/),
-        type: z.enum(['INCOME', 'EXPENSE']),
+        from: TransactionEntrySideSchema,
+        to: TransactionEntrySideSchema,
+        amount: z.string().trim().regex(/^\d+(?:[.,]\d{1,2})?$/),
         memo: z.string().trim().max(255).optional(),
       })
       .optional(),
@@ -47,11 +50,16 @@ export const TransactionsQuerySchema = z.object({
   accountId: z.string().uuid().optional(),
   categoryId: z.string().uuid().optional(),
   search: z.string().trim().min(1).optional(),
-  minAmount: z.string().trim().regex(/^-?\d+$/).optional(),
-  maxAmount: z.string().trim().regex(/^-?\d+$/).optional(),
+  minAmount: z.string().trim().regex(/^-?\d+(?:[.,]\d{1,2})?$/).optional(),
+  maxAmount: z.string().trim().regex(/^-?\d+(?:[.,]\d{1,2})?$/).optional(),
+});
+
+export const TransactionsBalancesQuerySchema = z.object({
+  month: z.string().trim().regex(/^\d{4}-\d{2}$/),
 });
 
 export type CreateTransactionDto = z.infer<typeof CreateTransactionSchema>;
 export type UpdateTransactionDto = z.infer<typeof UpdateTransactionSchema>;
 export type TransactionLineDto = z.infer<typeof TransactionLineSchema>;
 export type TransactionsQueryDto = z.infer<typeof TransactionsQuerySchema>;
+export type TransactionsBalancesQueryDto = z.infer<typeof TransactionsBalancesQuerySchema>;

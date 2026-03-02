@@ -36,22 +36,49 @@ export declare const CreateTransactionSchema: z.ZodEffects<z.ZodObject<{
         memo?: string | undefined;
     }>, "many">>;
     entry: z.ZodOptional<z.ZodObject<{
-        accountId: z.ZodString;
-        categoryId: z.ZodString;
+        from: z.ZodObject<{
+            kind: z.ZodEnum<["ACCOUNT", "CATEGORY"]>;
+            id: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        }, {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        }>;
+        to: z.ZodObject<{
+            kind: z.ZodEnum<["ACCOUNT", "CATEGORY"]>;
+            id: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        }, {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        }>;
         amount: z.ZodString;
-        type: z.ZodEnum<["INCOME", "EXPENSE"]>;
         memo: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
-        accountId: string;
-        categoryId: string;
         amount: string;
-        type: "INCOME" | "EXPENSE";
+        from: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
+        to: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
         memo?: string | undefined;
     }, {
-        accountId: string;
-        categoryId: string;
         amount: string;
-        type: "INCOME" | "EXPENSE";
+        from: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
+        to: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
         memo?: string | undefined;
     }>>;
 }, "strip", z.ZodTypeAny, {
@@ -64,10 +91,15 @@ export declare const CreateTransactionSchema: z.ZodEffects<z.ZodObject<{
         memo?: string | undefined;
     }[] | undefined;
     entry?: {
-        accountId: string;
-        categoryId: string;
         amount: string;
-        type: "INCOME" | "EXPENSE";
+        from: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
+        to: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
         memo?: string | undefined;
     } | undefined;
 }, {
@@ -80,10 +112,15 @@ export declare const CreateTransactionSchema: z.ZodEffects<z.ZodObject<{
         memo?: string | undefined;
     }[] | undefined;
     entry?: {
-        accountId: string;
-        categoryId: string;
         amount: string;
-        type: "INCOME" | "EXPENSE";
+        from: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
+        to: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
         memo?: string | undefined;
     } | undefined;
 }>, {
@@ -96,10 +133,15 @@ export declare const CreateTransactionSchema: z.ZodEffects<z.ZodObject<{
         memo?: string | undefined;
     }[] | undefined;
     entry?: {
-        accountId: string;
-        categoryId: string;
         amount: string;
-        type: "INCOME" | "EXPENSE";
+        from: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
+        to: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
         memo?: string | undefined;
     } | undefined;
 }, {
@@ -112,10 +154,15 @@ export declare const CreateTransactionSchema: z.ZodEffects<z.ZodObject<{
         memo?: string | undefined;
     }[] | undefined;
     entry?: {
-        accountId: string;
-        categoryId: string;
         amount: string;
-        type: "INCOME" | "EXPENSE";
+        from: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
+        to: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
         memo?: string | undefined;
     } | undefined;
 }>;
@@ -139,22 +186,49 @@ export declare const UpdateTransactionSchema: z.ZodEffects<z.ZodObject<{
         memo?: string | undefined;
     }>, "many">>;
     entry: z.ZodOptional<z.ZodObject<{
-        accountId: z.ZodString;
-        categoryId: z.ZodString;
+        from: z.ZodObject<{
+            kind: z.ZodEnum<["ACCOUNT", "CATEGORY"]>;
+            id: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        }, {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        }>;
+        to: z.ZodObject<{
+            kind: z.ZodEnum<["ACCOUNT", "CATEGORY"]>;
+            id: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        }, {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        }>;
         amount: z.ZodString;
-        type: z.ZodEnum<["INCOME", "EXPENSE"]>;
         memo: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
-        accountId: string;
-        categoryId: string;
         amount: string;
-        type: "INCOME" | "EXPENSE";
+        from: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
+        to: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
         memo?: string | undefined;
     }, {
-        accountId: string;
-        categoryId: string;
         amount: string;
-        type: "INCOME" | "EXPENSE";
+        from: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
+        to: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
         memo?: string | undefined;
     }>>;
 }, "strip", z.ZodTypeAny, {
@@ -167,10 +241,15 @@ export declare const UpdateTransactionSchema: z.ZodEffects<z.ZodObject<{
         memo?: string | undefined;
     }[] | undefined;
     entry?: {
-        accountId: string;
-        categoryId: string;
         amount: string;
-        type: "INCOME" | "EXPENSE";
+        from: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
+        to: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
         memo?: string | undefined;
     } | undefined;
 }, {
@@ -183,10 +262,15 @@ export declare const UpdateTransactionSchema: z.ZodEffects<z.ZodObject<{
         memo?: string | undefined;
     }[] | undefined;
     entry?: {
-        accountId: string;
-        categoryId: string;
         amount: string;
-        type: "INCOME" | "EXPENSE";
+        from: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
+        to: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
         memo?: string | undefined;
     } | undefined;
 }>, {
@@ -199,10 +283,15 @@ export declare const UpdateTransactionSchema: z.ZodEffects<z.ZodObject<{
         memo?: string | undefined;
     }[] | undefined;
     entry?: {
-        accountId: string;
-        categoryId: string;
         amount: string;
-        type: "INCOME" | "EXPENSE";
+        from: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
+        to: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
         memo?: string | undefined;
     } | undefined;
 }, {
@@ -215,10 +304,15 @@ export declare const UpdateTransactionSchema: z.ZodEffects<z.ZodObject<{
         memo?: string | undefined;
     }[] | undefined;
     entry?: {
-        accountId: string;
-        categoryId: string;
         amount: string;
-        type: "INCOME" | "EXPENSE";
+        from: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
+        to: {
+            kind: "ACCOUNT" | "CATEGORY";
+            id: string;
+        };
         memo?: string | undefined;
     } | undefined;
 }>;
@@ -247,7 +341,15 @@ export declare const TransactionsQuerySchema: z.ZodObject<{
     minAmount?: string | undefined;
     maxAmount?: string | undefined;
 }>;
+export declare const TransactionsBalancesQuerySchema: z.ZodObject<{
+    month: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    month: string;
+}, {
+    month: string;
+}>;
 export type CreateTransactionDto = z.infer<typeof CreateTransactionSchema>;
 export type UpdateTransactionDto = z.infer<typeof UpdateTransactionSchema>;
 export type TransactionLineDto = z.infer<typeof TransactionLineSchema>;
 export type TransactionsQueryDto = z.infer<typeof TransactionsQuerySchema>;
+export type TransactionsBalancesQueryDto = z.infer<typeof TransactionsBalancesQuerySchema>;

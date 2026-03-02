@@ -5,7 +5,18 @@ export declare class LoansService {
     private readonly loansRepository;
     private readonly householdsService;
     constructor(loansRepository: LoansRepository, householdsService: HouseholdsService);
-    list(userId: string, householdId: string, acceptLanguage?: string): Promise<{
+    list(userId: string, householdId: string, acceptLanguage?: string): Promise<({
+        account: {
+            id: string;
+            householdId: string;
+            name: string;
+            isActive: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+            type: import(".prisma/client").$Enums.AccountType;
+            currency: string | null;
+        };
+    } & {
         id: string;
         householdId: string;
         accountId: string;
@@ -14,9 +25,10 @@ export declare class LoansService {
         interestRateBps: number;
         startDate: Date;
         termMonths: number | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-    }[]>;
+    })[]>;
     create(userId: string, householdId: string, payload: CreateLoanDto, acceptLanguage?: string): Promise<{
         id: string;
         householdId: string;
@@ -26,6 +38,7 @@ export declare class LoansService {
         interestRateBps: number;
         startDate: Date;
         termMonths: number | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -34,9 +47,9 @@ export declare class LoansService {
             id: string;
             householdId: string;
             name: string;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
-            isActive: boolean;
             type: import(".prisma/client").$Enums.AccountType;
             currency: string | null;
         };
@@ -49,6 +62,7 @@ export declare class LoansService {
         interestRateBps: number;
         startDate: Date;
         termMonths: number | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -57,9 +71,9 @@ export declare class LoansService {
             id: string;
             householdId: string;
             name: string;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
-            isActive: boolean;
             type: import(".prisma/client").$Enums.AccountType;
             currency: string | null;
         };
@@ -72,10 +86,22 @@ export declare class LoansService {
         interestRateBps: number;
         startDate: Date;
         termMonths: number | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
     archive(userId: string, loanId: string, acceptLanguage?: string): Promise<{
+        account: {
+            id: string;
+            householdId: string;
+            name: string;
+            isActive: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+            type: import(".prisma/client").$Enums.AccountType;
+            currency: string | null;
+        };
+    } & {
         id: string;
         householdId: string;
         accountId: string;
@@ -84,8 +110,10 @@ export declare class LoansService {
         interestRateBps: number;
         startDate: Date;
         termMonths: number | null;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
     private parseDate;
+    private parseAmountToCents;
 }
